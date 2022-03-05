@@ -1,5 +1,5 @@
-#include <iostream>
 #include <cassert>
+#include <iostream>
 
 template <typename T>
 class Array {
@@ -106,6 +106,6 @@ int main() {
     c.push_back("!");
 
     std::cout << c << std::endl;
-    
+
     return 0;
 }
