@@ -1,9 +1,8 @@
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <string>
 
-int main()
-{
+int main() {
     int num = 0;
     std::string file_name;
 

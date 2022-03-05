@@ -1,10 +1,9 @@
-#include <string>
-#include <vector>
 #include <algorithm>
 #include <iostream>
+#include <string>
+#include <vector>
 
-int main()
-{
+int main() {
     std::vector<std::string> lines;
 
     std::string line;

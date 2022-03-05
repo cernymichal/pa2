@@ -1,9 +1,8 @@
-#include <string>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
+#include <string>
 
-int main()
-{
+int main() {
     int x;
     std::string c;
 
