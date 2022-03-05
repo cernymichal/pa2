@@ -1,8 +1,8 @@
 #include <iostream>
+
 #include "complex.cpp"
 
-int main()
-{
+int main() {
     Complex a(1, 1);
     std::cout << "a: " << a << std::endl;
 
