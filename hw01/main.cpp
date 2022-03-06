@@ -22,7 +22,25 @@ bool identicalFiles(const char *fileName1, const char *fileName2) {
 }
 
 int main(void) {
+    /*
+
+    // utf8 test
+    BitFStream stream("tests/utf8_test.txt", std::ios::in);
+    for (unsigned i = 0; stream.good(); i++) {
+        char32_t c;
+        stream >> c;
+
+        if (c != ' ' && c != '\t' && c != '\r' && c != '\n')
+            std::cout << c << ' ';
+
+        if (i % 50 == 0) std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    */
+
     assert(identicalFiles("main.cpp", "main.cpp"));
+    assert(!identicalFiles("main.cpp", "huffman.cpp"));
 
     assert(decompressFile("tests/test0.huf", "tempfile"));
     assert(identicalFiles("tests/test0.orig", "tempfile"));
