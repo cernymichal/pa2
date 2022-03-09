@@ -53,12 +53,15 @@ public:
         return fstream.good() && !eof();
     }
 
-    bool fail() const {
-        return fstream.fail();
-    }
-
     bool eof() const {
         return fstream.eof() && currentBit == 8;
+    }
+
+    void resetRead() {
+        currentBit = 8;
+        currentByte = '\0';
+        fstream.clear();
+        fstream.seekg(0);
     }
 
     uint8_t getBit() {
@@ -101,7 +104,7 @@ public:
 
         int i = 0;
         // after loading the first byte check for loading ones
-        for (; success && (i == 0 || result >= ~0u << (31 - i)); i++) {
+        for (; success && i < 4 && (i == 0 || result >= ~0u << (31 - i)); i++) {
             uint8_t byte;
             success = getByte(byte);
 
@@ -112,6 +115,9 @@ public:
             // add newly read byte to result
             result |= (uint32_t)byte << (8 * (3 - i));
         }
+
+        // check for zero after number of bytes 1110xxxx
+        success = success && (i == 1 || (result >> (31 - i)) % 2 == 0);
 
         if (!success)
             return false;
@@ -152,9 +158,9 @@ std::ostream &operator<<(std::ostream &stream, char32_t const &c) {
 }
 
 class TreeNode {
-    std::unique_ptr<TreeNode> left;
-    std::unique_ptr<TreeNode> right;
-    char32_t character = '\0';
+    TreeNode *parent = nullptr;
+    TreeNode *left = nullptr;
+    TreeNode *right = nullptr;
 
 #ifdef PT_DEBUG
 
@@ -163,6 +169,20 @@ class TreeNode {
 #endif /* PT_DEBUG */
 
 public:
+    char32_t character = '\0';
+    uint64_t count = 1;
+
+    TreeNode() {
+    }
+
+    TreeNode(char32_t character) : character(character) {
+    }
+
+    ~TreeNode() {
+        delete left;
+        delete right;
+    }
+
     // load tree from bit stream
     bool load(BitFStream &stream) {
         if (!stream.good())
@@ -173,13 +193,35 @@ public:
         if (stream.getBit())
             success = success && stream.getUTF8Char(character);
         else {
-            left = std::make_unique<TreeNode>();
+            left = new TreeNode();
             success = success && left->load(stream);
 
             if (!success || !stream.good())
                 return false;
 
-            right = std::make_unique<TreeNode>();
+            right = new TreeNode();
+            success = success && right->load(stream);
+        }
+
+        return success;
+    }
+
+    bool write(BitFStream &stream) {
+        if (!stream.good())
+            return false;
+
+        bool success = true;
+
+        if (stream.getBit())
+            success = success && stream.getUTF8Char(character);
+        else {
+            left = new TreeNode();
+            success = success && left->load(stream);
+
+            if (!success || !stream.good())
+                return false;
+
+            right = new TreeNode();
             success = success && right->load(stream);
         }
 
@@ -211,6 +253,10 @@ public:
 
 #endif /* PT_DEBUG */
 };
+
+bool compareTreeNodes(const TreeNode *left, const TreeNode *right) {
+    return left->count < right->count;
+}
 
 bool decompressChunk(TreeNode &tree, BitFStream &inStream, std::ofstream &outStream, uint16_t &chunkSize) {
     chunkSize = 4096;
@@ -255,7 +301,43 @@ bool decompressFile(const char *inFileName, const char *outFileName) {
 }
 
 bool compressFile(const char *inFileName, const char *outFileName) {
-    // keep this dummy implementation (no bonus) or implement the compression
-    // (bonus)
-    return false;
+    BitFStream inStream(inFileName, std::ios::in);
+
+    if (!inStream.good())
+        return false;
+
+    std::map<char32_t, TreeNode *> charMap;
+
+    bool success = true;
+    while (inStream.good() && success) {
+        char32_t c;
+        success = inStream.getUTF8Char(c);
+
+        auto search = charMap.find(c);
+        if (search == charMap.end())
+            charMap[c] = new TreeNode(c);
+        else
+            search->second->count++;
+    }
+
+    if (!success)
+        return false;
+
+    auto compareTreeNodes = [](const TreeNode *left, const TreeNode *right) {
+        return left->count < right->count;
+    };
+    std::priority_queue<TreeNode *, std::vector<TreeNode *>, decltype(compareTreeNodes)> nodeQueue(compareTreeNodes);
+
+    for (auto const &pair : charMap)
+        nodeQueue.push(pair.second);
+
+    while (!nodeQueue.empty()) {
+        auto c = nodeQueue.top();
+        std::cout << c->character << " : " << c->count << std::endl;
+        nodeQueue.pop();
+    }
+
+    inStream.resetRead();
+
+    return true;
 }
