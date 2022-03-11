@@ -99,31 +99,40 @@ public:
 
     // https://en.wikipedia.org/wiki/UTF-8#Encoding
     bool getUTF8Char(char32_t &target) {
-        uint64_t result = 0;
-        bool success = true;
+        uint32_t result = 0;
 
         int i = 0;
         // after loading the first byte check for loading ones
-        for (; success && i < 4 && (i == 0 || result >= ~0u << (31 - i)); i++) {
+        for (; i < 4 && (i == 0 || result >= ~0u << (31 - i)); i++) {
             uint8_t byte;
-            success = getByte(byte);
+            if (!getByte(byte))
+                return false;
 
             // check if consecutive bytes look like 10xxxxxx
             if (i != 0)
-                success = success && byte >> 6 == 2;
+                if ((byte & 0xc0) != 0x80) return false;
 
             // add newly read byte to result
-            result |= (uint32_t)byte << (8 * (3 - i));
+            result |= (uint32_t)byte << ((3 - i) * 8);
         }
 
-        // check for zero after number of bytes 1110xxxx
-        success = success && (i == 1 || (result >> (31 - i)) % 2 == 0);
+        // check for leading zero if 1 byte
+        if (i == 1 && (((uint32_t)1 << 31) & result) != 0)
+            return false;
 
-        if (!success)
+        // check for zero after number of bytes 1110xxxx
+        if (i != 1 && (result >> (31 - i)) % 2 != 0)
             return false;
 
         // if encoding is shorter than 4 bytes move value backwards;
-        target = result >> (4 - i) * 8;
+        result = result >> (4 - i) * 8;
+
+        // check if result is within unicode code-space
+        // U+10FFFF = 0xf48fbfbf in UTF8
+        if (result > 0xf48fbfbf)
+            return false;
+
+        target = result;
 
         return true;
     }
