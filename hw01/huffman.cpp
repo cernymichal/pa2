@@ -76,14 +76,14 @@ public:
     bool getNBits(uint8_t n, uint64_t &target) {
         uint64_t result = 0;
 
-        int i = 0;
-        for (; i < n && good(); i++)
-            result |= (uint64_t)getBit() << (63 - i);
+        int loadedBits = 0;
+        for (; loadedBits < n && good(); loadedBits++)
+            result |= (uint64_t)getBit() << (63 - loadedBits);
 
-        if (i != n)
+        if (loadedBits != n)
             return false;
 
-        target = result >> (64 - i);
+        target = result >> (64 - loadedBits);
         return true;
     }
 
@@ -101,31 +101,31 @@ public:
     bool getUTF8Char(char32_t &target) {
         uint32_t result = 0;
 
-        int i = 0;
+        int byteCount = 0;
         // after loading the first byte check for loading ones
-        for (; i < 4 && (i == 0 || result >= ~0u << (31 - i)); i++) {
+        for (; byteCount < 4 && (byteCount == 0 || result >= ~0u << (31 - byteCount)); byteCount++) {
             uint8_t byte;
             if (!getByte(byte))
                 return false;
 
             // check if consecutive bytes look like 10xxxxxx
-            if (i != 0)
+            if (byteCount != 0)
                 if ((byte & 0xc0) != 0x80) return false;
 
             // add newly read byte to result
-            result |= (uint32_t)byte << ((3 - i) * 8);
+            result |= (uint32_t)byte << ((3 - byteCount) * 8);
         }
 
         // check for leading zero if 1 byte
-        if (i == 1 && (((uint32_t)1 << 31) & result) != 0)
+        if (byteCount == 1 && (((uint32_t)1 << 31) & result) != 0)
             return false;
 
         // check for zero after number of bytes 1110xxxx
-        if (i != 1 && (result >> (31 - i)) % 2 != 0)
+        if (byteCount != 1 && (result >> (31 - byteCount)) % 2 != 0)
             return false;
 
         // if encoding is shorter than 4 bytes move value backwards;
-        result = result >> (4 - i) * 8;
+        result = result >> (4 - byteCount) * 8;
 
         // check if result is within unicode code-space
         // U+10FFFF = 0xf48fbfbf in UTF8
@@ -157,10 +157,11 @@ public:
 // https://en.wikipedia.org/wiki/UTF-8#Encoding
 std::ostream &operator<<(std::ostream &stream, char32_t const &c) {
     // starting from the front send bytes
-    for (int i = 1; i < 5; i++) {
+    for (int currentByte = 1; currentByte < 5; currentByte++) {
         // check if byte is used
-        if (i == 4 || c > ~(char32_t)0 >> (8 * i))
-            stream << (uint8_t)(c >> (32 - 8 * i));
+        // always print last byte
+        if (currentByte == 4 || c > ~(char32_t)0 >> (8 * currentByte))
+            stream << (uint8_t)(c >> (32 - 8 * currentByte));
     }
 
     return stream;
@@ -197,44 +198,31 @@ public:
         if (!stream.good())
             return false;
 
-        bool success = true;
-
+        // check if is leaf
         if (stream.getBit())
-            success = success && stream.getUTF8Char(character);
-        else {
-            left = new TreeNode();
-            success = success && left->load(stream);
+            return stream.getUTF8Char(character);
 
-            if (!success || !stream.good())
-                return false;
+        // is node -> load branches
+        left = new TreeNode();
+        right = new TreeNode();
 
-            right = new TreeNode();
-            success = success && right->load(stream);
-        }
-
-        return success;
+        return left->load(stream) && right->load(stream);
     }
 
+    // todo
     bool write(BitFStream &stream) {
         if (!stream.good())
             return false;
 
-        bool success = true;
-
+        // check if is leaf
         if (stream.getBit())
-            success = success && stream.getUTF8Char(character);
-        else {
-            left = new TreeNode();
-            success = success && left->load(stream);
+            return stream.getUTF8Char(character);
 
-            if (!success || !stream.good())
-                return false;
+        // is node -> load branches
+        left = new TreeNode();
+        right = new TreeNode();
 
-            right = new TreeNode();
-            success = success && right->load(stream);
-        }
-
-        return success;
+        return left->load(stream) && right->load(stream);
     }
 
     bool findChar(BitFStream &stream, char32_t &target) const {
@@ -247,9 +235,9 @@ public:
             return false;
 
         if (!stream.getBit())
-            return this->left ? this->left->findChar(stream, target) : false;
+            return this->left && this->left->findChar(stream, target);
         else
-            return this->right ? this->right->findChar(stream, target) : false;
+            return this->right && this->right->findChar(stream, target);
     }
 
     void addChar(const char32_t &character, const uint8_t &path) {
@@ -263,13 +251,13 @@ public:
 #endif /* PT_DEBUG */
 };
 
-bool compareTreeNodes(const TreeNode *left, const TreeNode *right) {
-    return left->count < right->count;
-}
-
 bool decompressChunk(TreeNode &tree, BitFStream &inStream, std::ofstream &outStream, uint16_t &chunkSize) {
     chunkSize = 4096;
 
+    if (!inStream.good())
+        return false;
+
+    // if 1st bit is 0 get chunk size
     if (!inStream.getBit()) {
         uint64_t temp;
         if (!inStream.getNBits(12, temp))
@@ -293,6 +281,7 @@ bool decompressChunk(TreeNode &tree, BitFStream &inStream, std::ofstream &outStr
 bool decompressFile(const char *inFileName, const char *outFileName) {
     BitFStream inStream(inFileName, std::ios::in);
 
+    // load character tree
     TreeNode tree;
     if (!tree.load(inStream))
         return false;
@@ -301,12 +290,15 @@ bool decompressFile(const char *inFileName, const char *outFileName) {
 
     std::ofstream outStream(outFileName);
 
+    // decompress chunks
     uint16_t chunkSize = 4096;
-    bool success = true;
-    while (chunkSize == 4096 && inStream.good() && outStream.good() && success)
-        success = decompressChunk(tree, inStream, outStream, chunkSize);
+    while (chunkSize == 4096) {
+        if (!decompressChunk(tree, inStream, outStream, chunkSize))
+            return false;
+    }
 
-    return chunkSize != 4096 && success;
+    // last chunk should be less than 4096 characters
+    return chunkSize != 4096;
 }
 
 bool compressFile(const char *inFileName, const char *outFileName) {
@@ -315,12 +307,14 @@ bool compressFile(const char *inFileName, const char *outFileName) {
     if (!inStream.good())
         return false;
 
+    // chars and their coresponding TreeNodes
     std::map<char32_t, TreeNode *> charMap;
 
-    bool success = true;
-    while (inStream.good() && success) {
+    // create unconnected TreeNodes for each char in inFile
+    while (inStream.good()) {
         char32_t c;
-        success = inStream.getUTF8Char(c);
+        if (!inStream.getUTF8Char(c))
+            return false;
 
         auto search = charMap.find(c);
         if (search == charMap.end())
@@ -329,9 +323,7 @@ bool compressFile(const char *inFileName, const char *outFileName) {
             search->second->count++;
     }
 
-    if (!success)
-        return false;
-
+    // create priority queue of nodes sorted by their count
     auto compareTreeNodes = [](const TreeNode *left, const TreeNode *right) {
         return left->count < right->count;
     };
