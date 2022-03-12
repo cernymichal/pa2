@@ -26,7 +26,8 @@ void UTF8CoutTest() {
     BitFStream stream("tests/utf8_test.txt", std::ios::in);
     for (unsigned i = 0; stream.good(); i++) {
         char32_t c;
-        stream >> c;
+        if (!stream.getUTF8Char(c))
+            continue;
 
         if (c != ' ' && c != '\t' && c != '\r' && c != '\n')
             std::cout << c << ' ';
@@ -36,10 +37,22 @@ void UTF8CoutTest() {
     std::cout << std::endl;
 }
 
+// utf8 BitFStream write test
+void UTF8BitFSTest() {
+    BitFStream inStream("tests/utf8_test.txt", std::ios::in);
+    BitFStream outStream("test_utf8.temp", std::ios::out);
+
+    while (true) {
+        char32_t c;
+        if (!inStream.getUTF8Char(c) || !outStream.writeUTF8Char(c))
+            break;
+    }
+}
+
 #ifdef PT_DEBUG
 
 // https://stackoverflow.com/a/51730733
-void TreeNode::print(const std::string &prefix, bool isLeft) const {
+void huffman::TreeNode::print(const std::string &prefix, bool isLeft) const {
     std::cout << prefix;
 
     std::cout << (isLeft ? "0───" : "1───");
@@ -58,8 +71,8 @@ void TreeNode::print(const std::string &prefix, bool isLeft) const {
         this->right->print(prefix + (isLeft ? "│   " : "    "), false);
 }
 
-void TreeNode::print() const {
+void huffman::TreeNode::print() const {
     print("", false);
 }
 
-#endif /* PT_DEBUG */
+#endif  // PT_DEBUG
