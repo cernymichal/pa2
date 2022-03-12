@@ -52,27 +52,27 @@ void UTF8BitFSTest() {
 #ifdef PT_DEBUG
 
 // https://stackoverflow.com/a/51730733
-void huffman::TreeNode::print(const std::string &prefix, bool isLeft) const {
+void huffman::TreeNode::_print(const std::string &prefix, bool isLeft) const {
     std::cout << prefix;
 
     std::cout << (isLeft ? "0───" : "1───");
 
     // print the value of the node
-    if (!this->left && !this->right)
+    if (!this->_left && !this->_right)
         std::cout << this->character << std::endl;
     else
         std::cout << "┐" << std::endl;
 
     // enter the next tree level - left and right branch
-    if (this->left)
-        this->left->print(prefix + (isLeft ? "│   " : "    "), true);
+    if (this->_left)
+        this->_left->_print(prefix + (isLeft ? "│   " : "    "), true);
 
-    if (this->right)
-        this->right->print(prefix + (isLeft ? "│   " : "    "), false);
+    if (this->_right)
+        this->_right->_print(prefix + (isLeft ? "│   " : "    "), false);
 }
 
 void huffman::TreeNode::print() const {
-    print("", false);
+    _print("", false);
 }
 
 #endif  // PT_DEBUG

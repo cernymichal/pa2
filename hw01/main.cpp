@@ -62,7 +62,7 @@ int main(void) {
 
     assert(decompressFile("tests/extra9.huf", "test_orig.temp"));
     assert(identicalFiles("tests/extra9.orig", "test_orig.temp"));
-    
+
     // compression asserts
 
     assert(compressFile("tests/test0.orig", "test_huff.temp"));
@@ -124,6 +124,12 @@ int main(void) {
     assert(compressFile("tests/extra9.orig", "test_huff.temp"));
     assert(decompressFile("test_huff.temp", "test_orig.temp"));
     assert(identicalFiles("tests/extra9.orig", "test_orig.temp"));
+
+    assert(compressFile("tests/utf8_test.txt", "test_huff.temp"));
+    assert(decompressFile("test_huff.temp", "test_orig.temp"));
+    assert(identicalFiles("tests/utf8_test.txt", "test_orig.temp"));
+
+    assert(!compressFile("tests/advice0.orig", "test_huff.temp"));
 
     std::cout << "ok :)" << std::endl;
     return EXIT_SUCCESS;

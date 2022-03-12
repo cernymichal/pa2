@@ -34,8 +34,8 @@
 
 #endif  // PT_DEBUG
 
-#define HUFF_CHUNK_SIZE 4096
-#define HUFF_CHUNK_SIZE_BITS 12
+#define HUFF_CHUNK_SIZE 12
+#define HUFF_CHUNK_MAX (1 << HUFF_CHUNK_SIZE)
 
 struct BitValue {
     uint64_t value;
@@ -47,41 +47,44 @@ struct BitValue {
 
 // fstream wrapper for single bit operations
 class BitFStream {
-    std::fstream fstream;
-    uint8_t currentReadBit = 8;
-    uint8_t currentReadByte = 0;
-    uint8_t currentWriteBit = 0;
-    uint8_t currentWriteByte = 0;
+    std::fstream _fstream;
+    uint8_t _currentReadBit = 8;
+    uint8_t _currentReadByte = 0;
+    uint8_t _currentWriteBit = 0;
+    uint8_t _currentWriteByte = 0;
 
 public:
-    BitFStream(const char *fileName, std::ios_base::openmode mode) : fstream(fileName, mode | std::ios::binary) {
+    bool getUTF8CharZeroBytes = false;
+
+    BitFStream(const char *fileName, std::ios_base::openmode mode) : _fstream(fileName, mode | std::ios::binary) {
     }
 
     ~BitFStream() {
-        if (currentWriteBit != 0)
-            writeWriteByte();
+        if (_currentWriteBit != 0)
+            _writeWriteByte();
     }
 
     bool good() const {
-        return fstream.good();
+        return _fstream.good();
     }
 
     bool eof() const {
-        return fstream.eof();
+        return _fstream.eof();
     }
 
     void resetRead() {
-        currentReadBit = 8;
-        currentReadByte = 0;
-        fstream.clear();
-        fstream.seekg(0);
+        _currentReadBit = 8;
+        _currentReadByte = 0;
+        getUTF8CharZeroBytes = false;
+        _fstream.clear();
+        _fstream.seekg(0);
     }
 
     uint8_t getBit() {
-        if (currentReadBit % 8 == 0)
-            getReadByte();
+        if (_currentReadBit % 8 == 0)
+            _getReadByte();
 
-        return (currentReadByte >> (7 - currentReadBit++)) & 1;
+        return (_currentReadByte >> (7 - _currentReadBit++)) & 1;
     }
 
     // max n = 64
@@ -117,12 +120,16 @@ public:
         // after loading the first byte check for loading ones
         for (; byteCount < 4 && (byteCount == 0 || result >= ~0u << (31 - byteCount)); byteCount++) {
             uint8_t byte;
-            if (!getByte(byte))
+            if (!getByte(byte)) {
+                if (byteCount == 0)
+                    getUTF8CharZeroBytes = true;
                 return false;
+            }
 
             // check if consecutive bytes look like 10xxxxxx
             if (byteCount != 0)
-                if ((byte & 0xc0) != 0x80) return false;
+                if ((byte & 0xc0) != 0x80)
+                    return false;
 
             // add newly read byte to result
             result |= (uint32_t)byte << ((3 - byteCount) * 8);
@@ -150,10 +157,10 @@ public:
     }
 
     void writeBit(uint8_t value) {
-        currentWriteByte |= (value & 1) << (7 - currentWriteBit++);
+        _currentWriteByte |= (value & 1) << (7 - _currentWriteBit++);
 
-        if (currentWriteBit == 8)
-            writeWriteByte();
+        if (_currentWriteBit == 8)
+            _writeWriteByte();
     }
 
     // max n = 64
@@ -188,15 +195,15 @@ public:
     }
 
 private:
-    void getReadByte() {
-        currentReadBit = 0;
-        currentReadByte = fstream.get();
+    void _getReadByte() {
+        _currentReadBit = 0;
+        _currentReadByte = _fstream.get();
     }
 
-    void writeWriteByte() {
-        fstream << currentWriteByte;
-        currentWriteBit = 0;
-        currentWriteByte = 0;
+    void _writeWriteByte() {
+        _fstream << _currentWriteByte;
+        _currentWriteBit = 0;
+        _currentWriteByte = 0;
     }
 };
 
@@ -217,9 +224,9 @@ std::ostream &operator<<(std::ostream &stream, char32_t c) {
 namespace huffman {
 
 class TreeNode {
-    TreeNode *parent = nullptr;
-    TreeNode *left = nullptr;
-    TreeNode *right = nullptr;
+    TreeNode *_parent = nullptr;
+    TreeNode *_left = nullptr;
+    TreeNode *_right = nullptr;
 
 public:
     char32_t character = 0;
@@ -232,14 +239,14 @@ public:
     }
 
     ~TreeNode() {
-        delete left;
-        left = nullptr;
-        delete right;
-        right = nullptr;
+        delete _left;
+        _left = nullptr;
+        delete _right;
+        _right = nullptr;
     }
 
     bool isLeaf() const {
-        return !this->left && !this->right;
+        return !this->_left && !this->_right;
     }
 
     // load tree from bit stream
@@ -252,10 +259,10 @@ public:
             return stream.getUTF8Char(character);
 
         // is node -> load branches
-        left = new TreeNode();
-        right = new TreeNode();
+        _left = new TreeNode();
+        _right = new TreeNode();
 
-        return left->load(stream) && right->load(stream);
+        return _left->load(stream) && _right->load(stream);
     }
 
     // write tree in pre-order to stream
@@ -263,7 +270,7 @@ public:
         // if leaf write itself
         if (isLeaf()) {
             stream.writeBit(1);
-            return stream.writeUTF8Char(character);
+            return stream.good() && stream.writeUTF8Char(character);
         }
 
         // not a leaf
@@ -272,11 +279,11 @@ public:
         if (!stream.good())
             return false;
 
-        return this->left->write(stream) && this->right->write(stream);
+        return this->_left->write(stream) && this->_right->write(stream);
     }
 
     void mapCodes(std::map<char32_t, BitValue> &map) const {
-        mapCodes(map, BitValue(0, 0));
+        _mapCodes(map, BitValue(0, 0));
     }
 
     bool findChar(BitFStream &stream, char32_t &target) const {
@@ -289,17 +296,17 @@ public:
             return false;
 
         if (!stream.getBit())
-            return this->left && this->left->findChar(stream, target);
+            return this->_left && this->_left->findChar(stream, target);
         else
-            return this->right && this->right->findChar(stream, target);
+            return this->_right && this->_right->findChar(stream, target);
     }
 
     void addBranches(TreeNode *left, TreeNode *right) {
-        this->left = left;
-        this->right = right;
-        this->left->parent = this;
-        this->right->parent = this;
-        this->count = this->left->count + this->right->count;
+        this->_left = left;
+        this->_right = right;
+        this->_left->_parent = this;
+        this->_right->_parent = this;
+        this->count = this->_left->count + this->_right->count;
     }
 
 #ifdef PT_DEBUG
@@ -309,7 +316,7 @@ public:
 #endif  // PT_DEBUG
 
 private:
-    void mapCodes(std::map<char32_t, BitValue> &map, BitValue code) const {
+    void _mapCodes(std::map<char32_t, BitValue> &map, BitValue code) const {
         if (isLeaf()) {
             map[character] = code;
             return;
@@ -317,57 +324,58 @@ private:
 
         code.length++;
         code.value = code.value << 1;
-        this->left->mapCodes(map, code);
+        this->_left->_mapCodes(map, code);
 
         code.value |= 1;
-        this->right->mapCodes(map, code);
+        this->_right->_mapCodes(map, code);
     }
 
 #ifdef PT_DEBUG
 
-    void print(const std::string &prefix, bool isLeft) const;
+    void _print(const std::string &prefix, bool isLeft) const;
 
 #endif  // PT_DEBUG
 };
 
 class Decompressor {
-    BitFStream inStream;
-    std::ofstream outStream;
-    TreeNode tree;
+    BitFStream _inStream;
+    std::ofstream _outStream;
+    TreeNode _tree;
 
 public:
-    Decompressor(const char *inFileName, const char *outFileName) : inStream(inFileName, std::ios::in), outStream(outFileName), tree() {
+    Decompressor(const char *inFileName, const char *outFileName)
+        : _inStream(inFileName, std::ios::in), _outStream(outFileName), _tree() {
     }
 
     bool run() {
         // load character tree
-        if (!tree.load(inStream))
+        if (!_tree.load(_inStream))
             return false;
 
-        PRINT_TREE(tree);
+        PRINT_TREE(_tree);
 
         // decompress chunks
-        uint16_t chunkSize = HUFF_CHUNK_SIZE;
-        while (chunkSize == HUFF_CHUNK_SIZE) {
-            if (!decompressChunk(chunkSize))
+        uint16_t chunkSize = HUFF_CHUNK_MAX;
+        while (chunkSize == HUFF_CHUNK_MAX) {
+            if (!_decompressChunk(chunkSize))
                 return false;
         }
 
         // last chunk should be smaller
-        return chunkSize != HUFF_CHUNK_SIZE;
+        return chunkSize != HUFF_CHUNK_MAX;
     }
 
 private:
-    bool decompressChunk(uint16_t &chunkSize) {
-        chunkSize = HUFF_CHUNK_SIZE;
+    bool _decompressChunk(uint16_t &chunkSize) {
+        chunkSize = HUFF_CHUNK_MAX;
 
-        if (!inStream.good())
+        if (!_inStream.good())
             return false;
 
         // if 1st bit is 0 get chunk size
-        if (!inStream.getBit()) {
+        if (!_inStream.getBit()) {
             uint64_t temp;
-            if (!inStream.getNBits(HUFF_CHUNK_SIZE_BITS, temp))
+            if (!_inStream.getNBits(HUFF_CHUNK_SIZE, temp))
                 return false;
 
             chunkSize = temp;
@@ -376,10 +384,10 @@ private:
         for (uint16_t i = 0; i < chunkSize; i++) {
             char32_t c;
 
-            if (!tree.findChar(inStream, c) || !outStream.good())
+            if (!_tree.findChar(_inStream, c) || !_outStream.good())
                 return false;
 
-            outStream << c;
+            _outStream << c;
         }
 
         return true;
@@ -387,73 +395,71 @@ private:
 };
 
 class Compressor {
-    BitFStream inStream;
-    BitFStream outStream;
-    std::map<char32_t, TreeNode *> charMap;
-    TreeNode *treeTop = nullptr;
-    std::map<char32_t, BitValue> charCodes;
+    BitFStream _inStream;
+    BitFStream _outStream;
+    std::map<char32_t, TreeNode *> _charMap;
+    TreeNode *_treeTop = nullptr;
+    std::map<char32_t, BitValue> _charCodes;
 
 public:
-    Compressor(const char *inFileName, const char *outFileName) : inStream(inFileName, std::ios::in), outStream(outFileName, std::ios::out) {
+    Compressor(const char *inFileName, const char *outFileName)
+        : _inStream(inFileName, std::ios::in), _outStream(outFileName, std::ios::out) {
     }
 
     ~Compressor() {
         // error after tree built
-        if (treeTop)
-            delete treeTop;
+        if (_treeTop)
+            delete _treeTop;
         // error while loading chars
         else {
-            for (auto const &pair : charMap)
+            for (auto const &pair : _charMap)
                 delete pair.second;
         }
     }
 
     bool run() {
         // create coding tree
-        if (!createTree())
+        if (!_createTree())
             return false;
 
-        PRINT_TREE(*treeTop);
+        PRINT_TREE(*_treeTop);
 
-        treeTop->mapCodes(charCodes);
+        _treeTop->mapCodes(_charCodes);
 
-        inStream.resetRead();
+        _inStream.resetRead();
 
         // write tree to outFile
-        if (!treeTop->write(outStream))
+        if (!_treeTop->write(_outStream))
             return false;
 
         // write whole chunks to outFile
-        for (uint64_t i = 0; i < treeTop->count / HUFF_CHUNK_SIZE; i++) {
-            if (!compressChunk(HUFF_CHUNK_SIZE))
+        for (uint64_t i = 0; i < _treeTop->count / HUFF_CHUNK_MAX; i++) {
+            if (!_compressChunk(HUFF_CHUNK_MAX))
                 return false;
         }
 
         // write last chunk to outFile
-        if (!compressChunk(treeTop->count % HUFF_CHUNK_SIZE))
+        if (!_compressChunk(_treeTop->count % HUFF_CHUNK_MAX))
             return false;
 
         return true;
     }
 
 private:
-    bool createTree() {
-        if (!inStream.good())
-            return false;
-
+    bool _createTree() {
         // create unconnected TreeNodes for each char in inFile
         while (true) {
             char32_t c;
-            if (!inStream.getUTF8Char(c)) {
-                if (inStream.eof())
+            if (!_inStream.getUTF8Char(c)) {
+                if (_inStream.eof() && _inStream.getUTF8CharZeroBytes)
                     break;
                 else
                     return false;
             }
 
-            auto search = charMap.find(c);
-            if (search == charMap.end())
-                charMap[c] = new TreeNode(c);
+            auto search = _charMap.find(c);
+            if (search == _charMap.end())
+                _charMap[c] = new TreeNode(c);
             else
                 search->second->count++;
         }
@@ -465,8 +471,12 @@ private:
         std::priority_queue<TreeNode *, std::vector<TreeNode *>, decltype(compareTreeNodes)> nodeQueue(compareTreeNodes);
 
         // add all leafs to queue
-        for (auto const &pair : charMap)
+        for (auto const &pair : _charMap)
             nodeQueue.push(pair.second);
+
+        // huffman coding is not defined for empty files or files with one character
+        if (nodeQueue.size() <= 1)
+            return false;
 
         // build tree
         while (nodeQueue.size() != 1) {
@@ -482,28 +492,28 @@ private:
             nodeQueue.push(node);
         }
 
-        treeTop = nodeQueue.top();
-        charMap.clear();
+        _treeTop = nodeQueue.top();
+        _charMap.clear();
 
         return true;
     }
 
-    bool compressChunk(uint16_t chunkSize) {
+    bool _compressChunk(uint16_t chunkSize) {
         // chunk header
-        if (chunkSize == HUFF_CHUNK_SIZE)
-            outStream.writeBit(1);
+        if (chunkSize == HUFF_CHUNK_MAX)
+            _outStream.writeBit(1);
         else {
-            outStream.writeBit(0);
-            outStream.writeNBits(HUFF_CHUNK_SIZE_BITS, chunkSize);
+            _outStream.writeBit(0);
+            _outStream.writeNBits(HUFF_CHUNK_SIZE, chunkSize);
         }
 
-        if (!outStream.good())
+        if (!_outStream.good())
             return false;
 
         // chunk body
         for (int i = 0; i < chunkSize; i++) {
             char32_t c;
-            if (!inStream.getUTF8Char(c) || !outStream.writeNBits(charCodes[c]))
+            if (!_inStream.getUTF8Char(c) || !_outStream.writeNBits(_charCodes[c]))
                 return false;
         }
 
