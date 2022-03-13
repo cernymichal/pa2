@@ -49,9 +49,9 @@ struct BitValue {
 class BitFStream {
     std::fstream _fstream;
     uint8_t _currentReadBit = 8;
-    uint8_t _currentReadByte = 0;
+    uint8_t _currentReadByte = 0; // read buffer
     uint8_t _currentWriteBit = 0;
-    uint8_t _currentWriteByte = 0;
+    uint8_t _currentWriteByte = 0; // write buffer
 
 public:
     bool getUTF8CharZeroBytes = false;
@@ -282,10 +282,12 @@ public:
         return this->_left->write(stream) && this->_right->write(stream);
     }
 
+    // fill char to code map
     void mapCodes(std::map<char32_t, BitValue> &map) const {
         _mapCodes(map, BitValue(0, 0));
     }
 
+    // read from stream until corresponding char is found in tree
     bool findChar(BitFStream &stream, char32_t &target) const {
         if (isLeaf()) {
             target = character;
@@ -316,6 +318,7 @@ public:
 #endif  // PT_DEBUG
 
 private:
+    // fill char to code map
     void _mapCodes(std::map<char32_t, BitValue> &map, BitValue code) const {
         if (isLeaf()) {
             map[character] = code;
@@ -493,6 +496,8 @@ private:
         }
 
         _treeTop = nodeQueue.top();
+
+        // char map to TreeNodes won't be needed anymore
         _charMap.clear();
 
         return true;
