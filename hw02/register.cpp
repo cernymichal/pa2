@@ -75,17 +75,14 @@ class CVATRegister {
         }
 
         static bool ltStringsCI(const std::string& stringA, const std::string& stringB) {
-            if (stringA.size() != stringB.size())
-                return stringA.size() < stringB.size();
-
-            for (size_t i = 0; i < stringA.size(); i++) {
+            for (size_t i = 0; i < stringA.size() && i < stringB.size(); i++) {
                 auto lowerA = std::tolower(stringA[i]);
                 auto lowerB = std::tolower(stringB[i]);
                 if (lowerA != lowerB)
                     return lowerA < lowerB;
             }
 
-            return false;
+            return stringA.size() < stringB.size();
         }
     };
 
