@@ -86,15 +86,138 @@ class CVATRegister {
         }
     };
 
+    class MedianHeap {
+        class Heap {
+            std::vector<unsigned int> data;
+            bool max = true;
+
+        public:
+            Heap(bool max = true) : max(max) {
+                data.reserve(1000);
+            }
+
+            size_t size() const {
+                return data.size();
+            }
+
+            void add(unsigned int value) {
+                data.push_back(value);
+                fixUp();
+            }
+
+            unsigned int top() const {
+                return data[0];
+            }
+
+            unsigned int pop() {
+                auto temp = data[0];
+
+                data[0] = data.back();
+                data.pop_back();
+                fixDown();
+
+                return temp;
+            }
+
+        private:
+            bool parentExists(size_t index) const {
+                return index >= 1;
+            }
+
+            bool leftExists(size_t index) const {
+                return leftIndex(index) < data.size();
+            }
+
+            bool rightExists(size_t index) const {
+                return rightIndex(index) < data.size();
+            }
+
+            size_t parentIndex(size_t index) const {
+                return (index - 1) / 2;
+            }
+
+            size_t leftIndex(size_t index) const {
+                return index * 2 + 1;
+            }
+
+            size_t rightIndex(size_t index) const {
+                return index * 2 + 2;
+            }
+
+            bool compare(unsigned int a, unsigned int b) const {
+                if (max)
+                    return a > b;
+                else
+                    return a < b;
+            }
+
+            void fixUp() {
+                size_t i = data.size() - 1;
+                while (parentExists(i) && compare(data[i], data[parentIndex(i)])) {
+                    std::swap(data[parentIndex(i)], data[i]);
+                    i = parentIndex(i);
+                }
+            }
+
+            void fixDown() {
+                size_t i = 0;
+                while (leftExists(i)) {
+                    size_t bestChild = leftIndex(i);
+                    if (rightExists(i) && compare(data[rightIndex(i)], data[bestChild]))
+                        bestChild = rightIndex(i);
+
+                    if (compare(data[i], data[bestChild]))
+                        break;
+
+                    std::swap(data[i], data[bestChild]);
+                    i = bestChild;
+                }
+            }
+        };
+
+        Heap maxHeap;
+        Heap minHeap;
+
+    public:
+        MedianHeap() : maxHeap(true), minHeap(false) {
+        }
+
+        unsigned int median() const {
+            if (maxHeap.size() == 0 && minHeap.size() == 0)
+                return 0;
+
+            if (minHeap.size() == 0 || minHeap.size() < maxHeap.size())
+                return maxHeap.top();
+
+            return minHeap.top();
+        }
+
+        void add(unsigned int value) {
+            if (value < median())
+                maxHeap.add(value);
+            else
+                minHeap.add(value);
+
+            rebalance();
+        }
+
+    private:
+        void rebalance() {
+            if (minHeap.size() + 1 < maxHeap.size())
+                minHeap.add(maxHeap.pop());
+            else if (maxHeap.size() + 1 < minHeap.size())
+                maxHeap.add(minHeap.pop());
+        }
+    };
+
     std::vector<Company*> _companies;       // sorted by name and address
     std::vector<Company*> _companiesTaxID;  // sorted by id
-    std::vector<unsigned int> _invoices;    // sorted by value
+    MedianHeap _invoices;
 
 public:
-    CVATRegister() {
+    CVATRegister() : _invoices() {
         _companies.reserve(1000);
         _companiesTaxID.reserve(1000);
-        _invoices.reserve(1000);
     }
 
     ~CVATRegister() {
@@ -209,10 +332,7 @@ public:
 
     // Metoda medianInvoice () vyhledá medián hodnoty faktury. Do vypočteného mediánu se započtou všechny úspěšně zpracované faktury zadané voláním invoice. Tedy nezapočítávají se faktury, které nešlo přiřadit (volání invoice selhalo), ale započítávají se všechny dosud registrované faktury, tedy při výmazu firmy se neodstraňují její faktury z výpočtu mediánu. Pokud je v systému zadaný sudý počet faktur, vezme se vyšší ze dvou prostředních hodnot. Pokud systém zatím nezpracoval žádnou fakturu, bude vrácena hodnota 0.
     unsigned int medianInvoice() const {
-        if (_invoices.size() == 0)
-            return 0;
-
-        return _invoices[_invoices.size() / 2];
+        return _invoices.median();
     }
 
     // print company vectors
@@ -235,9 +355,7 @@ private:
             return false;
 
         company->invoicesSum += amount;
-        _invoices.insert(
-            std::upper_bound(_invoices.begin(), _invoices.end(), amount),
-            amount);
+        _invoices.add(amount);
 
         return true;
     }
