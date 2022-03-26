@@ -223,5 +223,6 @@ int main(void) {
     oss << g;
     assert(oss.str() == "2000-01-01");
 
+    std::cout << "ok :)" << std::endl;
     return EXIT_SUCCESS;
 }
