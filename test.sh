@@ -57,6 +57,7 @@ do
 done
 
 EXECUTABLE="$(cd "$(dirname "$EXECUTABLE")" && pwd -P)/$(basename "$EXECUTABLE")"
+TESTS_DIR="$(cd "$(dirname "$TESTS_DIR")" && pwd -P)"
 
 TESTS_DIRS=( "$TESTS_DIR" )
 
@@ -64,6 +65,8 @@ if ! $SHALLOW
 then
     TESTS_DIRS+=( "$TESTS_DIR"/*/ )
 fi
+
+cd "$(dirname "$EXECUTABLE")"
 
 for directory in "${TESTS_DIRS[@]}"
 do
