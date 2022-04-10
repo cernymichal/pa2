@@ -107,7 +107,7 @@ public:
         return nodeCount != other.nodeCount;
     }
 
-    std::ostream& operator<<(std::ostream& out, const Queue<T>& queue) {
+    friend std::ostream& operator<<(std::ostream& out, const Queue<T>& queue) {
         out << "< ";
 
         for (auto node = queue.frontNode; node; node = node->next) {
