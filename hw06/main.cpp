@@ -4,8 +4,22 @@
 #include "types.cpp"
 
 static bool whitespaceMatch(const std::string& a, const std::string& b) {
-    // todo
-    return true;
+    size_t i = 0, j = 0;
+
+    for (; i < a.size() && j < b.size(); i++, j++) {
+        for (; i < a.size() && isspace(a[i]); i++)
+            ;
+        for (; j < b.size() && isspace(b[j]); j++)
+            ;
+
+        if (i >= a.size() || j >= b.size())
+            break;
+
+        if (a[i] != b[j])
+            return false;
+    }
+
+    return i == a.size() && j == b.size();
 }
 
 template <typename T_>
@@ -435,6 +449,8 @@ int main(void) {
         assert(e.what() == "Duplicate enum value: FIRST"sv);
     }
 
+    /*
+
     CDataTypeArray ar1(10, CDataTypeInt());
     assert(whitespaceMatch(ar1, "int[10]"));
     assert(whitespaceMatch(ar1.element(), "int"));
@@ -596,6 +612,8 @@ int main(void) {
                                "  double m_Third;\n"
                                "}"));
     }
+
+    */
 
     std::cout << "ok :)" << std::endl;
     return EXIT_SUCCESS;
