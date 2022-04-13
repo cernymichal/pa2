@@ -91,7 +91,7 @@ struct CDataTypeEnum : public DataType {
 
     // porovná tento typ s jiným typem, vrátí true, pokud jsou oba typy shodné (oba jsou výčtové typy a mají stejný výčet hodnot ve stejném pořadí),
     bool operator==(const DataType& other) const override {
-        return DataType::operator==(other) && options == ((const CDataTypeEnum&)other).options;
+        return DataType::operator==(other) && _options == ((const CDataTypeEnum&)other)._options;
     }
 
     virtual std::string typeName() const override {
@@ -100,23 +100,23 @@ struct CDataTypeEnum : public DataType {
 
     // metoda přidá další hodnotu do výčtu. Pokud stejná hodnota ve výčtu již existuje, je vyvolaná výjimka (viz ukázkový běh)
     CDataTypeEnum& add(const std::string& option) {
-        if (std::find(options.begin(), options.end(), option) != options.end())
+        if (std::find(_options.begin(), _options.end(), option) != _options.end())
             throw std::invalid_argument("Duplicate enum value: " + option);
 
-        options.push_back(option);
+        _options.push_back(option);
 
         return *this;
     }
 
 protected:
-    std::vector<std::string> options;
+    std::list<std::string> _options;
 
     // zobrazí název typu do zadaného proudu. Pozor, hodnoty výčtu musí být zobrazené v pořadí zadávání.
     std::ostream& print(std::ostream& stream, uint8_t level = 0) const override {
         DataType::print(stream, level) << std::endl;
         stream << indentManip(level) << '{' << std::endl;
 
-        for (const std::string& option : options)
+        for (const std::string& option : _options)
             stream << indentManip(level + 1) << option;
 
         stream << indentManip(level) << '}';
@@ -144,7 +144,15 @@ struct CDataTypeStruct : public DataType {
 
     // metoda přidá další složku zadaného jména a typu (int/double/enum) na konec seznamu složek. Pokud je jméno složky duplicitní, vyhlásí výjimku (viz ukázkový běh)
     CDataTypeStruct& addField(const std::string& name, const DataType& type) {
-        // todo
+        auto duplicatePos = std::find_if(
+            _fields.begin(), _fields.end(),
+            [&name](const std::pair<std::string, DataType>& element) { return element.first == name; });
+
+        if (duplicatePos != _fields.end())
+            throw std::invalid_argument("Duplicate field: " + name);
+
+        _fields.emplace_back(name, type);
+
         return *this;
     }
 
@@ -154,6 +162,8 @@ struct CDataTypeStruct : public DataType {
     }
 
 protected:
+    std::list<std::pair<std::string, DataType>> _fields;
+
     // zobrazí název typu do zadaného proudu. Pořadí složek odpovídá pořadí jejich přidání metodou addField.
     std::ostream& print(std::ostream& stream, uint8_t level = 0) const override {
         // todo
