@@ -30,6 +30,8 @@ static bool whitespaceMatch(const T_& x, const std::string& ref) {
 }
 
 int main(void) {
+    using namespace std;
+
     CDataTypeStruct a = CDataTypeStruct()
                             .addField("m_Length", CDataTypeInt())
                             .addField("m_Status", CDataTypeEnum()

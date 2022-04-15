@@ -25,13 +25,13 @@
 
 #endif  // __PROGTEST__
 
-struct indentManip {
+struct Indent {
     uint8_t level = 0;
 
-    indentManip(uint8_t level) : level(level) {
+    Indent(uint8_t level) : level(level) {
     }
 
-    friend std::ostream& operator<<(std::ostream& stream, const indentManip& indent) {
+    friend std::ostream& operator<<(std::ostream& stream, const Indent& indent) {
         for (int i = 0; i < indent.level; i++)
             stream << "  ";
         return stream;
@@ -39,6 +39,11 @@ struct indentManip {
 };
 
 struct DataType {
+    virtual ~DataType() {
+    }
+
+    virtual std::shared_ptr<DataType> clone() const = 0;
+
     virtual size_t getSize() const = 0;
 
     virtual bool operator==(const DataType& other) const {
@@ -51,17 +56,34 @@ struct DataType {
 
     virtual std::string typeName() const = 0;
 
+    virtual const DataType& field(const std::string& name) const {
+        throw std::invalid_argument("Cannot use field() for type: " + printToString());
+    }
+
+    const DataType& field(const char* name) const {
+        return field(std::string(name));
+    }
+
     friend std::ostream& operator<<(std::ostream& stream, const DataType& value) {
         return value.print(stream);
     }
 
-protected:
     virtual std::ostream& print(std::ostream& stream, uint8_t level = 0) const {
-        return stream << indentManip(level) << this->typeName();
+        return stream << Indent(level) << this->typeName();
+    }
+
+    std::string printToString() const {
+        std::ostringstream oss;
+        oss << *this;
+        return oss.str();
     }
 };
 
 struct CDataTypeInt : public DataType {
+    virtual std::shared_ptr<DataType> clone() const override {
+        return std::make_shared<CDataTypeInt>(*this);
+    }
+
     // metoda vrátí velikost typu, zde vždy 4
     size_t getSize() const override {
         return 4;
@@ -73,6 +95,10 @@ struct CDataTypeInt : public DataType {
 };
 
 struct CDataTypeDouble : public DataType {
+    virtual std::shared_ptr<DataType> clone() const override {
+        return std::make_shared<CDataTypeDouble>(*this);
+    }
+
     // metoda vrátí velikost typu, zde vždy 8
     size_t getSize() const override {
         return 8;
@@ -84,6 +110,10 @@ struct CDataTypeDouble : public DataType {
 };
 
 struct CDataTypeEnum : public DataType {
+    virtual std::shared_ptr<DataType> clone() const override {
+        return std::make_shared<CDataTypeEnum>(*this);
+    }
+
     // metoda vrátí velikost typu, zde vždy 4
     size_t getSize() const override {
         return 4;
@@ -91,7 +121,10 @@ struct CDataTypeEnum : public DataType {
 
     // porovná tento typ s jiným typem, vrátí true, pokud jsou oba typy shodné (oba jsou výčtové typy a mají stejný výčet hodnot ve stejném pořadí),
     bool operator==(const DataType& other) const override {
-        return DataType::operator==(other) && _options == ((const CDataTypeEnum&)other)._options;
+        if (!DataType::operator==(other))
+            return false;
+
+        return _options == static_cast<const CDataTypeEnum&>(other)._options;
     }
 
     virtual std::string typeName() const override {
@@ -108,34 +141,62 @@ struct CDataTypeEnum : public DataType {
         return *this;
     }
 
-protected:
-    std::list<std::string> _options;
+    CDataTypeEnum& add(const char* option) {
+        return add(std::string(option));
+    }
 
     // zobrazí název typu do zadaného proudu. Pozor, hodnoty výčtu musí být zobrazené v pořadí zadávání.
     std::ostream& print(std::ostream& stream, uint8_t level = 0) const override {
         DataType::print(stream, level) << std::endl;
-        stream << indentManip(level) << '{' << std::endl;
+        stream << Indent(level) << '{' << std::endl;
 
-        for (const std::string& option : _options)
-            stream << indentManip(level + 1) << option;
+        for (auto iter = _options.begin(); iter != _options.end();) {
+            stream << Indent(level + 1) << *iter;
 
-        stream << indentManip(level) << '}';
+            if (++iter != _options.end())
+                stream << ',';
+
+            stream << std::endl;
+        }
+
+        stream << Indent(level) << '}';
 
         return stream;
     }
+
+private:
+    std::list<std::string> _options;
 };
 
 struct CDataTypeStruct : public DataType {
+    virtual std::shared_ptr<DataType> clone() const override {
+        return std::make_shared<CDataTypeEnum>(*this);
+    }
+    
     // metoda vrátí velikost typu (dle obsažených složek)
     size_t getSize() const override {
-        // todo
-        return 4;
+        size_t sum = 0;
+        for (const std::pair<std::string, std::shared_ptr<DataType>>& f : _fields)
+            sum += f.second->getSize();
+
+        return sum;
     }
 
     // porovná tento typ s jiným typem, vrátí true, pokud jsou oba typy shodné (oba typy jsou struktury, mají stejný počet složek, složky na každé pozici mají stejný typ, jména složek se ale mohou lišit)
     bool operator==(const DataType& other) const override {
-        // todo
-        return false;
+        if (!DataType::operator==(other))
+            return false;
+
+        const CDataTypeStruct& otherI = static_cast<const CDataTypeStruct&>(other);
+
+        auto iter = _fields.begin();
+        auto iterOther = otherI._fields.begin();
+        for (; iter != _fields.end() && iterOther != otherI._fields.end(); iter++, iterOther++) {
+            if (*iter->second != *iterOther->second)
+                return false;
+        }
+
+        return iter == _fields.end() && iterOther == otherI._fields.end();
     }
 
     virtual std::string typeName() const override {
@@ -144,31 +205,45 @@ struct CDataTypeStruct : public DataType {
 
     // metoda přidá další složku zadaného jména a typu (int/double/enum) na konec seznamu složek. Pokud je jméno složky duplicitní, vyhlásí výjimku (viz ukázkový běh)
     CDataTypeStruct& addField(const std::string& name, const DataType& type) {
-        auto duplicatePos = std::find_if(
-            _fields.begin(), _fields.end(),
-            [&name](const std::pair<std::string, DataType>& element) { return element.first == name; });
+        for (const std::pair<std::string, std::shared_ptr<DataType>>& f : _fields) {
+            if (f.first == name)
+                throw std::invalid_argument("Duplicate field: " + name);
+        }
 
-        if (duplicatePos != _fields.end())
-            throw std::invalid_argument("Duplicate field: " + name);
-
-        _fields.emplace_back(name, type);
+        _fields.emplace_back(name, type.clone());
 
         return *this;
     }
 
-    // zpřístupní složku zadaného jména, případně vyhodí výjimku pokud složka takového jména neexistuje (viz ukázkový běh). Složka zpřístupněná touto metodou bude pouze čtena
-    const DataType& field(const std::string& name) const {
-        // todo
+    CDataTypeStruct& addField(const char* name, const DataType& type) {
+        return addField(std::string(name), type);
     }
 
-protected:
-    std::list<std::pair<std::string, DataType>> _fields;
+    // zpřístupní složku zadaného jména, případně vyhodí výjimku pokud složka takového jména neexistuje (viz ukázkový běh). Složka zpřístupněná touto metodou bude pouze čtena
+    const DataType& field(const std::string& name) const override {
+        for (const std::pair<std::string, std::shared_ptr<DataType>>& f : _fields) {
+            if (f.first == name)
+                return *f.second;
+        }
+
+        throw std::invalid_argument("Unknown field: " + name);
+    }
 
     // zobrazí název typu do zadaného proudu. Pořadí složek odpovídá pořadí jejich přidání metodou addField.
     std::ostream& print(std::ostream& stream, uint8_t level = 0) const override {
-        // todo
+        DataType::print(stream, level) << std::endl;
+        stream << Indent(level) << '{' << std::endl;
+
+        for (const std::pair<std::string, std::shared_ptr<DataType>>& f : _fields)
+            f.second->print(stream, level + 1) << ' ' << f.first << ';' << std::endl;
+
+        stream << Indent(level) << '}';
+
         return stream;
     }
+
+private:
+    std::list<std::pair<std::string, std::shared_ptr<DataType>>> _fields;
 };
 
 /*
@@ -189,7 +264,6 @@ struct CDataTypeArray : public DataType {
         return "?";
     }
 
-protected:
     std::ostream& print(std::ostream& stream, uint8_t level = 0) const override {
         // todo
         return stream;
@@ -212,7 +286,6 @@ struct CDataTypePtr : public DataType {
         return "?";
     }
 
-protected:
     std::ostream& print(std::ostream& stream, uint8_t level = 0) const override {
         // todo
         return stream;
