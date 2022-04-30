@@ -30,7 +30,7 @@ static bool whitespaceMatch(const T_& x, const std::string& ref) {
 }
 
 int main(void) {
-    using namespace std;
+    using std::literals::string_literals::operator ""s;
 
     CDataTypeStruct a = CDataTypeStruct()
                             .addField("m_Length", CDataTypeInt())
@@ -412,14 +412,14 @@ int main(void) {
         a.addField("m_Status", CDataTypeInt());
         assert("addField: missing exception!" == nullptr);
     } catch (const std::invalid_argument& e) {
-        assert(e.what() == "Duplicate field: m_Status"sv);
+        assert(e.what() == "Duplicate field: m_Status"s);
     }
 
     try {
         std::cout << a.field("m_Fail") << std::endl;
         assert("field: missing exception!" == nullptr);
     } catch (const std::invalid_argument& e) {
-        assert(e.what() == "Unknown field: m_Fail"sv);
+        assert(e.what() == "Unknown field: m_Fail"s);
     }
 
     try {
@@ -448,7 +448,7 @@ int main(void) {
         en.add("FIRST").add("SECOND").add("FIRST");
         assert("add: missing exception!" == nullptr);
     } catch (const std::invalid_argument& e) {
-        assert(e.what() == "Duplicate enum value: FIRST"sv);
+        assert(e.what() == "Duplicate enum value: FIRST"s);
     }
 
     /*
