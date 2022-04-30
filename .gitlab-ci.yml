@@ -15,7 +15,7 @@ build:
     - >
       for folder in $(find . -type f -name 'main.cpp' | grep -v '^\./semestral' | xargs -I {} dirname {}); do
         printf '=> Building %s\n' "$folder/main.cpp";
-        g++ -Wall -pedantic -Wno-long-long -o "$folder/main" "$folder/main.cpp" && chmod +x "$folder/main" || EXIT_CODE=1;
+        g++ -Wall -pedantic -Wno-long-long -std=c++17 -o "$folder/main" "$folder/main.cpp" && chmod +x "$folder/main" || EXIT_CODE=1;
         printf '\n';
       done
     - test "$EXIT_CODE" -eq 0
