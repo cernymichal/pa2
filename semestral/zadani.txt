@@ -1,63 +1,78 @@
-# Zadání semestrální práce z Progtestu
+# pins & needles
 
-## Ant wars
+## Menu
 
-Naprogramujte jendoduchou hru války několika mravenčích klanů. Mravenci se rodí v mraveništích a lze jim zadat cíl - jiné mraveniště.
+Hráč si v menu načte rozehranou hru nebo si vybere mapu a počet protihráčů. Mapa obsahuje mraveniště, jejich propojení, startovní body kolonií a dekorace.
 
-Na cizí mraveniště mravenci útočí, vlastní opevňují.
+## Hra
 
-Váš engine:
+Jakmile se mapa načte hra poběží v reálném čase (herní čas bude tikat o nějaké frekvenci). Při každém tiku se nejdříve posunou vyslaní mravenci popř. svedou boj a poté se v ovládaných mraveništích narodí mravenci noví.
+Hra končí když zbyde jedna vítězná kolonie nebo se hráč vzdá. Po ukončení se zobrazí obrazovka s výsledky a hráč se bude moct vrátit do menu.
 
-1. ze souboru nahraje mapu s lokacemi mraveništ a překážek
-2. implementuje triviální interakci mravenec vs. mravenec (např. jeden zabije jednoho)
-3. implementuje jednoduchou škálovanou AI řídící organizaci klanů mravenců
-4. umožňuje ukládat a načítat rozehrané hry
+### Kolonie
 
-Engine může fungovat real-time hra, či tahová hra.
+Každá kolonie začíná na začátku s jedním mraveništěm a pár mravenci.
+Všechny kolonie kromě hráčovi budou ovládány počítačem. Každá kolonie bude mít svou barvu, ty budou předem dané pro startovní pozice, ty samotné budou vybrány náhodně.
 
-Jak může vypadat mapa?
+### Mravenci
 
-- " " - prázdné místa pro pohyb mravenců
-- A a B (resp Z,Y,X a W pro druhého hráče) označují mraveniště s daným počtem mravenců uvnitř
-- a,b (resp z,y,x,w) označují jednotlivé mravence
-- zadané cesty lze označit (v ukázce A->B, B->Y, Y->B, W->Y, X->Y, Z->Y, např. z mraveniště Z vyrazilo 5 mravenců a dalších 6 ještě vyjde po zadané cestě
+Na cestě půjdou mravenci v řadě, při každém tiku se posunou o jednotku a pokud to bude možné / chtěné vyrazí za nimi další.
+Pokud se na cestě nebo v mraveništi potkají nepřátelští mravenci navzájem se zabijí.
+
+### Mraveniště
+
+Pokud mraveniště nikdo neovládá nebo v něm došli mravenci zabere ho první mravenec.
+Ve výchozím stavu budou mravenci zůstávat v mraveništi připraveni na možný útok. Hráč bude moct mravence přesouvat mezi mraveništi. Mraveniště může mravence vysílat pouze do jednoho cíle.
+Ne všechna mraveniště jsou propojena cestou a cesty nemusí být stejně dlouhé.
+
+## Realizace
 
 ```plaintext
 ##################################################
 #                                                #
 #                                                #
 #     █████           █████                      #
-#     █A13█aaaaaaaaaaa█B20█                      #
+#     █A13█mmmmmmmmmmm█B20█                      #
 #     █████           █████                      #
-#                          b                     #
-#                          b                     #
-#                           b                    #
-#########################   b              █████ #
-#                            b             █W03█ #
-#                            y             █████ #
-#                             y         -ww      #
-#                             y     <---         #
+#                          m                     #
+#                          m                     #
+#                           m                    #
+#########################   m              █████ #
+#                            m             █D03█ #
+#                            m             █████ #
+#                             m         -mm      #
+#                             m     - -          #
 #       █████                  █████       █████ #
-#       █Z06█zzzzz------------>█Y30█<-xx--x█X01█ #
+#       █C06█mmmmm - - - - - - █E30█ -mm -m█F01█ #
 #       █████                  █████       █████ #
 #                                                #
 ##################################################
 ```
 
-Kde lze využít polymorfismus? (doporučené)
+### Pohled
 
-- Parametry útočníků: znak, barva, písmeno, ...
-- Políčka mapy: volno, věž, mravenec...
-- Uživatelské rozhraní: konzole, ncurses, SDL, OpenGL (různé varianty), ...
+Mraveniště budou označena písmeny a barvou ovládající kolonie (šedé pokud nejsou obsazena). Vedle označení bude počet bránících mravenců.
+Barvu příslušející kolonie budou používat i zobrazení mravenci na cestě.
+Mezi mraveništi povedou přerušované čáry indikující možný přesun.
+Dekorace na mapě mohou být např. zdi (zde `#`), voda, stromy atp..
 
-Při implementaci se pokuste implementovat nějaké vlastní zajímavé prvky.
+### Ovládání
 
-Ukázky:
+Hráč bude hru ovládat jednoduchými příkazy tvaru `XY`.
 
-- http://www.auraluxgame.com/
-- http://www.superhry.cz/games/2072/
-- http://store.steampowered.com/app/357930/
+- `X` písmeno zdroje přesunu
+- `Y` písmeno cíle
 
----
+Příkaz s pouze jedním písmenem bude znamenat zrušení přesunu z mraveniště.
+Neplaté příkazy budou ignorovány.
 
-Tato úloha je hodnocena automatem a následně vyučujícím. Nejprve úlohu odevzdejte a odlaďte na automatu, pak jedno Vámi vybrané řešení předejte k ohodnocení vyučujícím. Předání úlohy k hodnocení učitelem se provede tlačítkem "Předat vyučujícímu" u zvoleného řešení. Vyučující bude hodnotit pouze jedno Vaše řešení, vyučující nezačně hodnotit dokud mu úlohu nepčředáte. Dokud není úloha ohodnocena jak automatem tak i učitelem, nejsou přidělené žádné body (jsou zobrazována pouze dílčí hodnocení v procentech).
+Pomocí ESC si hráč hru pozastaví a bude mít možnost ji případně uložit nebo se vzdát.
+
+### Uložení
+
+Hra půjde v průběhu uložit do souboru a následně v menu načíst.
+Program bude pro mapy a uložené hry využívat složku examples.
+
+### Polymorfismus
+
+Polymorfismu budou využívat herní objekty pro vykreslování a updatování při tiku.
