@@ -1,6 +1,7 @@
 CXX = g++
 LD = g++
 CXXFLAGS = -std=c++17 -Wall -pedantic -Wno-long-long -O2
+LDFLAGS = #-lSDL2
 OBJECTS = main.o
 
 LOGIN = cernym65
@@ -24,7 +25,7 @@ doc: src/*
 
 $(LOGIN): $(OBJECTS)
 	cd $(BUILD_DIR) && \
-	$(LD) -o ../$(LOGIN) $(OBJECTS)
+	$(LD) $(LDFLAGS) -o ../$(LOGIN) $(OBJECTS)
 
 %.o: $(SRC_DIR)/%.cpp
 	mkdir -p $(BUILD_DIR)
