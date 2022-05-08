@@ -23,7 +23,7 @@ build:
 buildsem:
   stage: build
   script:
-    - apk add --no-cache g++ musl-dev libstdc++ make doxygen graphviz
+    - apk add --no-cache g++ musl-dev libstdc++ ncurses-dev make doxygen graphviz
     - EXIT_CODE=0
     - >
       printf '=> Building semestral work\n';
