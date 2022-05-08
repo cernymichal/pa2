@@ -1,8 +1,8 @@
 CXX = g++
 LD = g++
 CXXFLAGS = -std=c++17 -Wall -pedantic -Wno-long-long -O2
-LDFLAGS = #-lSDL2
-OBJECTS = main.o
+LIBS = -lncurses
+OBJECTS = main.o Ant.o AntNest.o ComputerPlayer.o Game.o GameObject.o Label.o Player.o Program.o Wall.o
 
 LOGIN = cernym65
 SRC_DIR = src
@@ -25,7 +25,7 @@ doc: src/*
 
 $(LOGIN): $(OBJECTS)
 	cd $(BUILD_DIR) && \
-	$(LD) $(LDFLAGS) -o ../$(LOGIN) $(OBJECTS)
+	$(LD) -o ../$(LOGIN) $(OBJECTS) $(LIBS)
 
 %.o: $(SRC_DIR)/%.cpp
 	mkdir -p $(BUILD_DIR)

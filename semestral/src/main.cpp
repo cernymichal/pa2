@@ -1,8 +1,8 @@
-#include <iostream>
+#include "Program.h"
 
 /**
- * @brief program entry point
- * 
+ * @brief entry point
+ *
  * :)
  *
  * @param[in] argc argument count
@@ -11,6 +11,7 @@
  * @return exit code
  */
 int main(int argc, char **argv) {
-    std::cout << "hello world!" << std::endl;
-    return EXIT_SUCCESS;
+    Program().start();
+
+    return 0;
 }

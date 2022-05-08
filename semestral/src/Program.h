@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Game.h"
-
 class Program {
+public:
+    Program();
+    void start();
 };

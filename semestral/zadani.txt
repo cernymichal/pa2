@@ -2,17 +2,17 @@
 
 ## Menu
 
-Hráč si v menu načte rozehranou hru nebo si vybere mapu a počet protihráčů. Mapa obsahuje mraveniště, jejich propojení, startovní body kolonií a dekorace.
+Hráč si v menu může načíst rozehranou hru, nebo si vybere mapu a počet protihráčů. Mapa obsahuje mraveniště, jejich propojení, startovní body kolonií a dekorace.
 
 ## Hra
 
-Jakmile se mapa načte hra poběží v reálném čase (herní čas bude tikat o nějaké frekvenci). Při každém tiku se nejdříve posunou vyslaní mravenci popř. svedou boj a poté se v ovládaných mraveništích narodí mravenci noví.
-Hra končí když zbyde jedna vítězná kolonie nebo se hráč vzdá. Po ukončení se zobrazí obrazovka s výsledky a hráč se bude moct vrátit do menu.
+Jakmile se mapa načte, hra poběží v reálném čase (herní čas bude tikat o nějaké frekvenci). Při každém tiku se nejdříve posunou vyslaní mravenci a popř. svedou boj, poté se v ovládaných mraveništích narodí mravenci noví.
+Hra končí, když zůstane jen jedna vítězná kolonie nebo se hráč vzdá. Po ukončení se zobrazí obrazovka s výsledky a hráč se bude moct vrátit do menu.
 
 ### Kolonie
 
 Každá kolonie začíná na začátku s jedním mraveništěm a pár mravenci.
-Všechny kolonie kromě hráčovi budou ovládány počítačem. Každá kolonie bude mít svou barvu, ty budou předem dané pro startovní pozice, ty samotné budou vybrány náhodně.
+Všechny kolonie kromě hráčovi budou ovládány počítačem. Každá kolonie bude mít svou barvu, ty budou předem dané pro startovní pozice.
 
 ### Mravenci
 
@@ -21,9 +21,9 @@ Pokud se na cestě nebo v mraveništi potkají nepřátelští mravenci navzáje
 
 ### Mraveniště
 
-Pokud mraveniště nikdo neovládá nebo v něm došli mravenci zabere ho první mravenec.
-Ve výchozím stavu budou mravenci zůstávat v mraveništi připraveni na možný útok. Hráč bude moct mravence přesouvat mezi mraveništi. Mraveniště může mravence vysílat pouze do jednoho cíle.
-Ne všechna mraveniště jsou propojena cestou a cesty nemusí být stejně dlouhé.
+Pokud mraveniště nikdo neovládá nebo v něm došli mravenci, zabere ho první příchozí mravenec.
+Ve výchozím stavu budou mravenci zůstávat v mraveništi připraveni na možný útok. Hráč bude moct mravence přesouvat mezi mraveništi tím, že je spojí. Mraveniště může mravence vysílat pouze do jednoho cíle.
+Ne všechna mraveniště jsou propojena a cesty nemusí být stejně dlouhé.
 
 ## Realizace
 
@@ -51,14 +51,14 @@ Ne všechna mraveniště jsou propojena cestou a cesty nemusí být stejně dlou
 
 ### Pohled
 
-Mraveniště budou označena písmeny a barvou ovládající kolonie (šedé pokud nejsou obsazena). Vedle označení bude počet bránících mravenců.
+Mraveniště budou označena písmeny a barvou ovládající kolonie (šedá pokud nejsou obsazena). Vedle označení bude počet bránících mravenců.
 Barvu příslušející kolonie budou používat i zobrazení mravenci na cestě.
 Mezi mraveništi povedou přerušované čáry indikující možný přesun.
 Dekorace na mapě mohou být např. zdi (zde `#`), voda, stromy atp..
 
 ### Ovládání
 
-Hráč bude hru ovládat jednoduchými příkazy tvaru `XY`.
+Hráč bude hru ovládat jednoduchými příkazy tvaru `XY` + ENTER.
 
 - `X` písmeno zdroje přesunu
 - `Y` písmeno cíle
@@ -66,13 +66,15 @@ Hráč bude hru ovládat jednoduchými příkazy tvaru `XY`.
 Příkaz s pouze jedním písmenem bude znamenat zrušení přesunu z mraveniště.
 Neplaté příkazy budou ignorovány.
 
-Pomocí ESC si hráč hru pozastaví a bude mít možnost ji případně uložit nebo se vzdát.
+Pomocí ESC si hráč hru pozastaví a bude mít možnost ji uložit nebo se vzdát.
 
 ### Uložení
 
-Hra půjde v průběhu uložit do souboru a následně v menu načíst.
-Program bude pro mapy a uložené hry využívat složku examples.
+Hra půjde v průběhu uložit do souboru a následně v menu načíst. Název souboru bude mapa + aktuální čas.
+Program bude pro mapy využívat složku assets a uložené hry složku examples. Uložené hry a mapy budou odlišeny příponou.
+V souboru bude seznam `GameObject`ů a se stavem hry (`GameObject`y mají metodu `Serialize`). Formát mapy a uložené hry se lišit nebude, mapa bude jen výchozí stav hry.
 
 ### Polymorfismus
 
-Polymorfismu budou využívat herní objekty pro vykreslování a updatování při tiku.
+Polymorfismu budou využívat herní objekty pro vykreslování, updatování při tiku a dalších eventech. `GameObject`y jako `Ant`, `AntNest`, `Player` atd. budou uchovávány v objektu `Game`, který bude zajištovat dění ve hře. V každé fázi herního cyklu bude volat virtuální metody na `GameObject`ech.
+Zaroveň bude polymorfismu využito při ukládání hry pro serializaci `GameObject`ů.
