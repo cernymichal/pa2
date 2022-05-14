@@ -5,6 +5,7 @@
 #include "Ant.h"
 #include "Game.h"
 #include "Label.h"
+#include "log.h"
 
 Program::Program() {
 }
@@ -37,6 +38,8 @@ void Program::start() {
 
     game.update();
     game.draw();
+
+    PN_LOG_OBJ(&game);
 
     timeout(-1);
     getch();

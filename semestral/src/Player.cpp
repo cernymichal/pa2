@@ -3,6 +3,8 @@
 Player::Player() : GameObject(0, 0) {
 }
 
-void Player::serialize(std::ostream &stream) const {
+std::ostream &Player::serialize(std::ostream &stream) const {
     // todo
+    
+    return stream;
 }

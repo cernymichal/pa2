@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include <algorithm>
+#include <iostream>
 
 void Game::addObject(GameObject *object) {
     auto compareGameObjects = [](const GameObject *a, const std::unique_ptr<GameObject> &b) {
@@ -34,4 +35,13 @@ Game Game::load(const char *fileName) {
     // todo
 
     return Game();
+}
+
+std::ostream &Game::log(std::ostream &stream) const {
+    stream << "objects: {" << std::endl;
+
+    for (const std::unique_ptr<GameObject> &object : _objects)
+        object->log(stream) << "," << std::endl;
+
+    return stream << "}";
 }

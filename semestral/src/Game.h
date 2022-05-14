@@ -43,4 +43,11 @@ public:
      * @return loaded Game
      */
     static Game load(const char *fileName);
+
+    /**
+     * @brief print debug info to stream
+     *
+     * @param[in] stream output stream
+     */
+    std::ostream &log(std::ostream &stream) const;
 };

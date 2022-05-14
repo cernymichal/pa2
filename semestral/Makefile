@@ -1,11 +1,12 @@
 CXX = g++
 LD = g++
 CXXFLAGS = -std=c++17 -Wall -pedantic -Wno-long-long -O2
+CXXFLAGS_DEBUG = $(CXXFLAGS) -D PN_DEBUG -g -pg -fPIE
 LIBS = -lncurses
 
-OBJECTS = Ant.o AntNest.o ComputerPlayer.o Game.o GameObject.o Label.o Player.o Program.o Wall.o
-OBJECTS_MAIN = main.o $(OBJECTS)
-OBJECTS_TEST = test.o $(OBJECTS)
+OBJECTS = Ant.o AntNest.o ComputerPlayer.o Game.o GameObject.o Label.o log.o Player.o Program.o Wall.o
+OBJECTS_MAIN = $(OBJECTS) main.o
+OBJECTS_TEST = $(OBJECTS) test.o
 
 TARGET = cernym65
 TARGET_TEST = $(TARGET)_test
@@ -18,7 +19,7 @@ all: compile doc
 
 compile: $(TARGET)
 
-compile_debug: CXXFLAGS := -D PN_DEBUG -g -pg -fPIE $(CXXFLAGS)
+compile_debug: CXXFLAGS := $(CXXFLAGS_DEBUG)
 compile_debug: compile
 
 run: compile
@@ -27,11 +28,12 @@ run: compile
 debug: compile_debug
 	./$(TARGET)
 
+test: CXXFLAGS := $(CXXFLAGS_DEBUG)
 test: $(TARGET_TEST)
 	./$(TARGET_TEST)
 
 clean:
-	rm -rf $(TARGET) $(TARGET_TEST) $(BUILD_DIR) doc Makefile.d
+	rm -rf $(TARGET) $(TARGET_TEST) $(BUILD_DIR) log doc Makefile.d
 
 doc: src/*
 	doxygen Doxyfile

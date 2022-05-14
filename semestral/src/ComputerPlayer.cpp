@@ -1,5 +1,7 @@
 #include "ComputerPlayer.h"
 
-void ComputerPlayer::serialize(std::ostream &stream) const {
+std::ostream &ComputerPlayer::serialize(std::ostream &stream) const {
     // todo
+    
+    return stream;
 }

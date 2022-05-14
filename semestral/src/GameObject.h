@@ -28,5 +28,12 @@ public:
      *
      * @param[in] stream output stream
      */
-    virtual void serialize(std::ostream &stream) const = 0;
+    virtual std::ostream &serialize(std::ostream &stream) const = 0;
+
+    /**
+     * @brief log debug info
+     *
+     * @param[in] stream output stream
+     */
+    virtual std::ostream &log(std::ostream &stream) const;
 };

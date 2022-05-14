@@ -10,6 +10,8 @@ void AntNest::draw() const {
     mvaddch(y, x, '#' | COLOR_PAIR(1));
 }
 
-void AntNest::serialize(std::ostream &stream) const {
+std::ostream &AntNest::serialize(std::ostream &stream) const {
     // todo
+    
+    return stream;
 }

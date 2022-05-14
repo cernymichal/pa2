@@ -8,6 +8,8 @@ void Wall::draw() const {
     mvaddch(y, x, '#' | COLOR_PAIR(2));
 }
 
-void Wall::serialize(std::ostream &stream) const {
+std::ostream &Wall::serialize(std::ostream &stream) const {
     // todo
+    
+    return stream;
 }

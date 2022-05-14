@@ -16,6 +16,8 @@ void Label::draw() const {
     attron(A_NORMAL | COLOR_PAIR(1));
 }
 
-void Label::serialize(std::ostream &stream) const {
+std::ostream &Label::serialize(std::ostream &stream) const {
     // todo
+    
+    return stream;
 }

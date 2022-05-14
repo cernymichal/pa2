@@ -1,5 +1,7 @@
 #include "Ant.h"
 
+#include "log.h"
+
 Ant::Ant(uint8_t x, uint8_t y) : GameObject(x, y) {
 }
 
@@ -12,6 +14,8 @@ void Ant::update() {
     // todo
 }
 
-void Ant::serialize(std::ostream &stream) const {
+std::ostream &Ant::serialize(std::ostream &stream) const {
     // todo
+
+    return stream;
 }
