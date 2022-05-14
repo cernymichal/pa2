@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "GameObject.h"
+#include "../game_object/GameObject.h"
 #include "Screen.h"
 
 class Game : public Screen {
@@ -22,8 +22,8 @@ public:
     /**
      * @brief update all GameObjects and redraw
      *
-     * @param[in] double delta time since last update
-     * @param[in] int ncurses input key
+     * @param[in] dt delta time since last update
+     * @param[in] key ncurses input key
      */
     virtual void update(double dt, int key) override;
 

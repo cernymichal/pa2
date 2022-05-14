@@ -10,8 +10,8 @@ public:
     /**
      * @brief update screen
      *
-     * @param[in] double delta time since last update
-     * @param[in] int ncurses input key
+     * @param[in] dt delta time since last update
+     * @param[in] key ncurses input key
      */
     virtual void update(double dt, int key) = 0;
 

@@ -1,6 +1,6 @@
 #include "Ant.h"
 
-#include "log.h"
+#include "../log.h"
 
 Ant::Ant(uint8_t x, uint8_t y) : GameObject(x, y) {
 }

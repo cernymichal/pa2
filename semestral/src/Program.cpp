@@ -2,10 +2,10 @@
 
 #include <ncurses.h>
 
-#include "Ant.h"
-#include "Game.h"
-#include "Label.h"
+#include "game_object/Ant.h"
+#include "game_object/Label.h"
 #include "log.h"
+#include "screen/Game.h"
 
 Program::Program() {
 }

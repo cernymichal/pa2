@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "log.h"
+#include "../log.h"
 
 void testAnt() {
     PN_LOGH("testing ant");
