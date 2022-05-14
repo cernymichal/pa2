@@ -4,11 +4,14 @@
 #include <vector>
 
 #include "GameObject.h"
+#include "Screen.h"
 
-class Game {
+class Game : public Screen {
     std::vector<std::unique_ptr<GameObject>> _objects;
 
 public:
+    Game();
+
     /**
      * @brief register GameObject to game
      *
@@ -17,14 +20,12 @@ public:
     void addObject(GameObject *object);
 
     /**
-     * @brief update all GameObjects
+     * @brief update all GameObjects and redraw
+     *
+     * @param[in] double delta time since last update
+     * @param[in] int ncurses input key
      */
-    void update();
-
-    /**
-     * @brief draw all GameObjects
-     */
-    void draw();
+    virtual void update(double dt, int key) override;
 
     /**
      * @brief save Game to file
@@ -50,4 +51,10 @@ public:
      * @param[in] stream output stream
      */
     std::ostream &log(std::ostream &stream) const;
+
+private:
+    /**
+     * @brief draw all GameObjects
+     */
+    void draw();
 };

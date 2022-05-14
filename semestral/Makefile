@@ -4,7 +4,7 @@ CXXFLAGS = -std=c++17 -Wall -pedantic -Wno-long-long -O2
 CXXFLAGS_DEBUG = $(CXXFLAGS) -D PN_DEBUG -g -pg -fPIE
 LIBS = -lncurses
 
-OBJECTS = Ant.o AntNest.o ComputerPlayer.o Game.o GameObject.o Label.o log.o Player.o Program.o Wall.o
+OBJECTS = Ant.o AntNest.o ComputerPlayer.o Dialog.o Game.o GameObject.o Label.o log.o Player.o Program.o Screen.o Wall.o
 OBJECTS_MAIN = $(OBJECTS) main.o
 OBJECTS_TEST = $(OBJECTS) test.o
 
@@ -27,6 +27,9 @@ run: compile
 
 debug: compile_debug
 	./$(TARGET)
+
+log:
+	less +F log
 
 test: CXXFLAGS := $(CXXFLAGS_DEBUG)
 test: $(TARGET_TEST)
@@ -53,6 +56,6 @@ $(TARGET_TEST): $(OBJECTS_TEST)
 Makefile.d:
 	$(CXX) -MM $(SRC_DIR)/*.cpp > Makefile.d
 
-.PHONY: all clean compile run test
+.PHONY: all clean debug compile compile_debug log run test
 
 include Makefile.d

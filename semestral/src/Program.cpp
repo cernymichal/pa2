@@ -36,13 +36,9 @@ void Program::start() {
     game.addObject(
         new Ant(25, LINES - 3));
 
-    game.update();
-    game.draw();
-
     PN_LOG_OBJ(&game);
 
-    timeout(-1);
-    getch();
+    game.show();
 
     endwin();
 }

@@ -3,6 +3,11 @@
 #include <algorithm>
 #include <iostream>
 
+Game::Game() {
+    timeoutDelay = -1;  // hello world screen only!!
+    // timeoutDelay = 0;  // non blocking input
+}
+
 void Game::addObject(GameObject *object) {
     auto compareGameObjects = [](const GameObject *a, const std::unique_ptr<GameObject> &b) {
         return a->updatePriority < b->updatePriority;
@@ -13,9 +18,13 @@ void Game::addObject(GameObject *object) {
         static_cast<GameObject *>(object));
 }
 
-void Game::update() {
+void Game::update(double dt, int key) {
+    // todo
+
     for (std::unique_ptr<GameObject> &object : _objects)
         object->update();
+
+    draw();
 }
 
 void Game::draw() {
