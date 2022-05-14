@@ -4,8 +4,7 @@
 #include <iostream>
 
 Game::Game() {
-    timeoutDelay = -1;  // hello world screen only!!
-    // timeoutDelay = 0;  // non blocking input
+    timeoutDelay = 0;  // non blocking input
 }
 
 void Game::addObject(GameObject *object) {
@@ -18,16 +17,16 @@ void Game::addObject(GameObject *object) {
         static_cast<GameObject *>(object));
 }
 
-void Game::update(double dt, int key) {
-    // todo
+void Game::update(int64_t dt, int key) {
+    // TODO update dt
 
     for (std::unique_ptr<GameObject> &object : _objects)
         object->update();
 
-    draw();
+    _draw();
 }
 
-void Game::draw() {
+void Game::_draw() {
     for (std::unique_ptr<GameObject> &object : _objects)
         object->draw();
 
@@ -35,13 +34,13 @@ void Game::draw() {
 }
 
 bool Game::save(const char *fileName) const {
-    // todo
+    // TODO save game
 
     return false;
 }
 
 Game Game::load(const char *fileName) {
-    // todo
+    // TODO load game
 
     return Game();
 }

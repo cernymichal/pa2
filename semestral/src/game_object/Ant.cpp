@@ -11,11 +11,11 @@ void Ant::draw() const {
 }
 
 void Ant::update() {
-    // todo
+    // TODO update
 }
 
 std::ostream &Ant::serialize(std::ostream &stream) const {
-    // todo
+    // TODO serialize
 
     return stream;
 }

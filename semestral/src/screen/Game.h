@@ -25,7 +25,7 @@ public:
      * @param[in] dt delta time since last update
      * @param[in] key ncurses input key
      */
-    virtual void update(double dt, int key) override;
+    virtual void update(int64_t dt, int key) override;
 
     /**
      * @brief save Game to file
@@ -56,5 +56,5 @@ private:
     /**
      * @brief draw all GameObjects
      */
-    void draw();
+    void _draw();
 };

@@ -17,7 +17,7 @@ void Label::draw() const {
 }
 
 std::ostream &Label::serialize(std::ostream &stream) const {
-    // todo
+    // TODO serialize
     
     return stream;
 }

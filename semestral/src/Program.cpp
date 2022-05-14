@@ -1,44 +1,118 @@
 #include "Program.h"
 
-#include <ncurses.h>
-
 #include "game_object/Ant.h"
 #include "game_object/Label.h"
 #include "log.h"
+#include "screen/Dialog.h"
 #include "screen/Game.h"
 
 Program::Program() {
 }
 
 void Program::start() {
-    // init ncurses
-    initscr();
-    cbreak();
-    noecho();
-    keypad(stdscr, TRUE);
-    scrollok(stdscr, FALSE);
-    curs_set(FALSE);
-    start_color();
+    Screen::initNCurses();
 
-    init_pair(1, COLOR_WHITE, COLOR_BLACK);
+    _mainMenuScreen();
 
-    auto game = Game();
+    Screen::exitNCurses();
+}
 
-    game.addObject(
-        new Label(COLS / 2, LINES / 3, "hello world!", true));
+void Program::_mainMenuScreen() {
+    while (true) {
+        Dialog dialog({"new game", "load", "exit"}, "pins & needles");
+        dialog.show();
 
-    game.addObject(
-        new Ant(18, 3));
+        if (dialog.closed || dialog.optionIndex == 2)
+            break;
 
-    game.addObject(
-        new Ant(COLS - 14, LINES - 8));
+        switch (dialog.optionIndex) {
+            case 0:
+                _mapListScreen();
+                break;
+            case 1:
+                _saveListScreen();
+                break;
+        }
+    }
+}
 
-    game.addObject(
-        new Ant(25, LINES - 3));
+void Program::_mapListScreen() {
+    // TODO close after game ends
+    while (true) {
+        // TODO search for maps
+        std::vector<std::string> maps({"map 1", "map 2", "map 3"});
 
-    PN_LOG_OBJ(&game);
+        Dialog dialog(maps);
+        dialog.show();
 
-    game.show();
+        if (dialog.closed)
+            break;
 
-    endwin();
+        // TODO load map
+        _oponentNumberScreen();
+    }
+}
+
+void Program::_saveListScreen() {
+    // TODO search for saves
+    std::vector<std::string> saves({"save 1", "save 2", "save 3"});
+
+    Dialog dialog(saves);
+    dialog.show();
+
+    if (dialog.closed)
+        return;
+
+    // TODO load save
+    _gameScreen();
+}
+
+void Program::_oponentNumberScreen() {
+    // TODO get max oponenents from map
+    std::vector<std::string> oponents({"1", "2", "3"});
+
+    Dialog dialog(oponents);
+    dialog.show();
+
+    if (dialog.closed)
+        return;
+
+    // TODO create computer players
+    _gameScreen();
+}
+
+void Program::_gameScreen() {
+    // TODO game screen
+
+    Dialog dialog({}, "*game here*");
+    dialog.show();
+}
+
+void Program::_pauseScreen() {
+    Dialog dialog({"continue", "save", "surrender", "return to main menu"});
+    dialog.show();
+
+    if (dialog.closed)
+        return;
+
+    switch (dialog.optionIndex) {
+        case 0:
+            break;
+        case 1:
+            // TODO save
+            break;
+        case 2:
+            // TODO surrender
+            break;
+        case 3:
+            // TODO return to menu
+            break;
+    }
+}
+
+void Program::_resultsScreen() {
+    // TODO results screen
+
+    Dialog dialog({"return to main menu"});
+    dialog.show();
 }

@@ -11,7 +11,7 @@ void AntNest::draw() const {
 }
 
 std::ostream &AntNest::serialize(std::ostream &stream) const {
-    // todo
+    // TODO serialize
     
     return stream;
 }

@@ -9,7 +9,7 @@ void Wall::draw() const {
 }
 
 std::ostream &Wall::serialize(std::ostream &stream) const {
-    // todo
+    // TODO serialize
     
     return stream;
 }
