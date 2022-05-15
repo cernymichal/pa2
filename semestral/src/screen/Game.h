@@ -1,13 +1,13 @@
 #pragma once
 
 #include <memory>
-#include <vector>
+#include <list>
 
 #include "../game_object/GameObject.h"
 #include "Screen.h"
 
 class Game : public Screen {
-    std::vector<std::unique_ptr<GameObject>> _objects;
+    std::list<std::unique_ptr<GameObject>> _objects;
     std::chrono::nanoseconds _dtAccumulator;
 
 public:

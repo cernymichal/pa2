@@ -19,7 +19,7 @@ public:
     virtual void draw() const;
 
     /**
-     * @brief update game object every tick
+     * @brief update game object
      */
     virtual void update();
 

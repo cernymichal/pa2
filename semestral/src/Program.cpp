@@ -1,7 +1,6 @@
 #include "Program.h"
 
 #include "game_object/Ant.h"
-#include "game_object/Label.h"
 #include "log.h"
 #include "screen/Dialog.h"
 #include "screen/Game.h"

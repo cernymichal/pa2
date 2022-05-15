@@ -2,9 +2,6 @@
 
 #include <ncurses.h>
 
-#include <algorithm>
-#include <iostream>
-
 #include "../log.h"
 
 const auto FRAME_TIME = std::chrono::milliseconds(500);
@@ -26,13 +23,11 @@ void Game::clear() {
 }
 
 void Game::addObject(GameObject *object) {
-    auto compareGameObjects = [](const GameObject *a, const std::unique_ptr<GameObject> &b) {
-        return a->updatePriority < b->updatePriority;
-    };
+    auto iter = _objects.begin();
+    for (; iter != _objects.end() && (*iter)->updatePriority < object->updatePriority; iter++)
+        ;
 
-    _objects.emplace(
-        std::upper_bound(_objects.begin(), _objects.end(), object, compareGameObjects),
-        static_cast<GameObject *>(object));
+    _objects.emplace(iter, static_cast<GameObject *>(object));
 }
 
 void Game::update(std::chrono::nanoseconds dt, int key) {
