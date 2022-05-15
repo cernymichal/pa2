@@ -1,6 +1,11 @@
 #pragma once
 
+#include "screen/Game.h"
+
 class Program {
+    Game _game;
+    bool _toMainMenu = false;
+
 public:
     Program();
 

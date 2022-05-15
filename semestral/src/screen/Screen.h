@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cstdint>
 
 class Screen {
@@ -15,7 +16,7 @@ public:
      * @param[in] dt delta time since last update
      * @param[in] key ncurses input key
      */
-    virtual void update(int64_t dt, int key) = 0;
+    virtual void update(std::chrono::nanoseconds dt, int key) = 0;
 
     /**
      * @brief check for input and call update

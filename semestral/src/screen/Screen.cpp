@@ -2,20 +2,18 @@
 
 #include <ncurses.h>
 
-#include <chrono>
-
 void Screen::show() {
     timeout(timeoutDelay);
 
     auto start = std::chrono::steady_clock::now();
 
-    update(0, ERR);
+    update(std::chrono::nanoseconds(0), ERR);
 
     while (!exit) {
         auto newStart = std::chrono::steady_clock::now();
-        int64_t dt = (newStart - start).count();
+        auto dt = newStart - start;
         start = newStart;
-        
+
         update(dt, getch());
     }
 }

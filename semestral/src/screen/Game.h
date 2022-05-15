@@ -8,9 +8,22 @@
 
 class Game : public Screen {
     std::vector<std::unique_ptr<GameObject>> _objects;
+    std::chrono::nanoseconds _dtAccumulator;
 
 public:
+    bool paused = false;
+
     Game();
+
+    /**
+     * @brief reset screen variables
+     */
+    void resetScreen();
+
+    /**
+     * @brief free objects and reset state
+     */
+    void clear();
 
     /**
      * @brief register GameObject to game
@@ -25,7 +38,7 @@ public:
      * @param[in] dt delta time since last update
      * @param[in] key ncurses input key
      */
-    virtual void update(int64_t dt, int key) override;
+    virtual void update(std::chrono::nanoseconds dt, int key) override;
 
     /**
      * @brief save Game to file

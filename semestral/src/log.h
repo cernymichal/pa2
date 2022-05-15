@@ -28,12 +28,20 @@ extern std::ostream* PN_LOGSTREAM;
 #define PN_LOG(x) PN_DEBUG_ONLY((*PN_LOGSTREAM) << x << std::endl)
 
 /**
- * @brief log message as header
+ * @brief log message as a large header
  *
  * @param[in] x printable value
  */
-#define PN_LOGH(x) PN_DEBUG_ONLY((*PN_LOGSTREAM) << std::endl \
-                                                 << "=> " << x << std::endl)
+#define PN_LOGH1(x) PN_DEBUG_ONLY((*PN_LOGSTREAM) << "\n\n" \
+                                                  << "==================== " << x << " ====================" << std::endl)
+
+/**
+ * @brief log message as a header
+ *
+ * @param[in] x printable value
+ */
+#define PN_LOGH2(x) PN_DEBUG_ONLY((*PN_LOGSTREAM) << "\n" \
+                                                  << "=> " << x << std::endl)
 
 /**
  * @brief log object

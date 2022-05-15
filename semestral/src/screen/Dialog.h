@@ -26,7 +26,7 @@ public:
      * @param[in] dt delta time since last update
      * @param[in] key ncurses input key
      */
-    virtual void update(int64_t dt, int key) override;
+    virtual void update(std::chrono::nanoseconds dt, int key) override;
 
 private:
     void _draw() const;

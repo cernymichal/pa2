@@ -12,6 +12,8 @@ void Ant::draw() const {
 
 void Ant::update() {
     // TODO update
+
+    x += 1;
 }
 
 std::ostream &Ant::serialize(std::ostream &stream) const {

@@ -16,5 +16,6 @@ int main(int argc, char **argv) {
 
     Program().start();
 
+    PN_LOGH2("main end");
     return 0;
 }

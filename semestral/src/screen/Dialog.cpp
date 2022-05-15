@@ -5,7 +5,7 @@
 Dialog::Dialog(const std::vector<std::string>& options, const std::string& header) : _options(options), _header(header) {
 }
 
-void Dialog::update(int64_t dt, int key) {
+void Dialog::update(std::chrono::nanoseconds dt, int key) {
     switch (key) {
         case KEY_UP:
         case 'w':

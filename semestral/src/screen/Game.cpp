@@ -1,10 +1,28 @@
 #include "Game.h"
 
+#include <ncurses.h>
+
 #include <algorithm>
 #include <iostream>
 
+#include "../log.h"
+
+const auto FRAME_TIME = std::chrono::milliseconds(500);
+
 Game::Game() {
     timeoutDelay = 0;  // non blocking input
+    clear();
+}
+
+void Game::resetScreen() {
+    exit = false;
+    paused = false;
+    _dtAccumulator = FRAME_TIME;
+}
+
+void Game::clear() {
+    resetScreen();
+    _objects.clear();
 }
 
 void Game::addObject(GameObject *object) {
@@ -17,16 +35,35 @@ void Game::addObject(GameObject *object) {
         static_cast<GameObject *>(object));
 }
 
-void Game::update(int64_t dt, int key) {
-    // TODO update dt
+void Game::update(std::chrono::nanoseconds dt, int key) {
+    _dtAccumulator += dt;
 
-    for (std::unique_ptr<GameObject> &object : _objects)
-        object->update();
+    // PN_LOG("Game::update(" << (long long)dt.count() << ", " << (char)key << ")");
 
-    _draw();
+    switch (key) {
+        case ERR:
+            break;
+
+        case KEY_BACKSPACE:
+            paused = true;
+        default:
+            exit = true;
+            break;
+    }
+
+    if (_dtAccumulator > FRAME_TIME) {
+        _dtAccumulator -= FRAME_TIME;
+
+        for (std::unique_ptr<GameObject> &object : _objects)
+            object->update();
+
+        _draw();
+    }
 }
 
 void Game::_draw() {
+    ::clear();
+
     for (std::unique_ptr<GameObject> &object : _objects)
         object->draw();
 
