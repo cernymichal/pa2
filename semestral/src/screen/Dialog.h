@@ -6,18 +6,23 @@
 
 #include "Screen.h"
 
+// TODO docs
 /**
  * dialog screen with blocking input
  * can be closed without choosing with BACKSPACE
  * otherwise chosen option is in optionIndex and closed is false
  */
+template <typename T>
 class Dialog : public Screen {
 public:
+    std::function<void(Dialog<T>&, Application&)> onExitF;
+    const std::vector<T> options;
+    bool showTitle;
     uint8_t optionIndex = 0;
     bool closed = false;
 
-    Dialog(Application& application, const std::string& title, std::function<void(Dialog&, Application&)> onExit,
-           const std::vector<std::string>& options, bool showTitle = false);
+    Dialog(Application& application, const std::string& title, std::function<void(Dialog<T>&, Application&)> onExit,
+           const std::vector<T>& options, bool showTitle = false);
 
     /**
      * @brief move cursor or select option
@@ -31,9 +36,5 @@ protected:
     virtual void _onExit() override;
 
 private:
-    std::function<void(Dialog&, Application&)> _onExitF;
-    const std::vector<std::string> _options;
-    bool _showTitle;
-
     void _draw() const;
 };

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <list>
 #include <memory>
 
@@ -14,7 +15,7 @@ public:
      *
      * @param[in] object pointer to GameObject, will be managed by Game
      */
-    void addObject(GameObject *object);
+    void addObject(GameObject* object);
 
     /**
      * @brief update all GameObjects and redraw
@@ -28,7 +29,7 @@ public:
      *
      * @return success
      */
-    bool save(const char *fileName) const;
+    bool save(const std::filesystem::path& path) const;
 
     /**
      * @brief load Game from file
@@ -37,14 +38,14 @@ public:
      *
      * @return loaded Game
      */
-    static Game load(const char *fileName);
+    static Game load(const std::filesystem::path& path);
 
     /**
      * @brief print debug info to stream
      *
      * @param[in] stream output stream
      */
-    std::ostream &log(std::ostream &stream) const;
+    std::ostream& log(std::ostream& stream) const;
 
 private:
     std::list<std::unique_ptr<GameObject>> _objects;

@@ -2,12 +2,16 @@
 
 #include <ncurses.h>
 
-Dialog::Dialog(Application& application, const std::string& title, std::function<void(Dialog&, Application&)> onExit,
-               const std::vector<std::string>& options, bool showTitle)
-    : Screen(application, title), _onExitF(onExit), _options(options), _showTitle(showTitle) {
+#include "../Save.h"
+
+template <typename T>
+Dialog<T>::Dialog(Application& application, const std::string& title, std::function<void(Dialog<T>&, Application&)> onExit,
+                  const std::vector<T>& options, bool showTitle)
+    : Screen(application, title), onExitF(onExit), options(options), showTitle(showTitle) {
 }
 
-void Dialog::update(std::chrono::nanoseconds dt, int key) {
+template <typename T>
+void Dialog<T>::update(std::chrono::nanoseconds dt, int key) {
     switch (key) {
         case KEY_UP:
         case 'w':
@@ -19,7 +23,7 @@ void Dialog::update(std::chrono::nanoseconds dt, int key) {
         case KEY_DOWN:
         case 's':
         case 'S':
-            if (optionIndex < _options.size() - 1)
+            if (optionIndex < options.size() - 1)
                 optionIndex++;
             break;
 
@@ -35,25 +39,30 @@ void Dialog::update(std::chrono::nanoseconds dt, int key) {
     _draw();
 }
 
-void Dialog::_onExit() {
-    _onExitF(*this, _application);
+template <typename T>
+void Dialog<T>::_onExit() {
+    onExitF(*this, _application);
 }
 
-void Dialog::_draw() const {
+template <typename T>
+void Dialog<T>::_draw() const {
     clear();
 
     uint8_t offset = 1;
 
-    if (_showTitle) {
+    if (showTitle) {
         mvaddstr(1, 2, title.c_str());
         offset = 3;
     }
 
-    for (size_t i = 0; i < _options.size(); i++)
-        mvaddstr(i + offset, 3, _options[i].c_str());
+    for (size_t i = 0; i < options.size(); i++)
+        mvaddstr(i + offset, 3, options[i].c_str());
 
-    if (_options.size() > 0)
+    if (options.size() > 0)
         mvaddch(optionIndex + offset, 2, '>');
 
     refresh();
 }
+
+template class Dialog<std::string>;
+template class Dialog<Save>;
