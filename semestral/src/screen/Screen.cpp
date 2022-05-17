@@ -2,8 +2,15 @@
 
 #include <ncurses.h>
 
+Screen::Screen(Application& application, const std::string& title)
+    : title(title), _application(application) {
+}
+
+void Screen::_onExit() {
+}
+
 void Screen::show() {
-    timeout(timeoutDelay);
+    timeout(_timeoutDelay);
 
     auto start = std::chrono::steady_clock::now();
 
@@ -16,6 +23,8 @@ void Screen::show() {
 
         update(dt, getch());
     }
+
+    _onExit();
 }
 
 void Screen::initNCurses() {

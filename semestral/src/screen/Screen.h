@@ -2,13 +2,18 @@
 
 #include <chrono>
 #include <cstdint>
+#include <string>
+
+#include "../log.h"
+
+class Application;
 
 class Screen {
-protected:
-    int timeoutDelay = -1;
-
 public:
+    std::string title;
     bool exit = false;
+
+    Screen(Application& application, const std::string& title = "untitled screen");
 
     /**
      * @brief update screen
@@ -26,4 +31,10 @@ public:
     static void initNCurses();
 
     static void exitNCurses();
+
+protected:
+    Application& _application;
+    int _timeoutDelay = -1;
+
+    virtual void _onExit();
 };

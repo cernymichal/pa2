@@ -1,29 +1,13 @@
 #pragma once
 
-#include <memory>
 #include <list>
+#include <memory>
 
-#include "../game_object/GameObject.h"
-#include "Screen.h"
+#include "game_object/GameObject.h"
 
-class Game : public Screen {
-    std::list<std::unique_ptr<GameObject>> _objects;
-    std::chrono::nanoseconds _dtAccumulator;
-
+class Game {
 public:
-    bool paused = false;
-
     Game();
-
-    /**
-     * @brief reset screen variables
-     */
-    void resetScreen();
-
-    /**
-     * @brief free objects and reset state
-     */
-    void clear();
 
     /**
      * @brief register GameObject to game
@@ -34,11 +18,8 @@ public:
 
     /**
      * @brief update all GameObjects and redraw
-     *
-     * @param[in] dt delta time since last update
-     * @param[in] key ncurses input key
      */
-    virtual void update(std::chrono::nanoseconds dt, int key) override;
+    void update();
 
     /**
      * @brief save Game to file
@@ -66,6 +47,8 @@ public:
     std::ostream &log(std::ostream &stream) const;
 
 private:
+    std::list<std::unique_ptr<GameObject>> _objects;
+
     /**
      * @brief draw all GameObjects
      */

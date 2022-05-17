@@ -2,7 +2,9 @@
 
 #include <ncurses.h>
 
-Dialog::Dialog(const std::vector<std::string>& options, const std::string& header) : _options(options), _header(header) {
+Dialog::Dialog(Application& application, const std::string& title, std::function<void(Dialog&, Application&)> onExit,
+               const std::vector<std::string>& options, bool showTitle)
+    : Screen(application, title), _onExitF(onExit), _options(options), _showTitle(showTitle) {
 }
 
 void Dialog::update(std::chrono::nanoseconds dt, int key) {
@@ -33,13 +35,17 @@ void Dialog::update(std::chrono::nanoseconds dt, int key) {
     _draw();
 }
 
+void Dialog::_onExit() {
+    _onExitF(*this, _application);
+}
+
 void Dialog::_draw() const {
     clear();
 
     uint8_t offset = 1;
 
-    if (_header.size() > 0) {
-        mvaddstr(1, 2, _header.c_str());
+    if (_showTitle) {
+        mvaddstr(1, 2, title.c_str());
         offset = 3;
     }
 

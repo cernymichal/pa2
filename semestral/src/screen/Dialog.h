@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -11,14 +12,12 @@
  * otherwise chosen option is in optionIndex and closed is false
  */
 class Dialog : public Screen {
-    const std::vector<std::string> _options;
-    const std::string _header;
-
 public:
     uint8_t optionIndex = 0;
     bool closed = false;
 
-    Dialog(const std::vector<std::string>& options, const std::string& header = "");
+    Dialog(Application& application, const std::string& title, std::function<void(Dialog&, Application&)> onExit,
+           const std::vector<std::string>& options, bool showTitle = false);
 
     /**
      * @brief move cursor or select option
@@ -28,6 +27,13 @@ public:
      */
     virtual void update(std::chrono::nanoseconds dt, int key) override;
 
+protected:
+    virtual void _onExit() override;
+
 private:
+    std::function<void(Dialog&, Application&)> _onExitF;
+    const std::vector<std::string> _options;
+    bool _showTitle;
+
     void _draw() const;
 };

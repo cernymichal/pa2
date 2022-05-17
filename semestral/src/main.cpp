@@ -1,4 +1,4 @@
-#include "Program.h"
+#include "Application.h"
 #include "log.h"
 
 /**
@@ -14,7 +14,7 @@
 int main(int argc, char **argv) {
     PN_INIT_LOG();
 
-    Program().start();
+    Application().start();
 
     PN_LOGH2("main end");
     return 0;
