@@ -6,8 +6,8 @@
 
 #include "../log.h"
 
-SaveList::SaveList(Application& application, std::function<void(Dialog<Save>&, Application&)> onExit)
-    : Dialog<Save>(application, "save list screen", Save::findSaves(), onExit) {
+SaveList::SaveList(Application& application, const std::vector<Save>& options, std::function<void(Dialog<Save>&, Application&)> onExit)
+    : Dialog<Save>(application, "save list screen", options, onExit) {
 }
 
 void SaveList::update(std::chrono::nanoseconds dt, int key) {

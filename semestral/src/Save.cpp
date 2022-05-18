@@ -36,6 +36,22 @@ std::vector<Save> findFiles(const char* directory, const char* extension) {
     return files;
 }
 
+bool filesExist(const char* directory, const char* extension) {
+    // TODO check for fs errors
+
+    auto path = std::filesystem::path(EXECUTABLE_DIRECTORY)
+                    .append(directory);
+
+    PN_LOG("checking if any " << extension << " files exist in " << path);
+
+    for (const auto& entry : std::filesystem::directory_iterator(path)) {
+        if (entry.is_regular_file() && entry.path().extension() == extension)
+            return true;
+    }
+
+    return false;
+}
+
 Save::Save(const std::filesystem::path& path) : path(path) {
     std::ifstream saveFile;
     saveFile.open(path, std::fstream::in);
@@ -63,6 +79,14 @@ std::vector<Save> Save::findSaves() {
 std::vector<Save> Save::findMaps() {
     PN_LOG("looking for maps");
     return findFiles(MAP_DIRECTORY, MAP_EXTENSION);
+}
+
+bool Save::emptySaveDirectory() {
+    return !filesExist(SAVE_DIRECTORY, SAVE_EXTENSION);
+}
+
+bool Save::emptyMapDirectory() {
+    return !filesExist(MAP_DIRECTORY, MAP_EXTENSION);
 }
 
 std::filesystem::path Save::createSavePath(const std::string& mapName) {

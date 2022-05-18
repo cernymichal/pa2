@@ -43,9 +43,28 @@ void Application::openMainMenuScreen() {
 
         switch (dialog.optionIndex) {
             case 0:
+                if (Save::emptyMapDirectory()) {
+                    // TODO no map feedback
+
+                    PN_LOG("no maps found");
+
+                    dialog.exit = false;
+
+                    break;
+                }
                 application.openMapListScreen();
                 break;
+
             case 1:
+                if (Save::emptySaveDirectory()) {
+                    // TODO no save feedback
+
+                    PN_LOG("no saves found");
+
+                    dialog.exit = false;
+
+                    break;
+                }
                 application.openSaveListScreen();
                 break;
         }
@@ -82,8 +101,6 @@ void Application::openMapListScreen() {
 void Application::openSaveListScreen() {
     PN_LOGH2("opening saveListScreen");
 
-    // TODO check for no saves
-
     auto onExit = [](Dialog<Save>& dialog, Application& application) {
         if (dialog.closed) {
             application.openMainMenuScreen();
@@ -94,7 +111,7 @@ void Application::openSaveListScreen() {
         application.openGameScreen();
     };
 
-    openScreen(new SaveList(*this, onExit));
+    openScreen(new SaveList(*this, Save::findSaves(), onExit));
 }
 
 void Application::openOponentNumberScreen() {
@@ -139,16 +156,19 @@ void Application::openPauseScreen() {
         switch (dialog.optionIndex) {
             case 0:
                 break;
+
             case 1:
                 application.state.game->save(
                     Save::createSavePath(application.state.game->mapName));
                 dialog.exit = false;
                 break;
+
             case 2:
                 application.closeCurrentScreen();  // close self
                 application.closeCurrentScreen();  // close game screen
                 application.openResultsScreen();
                 break;
+
             case 3:
                 application.closeCurrentScreen();  // close self
                 application.closeCurrentScreen();  // close game screen

@@ -12,9 +12,10 @@ class SaveList : public Dialog<Save> {
 public:
     /**
      * @param[in] application
+     * @param[in] options save files
      * @param[in] onExit function to be called after exit
      */
-    SaveList(Application& application, std::function<void(Dialog<Save>&, Application&)> onExit);
+    SaveList(Application& application, const std::vector<Save>& options, std::function<void(Dialog<Save>&, Application&)> onExit);
 
     /**
      * @brief check for DEL and call Dialog::update

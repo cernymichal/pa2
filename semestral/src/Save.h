@@ -51,6 +51,16 @@ public:
     static std::vector<Save> findMaps();
 
     /**
+     * @returns no save files in default directory?
+     */
+    static bool emptySaveDirectory();
+
+    /**
+     * @returns no maps in default directory?
+     */
+    static bool emptyMapDirectory();
+
+    /**
      * @brief create save file path from map name
      *
      * "%Y-%m-%d %H:%M:%S %mapName"

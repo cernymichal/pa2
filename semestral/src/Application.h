@@ -51,6 +51,8 @@ private:
 
     /**
      * @brief main program loop
+     *
+     * shows top screen
      */
     void _run();
 };
