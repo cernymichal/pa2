@@ -8,6 +8,11 @@
 
 class Application;
 
+/**
+ * @brief handle user input and drawing
+ *
+ * - _timeoutDelay - input wait
+ */
 class Screen {
 public:
     std::string title;
@@ -16,7 +21,7 @@ public:
     Screen(Application& application, const std::string& title = "untitled screen");
 
     /**
-     * @brief update screen
+     * @brief update screen and handle input
      *
      * @param[in] dt delta time since last update
      * @param[in] key ncurses input key
@@ -24,7 +29,7 @@ public:
     virtual void update(std::chrono::nanoseconds dt, int key) = 0;
 
     /**
-     * @brief check for input and call update
+     * @brief catch input and call update
      */
     void show();
 
@@ -36,5 +41,8 @@ protected:
     Application& _application;
     int _timeoutDelay = -1;
 
+    /**
+     * @brief called from update after exit
+     */
     virtual void _onExit();
 };

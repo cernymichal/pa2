@@ -5,6 +5,7 @@
 #include "log.h"
 #include "screen/Dialog.h"
 #include "screen/GameScreen.h"
+#include "screen/SaveList.h"
 
 Application::Application() {
 }
@@ -52,10 +53,11 @@ void Application::openMainMenuScreen() {
 
     openScreen(
         new Dialog<std::string>(
-            *this, "pins & needles", onExit,
+            *this, "pins & needles",
             {"new game",
              "load",
              "exit"},
+            onExit,
             true));
 }
 
@@ -70,16 +72,17 @@ void Application::openMapListScreen() {
 
         dialog.exit = false;
 
-        // TODO load map
-        application.state.game = std::make_shared<Game>();
+        application.state.game = std::make_unique<Game>(dialog.options[dialog.optionIndex].path);
         application.openOponentNumberScreen();
     };
 
-    openScreen(new Dialog<Save>(*this, "map list screen", onExit, Save::findMaps()));
+    openScreen(new Dialog<Save>(*this, "map list screen", Save::findMaps(), onExit));
 }
 
 void Application::openSaveListScreen() {
     PN_LOGH2("opening saveListScreen");
+
+    // TODO check for no saves
 
     auto onExit = [](Dialog<Save>& dialog, Application& application) {
         if (dialog.closed) {
@@ -87,12 +90,11 @@ void Application::openSaveListScreen() {
             return;
         }
 
-        application.state.game = std::make_shared<Game>(
-            Game::load(dialog.options[dialog.optionIndex].path));
+        application.state.game = std::make_unique<Game>(dialog.options[dialog.optionIndex].path);
         application.openGameScreen();
     };
 
-    openScreen(new Dialog<Save>(*this, "save list screen", onExit, Save::findSaves()));
+    openScreen(new SaveList(*this, onExit));
 }
 
 void Application::openOponentNumberScreen() {
@@ -112,7 +114,7 @@ void Application::openOponentNumberScreen() {
         application.openGameScreen();
     };
 
-    openScreen(new Dialog<std::string>(*this, "oponent number screen", onExit, oponents));
+    openScreen(new Dialog<std::string>(*this, "oponent number screen", oponents, onExit));
 }
 
 void Application::openGameScreen() {
@@ -122,11 +124,13 @@ void Application::openGameScreen() {
 
     PN_LOG_OBJ(state.game);
 
-    openScreen(new GameScreen(*this, state.game));
+    openScreen(new GameScreen(*this));
 }
 
 void Application::openPauseScreen() {
     PN_LOGH2("opening pauseScreen");
+
+    // TODO save feedback
 
     auto onExit = [](Dialog<std::string>& dialog, Application& application) {
         if (dialog.closed)
@@ -136,8 +140,8 @@ void Application::openPauseScreen() {
             case 0:
                 break;
             case 1:
-                // TODO save name
-                application.state.game->save(Save::createSavePath("TODO"));
+                application.state.game->save(
+                    Save::createSavePath(application.state.game->mapName));
                 dialog.exit = false;
                 break;
             case 2:
@@ -155,11 +159,12 @@ void Application::openPauseScreen() {
 
     openScreen(
         new Dialog<std::string>(
-            *this, "pause screen", onExit,
+            *this, "pause screen",
             {"continue",
              "save",
              "surrender",
-             "return to main menu"}));
+             "return to main menu"},
+            onExit));
 }
 
 void Application::openResultsScreen() {
@@ -171,7 +176,7 @@ void Application::openResultsScreen() {
         application.openMainMenuScreen();
     };
 
-    openScreen(new Dialog<std::string>(*this, "results screen", onExit, {"return to main menu"}));
+    openScreen(new Dialog<std::string>(*this, "results screen", {"return to main menu"}, onExit));
 }
 
 void Application::_run() {

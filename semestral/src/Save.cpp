@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <ctime>
+#include <fstream>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
 #include "log.h"
@@ -15,6 +17,8 @@
 const auto EXECUTABLE_DIRECTORY = std::filesystem::canonical("/proc/self/exe").parent_path();
 
 std::vector<Save> findFiles(const char* directory, const char* extension) {
+    // TODO check for fs errors
+
     std::vector<Save> files;
 
     auto path = std::filesystem::path(EXECUTABLE_DIRECTORY)
@@ -32,7 +36,11 @@ std::vector<Save> findFiles(const char* directory, const char* extension) {
     return files;
 }
 
-Save::Save(const std::filesystem::path& path) : path(path), _name(path.stem()) {
+Save::Save(const std::filesystem::path& path) : path(path) {
+    std::ifstream saveFile;
+    saveFile.open(path, std::fstream::in);
+
+    std::getline(saveFile, _name);
 }
 
 bool Save::operator<(const Save& other) const {
@@ -62,7 +70,7 @@ std::filesystem::path Save::createSavePath(const std::string& mapName) {
     auto tm = *std::localtime(&t);
 
     std::ostringstream oss;
-    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << " - " << mapName << SAVE_EXTENSION;
+    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << " " << mapName << SAVE_EXTENSION;
 
     return std::filesystem::path(EXECUTABLE_DIRECTORY)
         .append(SAVE_DIRECTORY)

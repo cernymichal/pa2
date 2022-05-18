@@ -3,12 +3,23 @@
 #include <filesystem>
 #include <list>
 #include <memory>
+#include <string>
 
 #include "game_object/GameObject.h"
 
+/**
+ * @brief holds all game objects and logic
+ */
 class Game {
 public:
-    Game();
+    std::string mapName;
+
+    /**
+     * @brief load Game from file
+     *
+     * @param[in] path save file
+     */
+    Game(const std::filesystem::path& path);
 
     /**
      * @brief register GameObject to game
@@ -25,20 +36,11 @@ public:
     /**
      * @brief save Game to file
      *
-     * @param[in] fileName target
+     * @param[in] path target
      *
      * @return success
      */
     bool save(const std::filesystem::path& path) const;
-
-    /**
-     * @brief load Game from file
-     *
-     * @param[in] fileName source
-     *
-     * @return loaded Game
-     */
-    static Game load(const std::filesystem::path& path);
 
     /**
      * @brief print debug info to stream

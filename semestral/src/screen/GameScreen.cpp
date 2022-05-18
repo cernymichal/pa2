@@ -4,8 +4,7 @@
 
 const auto FRAME_TIME = std::chrono::milliseconds(500);
 
-GameScreen::GameScreen(Application& application, const std::shared_ptr<Game>& game)
-    : Screen(application, "game screen"), _game(game) {
+GameScreen::GameScreen(Application& application) : Screen(application, "game screen") {
     _timeoutDelay = 0;  // non blocking input
     _resetScreen();
 }
@@ -31,7 +30,7 @@ void GameScreen::update(std::chrono::nanoseconds dt, int key) {
 
     if (_dtAccumulator > FRAME_TIME) {
         _dtAccumulator -= FRAME_TIME;
-        _game->update();
+        _application.state.game->update();
     }
 }
 

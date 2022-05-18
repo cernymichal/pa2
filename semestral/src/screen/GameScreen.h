@@ -6,12 +6,15 @@
 #include "../Game.h"
 #include "Screen.h"
 
+/**
+ * @brief get input and call fixed update for game
+ */
 class GameScreen : public Screen {
 public:
-    GameScreen(Application& application, const std::shared_ptr<Game>& game);
+    GameScreen(Application& application);
 
     /**
-     * @brief update game
+     * @brief handle input, periodically call game update
      *
      * @param[in] dt delta time since last update
      * @param[in] key ncurses input key
@@ -22,7 +25,6 @@ protected:
     virtual void _onExit() override;
 
 private:
-    std::shared_ptr<Game> _game;
     std::chrono::nanoseconds _dtAccumulator;
     bool _paused = false;
 

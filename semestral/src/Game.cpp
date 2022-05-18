@@ -1,8 +1,24 @@
 #include "Game.h"
 
+#include <fstream>
+#include <iostream>
+
 #include "log.h"
 
-Game::Game() {
+Game::Game(const std::filesystem::path& path) {
+    PN_LOG("loading game from " << path);
+
+    // TODO check for fs errors
+
+    std::ifstream saveFile;
+    saveFile.open(path, std::fstream::in);
+
+    std::getline(saveFile, mapName);  // skip save name line
+    std::getline(saveFile, mapName);
+
+    // TODO load game
+
+    PN_LOG("loaded game");
 }
 
 void Game::addObject(GameObject* object) {
@@ -31,16 +47,22 @@ void Game::_draw() {
 
 bool Game::save(const std::filesystem::path& path) const {
     PN_LOG("saving game to " << path);
+
+    // TODO check for fs errors
+
+    std::filesystem::create_directories(path.parent_path());
+
+    std::ofstream saveFile;
+    saveFile.open(path, std::fstream::out);
+
+    saveFile << path.stem().string() << "\n";
+    saveFile << mapName << "\n";
+
     // TODO save game
 
+    PN_LOG("saved game");
+
     return false;
-}
-
-Game Game::load(const std::filesystem::path& path) {
-    PN_LOG("loading game from " << path);
-    // TODO load game
-
-    return Game();
 }
 
 std::ostream& Game::log(std::ostream& stream) const {

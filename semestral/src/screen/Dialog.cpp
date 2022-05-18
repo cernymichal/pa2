@@ -5,9 +5,9 @@
 #include "../Save.h"
 
 template <typename T>
-Dialog<T>::Dialog(Application& application, const std::string& title, std::function<void(Dialog<T>&, Application&)> onExit,
-                  const std::vector<T>& options, bool showTitle)
-    : Screen(application, title), onExitF(onExit), options(options), showTitle(showTitle) {
+Dialog<T>::Dialog(Application& application, const std::string& title, const std::vector<T>& options,
+                  std::function<void(Dialog<T>&, Application&)> onExit, bool showTitle)
+    : Screen(application, title), options(options), showTitle(showTitle), _onExitF(onExit) {
 }
 
 template <typename T>
@@ -41,7 +41,7 @@ void Dialog<T>::update(std::chrono::nanoseconds dt, int key) {
 
 template <typename T>
 void Dialog<T>::_onExit() {
-    onExitF(*this, _application);
+    _onExitF(*this, _application);
 }
 
 template <typename T>

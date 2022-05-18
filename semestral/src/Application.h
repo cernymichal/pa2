@@ -7,7 +7,7 @@
 #include "screen/Screen.h"
 
 struct ApplicationState {
-    std::shared_ptr<Game> game;
+    std::unique_ptr<Game> game;
 };
 
 class Application {

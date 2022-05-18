@@ -6,23 +6,30 @@
 
 #include "Screen.h"
 
-// TODO docs
 /**
- * dialog screen with blocking input
- * can be closed without choosing with BACKSPACE
- * otherwise chosen option is in optionIndex and closed is false
+ * @brief screen with options to choose from
+ *
+ * - input blocking
+ * - can be closed without choosing with BACKSPACE
+ * - otherwise chosen option is in optionIndex and closed is false
  */
 template <typename T>
 class Dialog : public Screen {
 public:
-    std::function<void(Dialog<T>&, Application&)> onExitF;
-    const std::vector<T> options;
+    std::vector<T> options;
     bool showTitle;
     uint8_t optionIndex = 0;
     bool closed = false;
 
-    Dialog(Application& application, const std::string& title, std::function<void(Dialog<T>&, Application&)> onExit,
-           const std::vector<T>& options, bool showTitle = false);
+    /**
+     * @param[in] application
+     * @param[in] title
+     * @param[in] onExit function to be called after exit
+     * @param[in] options vector<T> of dialog options, with c_str()
+     * @param[in] showTitle
+     */
+    Dialog(Application& application, const std::string& title, const std::vector<T>& options,
+           std::function<void(Dialog<T>&, Application&)> onExit, bool showTitle = false);
 
     /**
      * @brief move cursor or select option
@@ -33,8 +40,16 @@ public:
     virtual void update(std::chrono::nanoseconds dt, int key) override;
 
 protected:
+    /**
+     * @brief call _onExifF after exit
+     */
     virtual void _onExit() override;
 
 private:
+    std::function<void(Dialog<T>&, Application&)> _onExitF;
+
+    /**
+     * @brief draw dialog to the screen
+     */
     void _draw() const;
 };
