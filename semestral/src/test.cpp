@@ -1,7 +1,7 @@
 
 #include <iostream>
 
-#include "game_object/Ant.t.cpp"
+#include "GameObject/Ant.t.cpp"
 #include "log.h"
 
 /**

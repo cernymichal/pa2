@@ -5,7 +5,7 @@
 #include <memory>
 #include <string>
 
-#include "game_object/GameObject.h"
+#include "GameObject/GameObject.h"
 
 /**
  * @brief holds all game objects and logic
@@ -48,6 +48,8 @@ public:
      * @param[in] stream output stream
      */
     std::ostream& log(std::ostream& stream) const;
+
+    static void initGONameMap();
 
 private:
     std::list<std::unique_ptr<GameObject>> _objects;

@@ -39,10 +39,13 @@ test: $(TARGET_TEST)
 clean:
 	rm -rf $(TARGET) $(TARGET_TEST) $(TARGET).zip log Makefile.d $(BUILD_DIR) doc 
 
-doc: src/* src/**/*
+doc: $(SRC_DIR)/* $(SRC_DIR)/**/*
 	doxygen Doxyfile
 
 submit: $(TARGET).zip
+
+lc:
+	find $(SRC_DIR) -type f | sort -f | xargs wc -l
 
 $(TARGET).zip: clean
 	rm -rf /tmp/$(TARGET)
@@ -66,9 +69,9 @@ $(TARGET_TEST): $(OBJECTS_TEST)
 	mkdir -p $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c -o $(BUILD_DIR)/$@ $<
 
-Makefile.d:
+Makefile.d: $(SRC_DIR)/*.cpp $(SRC_DIR)/**/*.cpp
 	$(CXX) -MM $(SRC_DIR)/*.cpp $(SRC_DIR)/**/*.cpp > Makefile.d
 
-.PHONY: all clean compile compile_debug debug log run submit test
+.PHONY: all clean compile compile_debug debug lc log run submit test
 
 include Makefile.d

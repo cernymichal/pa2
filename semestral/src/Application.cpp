@@ -1,11 +1,11 @@
 #include "Application.h"
 
 #include "Save.h"
-#include "game_object/Ant.h"
+#include "GameObject/Ant.h"
 #include "log.h"
-#include "screen/Dialog.h"
-#include "screen/GameScreen.h"
-#include "screen/SaveList.h"
+#include "Screen/Dialog.h"
+#include "Screen/GameScreen.h"
+#include "Screen/SaveList.h"
 
 Application::Application() {
 }
@@ -13,6 +13,7 @@ Application::Application() {
 void Application::start() {
     PN_LOGH1("Application::start()");
 
+    Game::initGONameMap();
     Screen::initNCurses();
 
     openMainMenuScreen();
@@ -136,8 +137,6 @@ void Application::openOponentNumberScreen() {
 
 void Application::openGameScreen() {
     PN_LOGH2("opening gameScreen");
-
-    state.game->addObject(new Ant(0, LINES / 2));
 
     PN_LOG_OBJ(state.game);
 
