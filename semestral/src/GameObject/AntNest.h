@@ -1,8 +1,9 @@
 #pragma once
 
-#include "GameObject.h"
+#include "Player.h"
+#include "PlayerUnit.h"
 
-class AntNest : public GameObject {
+class AntNest : public PlayerUnit {
 public:
     char id = '?';
     bool starting = false;
@@ -10,11 +11,13 @@ public:
 
     AntNest();
 
-    AntNest(uint8_t x, uint8_t y, char id, bool stating = false);
+    AntNest(uint8_t x, uint8_t y, char id, bool starting = false);
 
     virtual void draw() const override;
 
     virtual void update() override;
+
+    virtual void afterAdd() override;
 
     virtual void collideWith(GameObject& object) override;
 

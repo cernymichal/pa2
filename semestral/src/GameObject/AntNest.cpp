@@ -7,9 +7,10 @@
 AntNest::AntNest() : AntNest(0, 0, false) {
 }
 
-AntNest::AntNest(uint8_t x, uint8_t y, char id, bool starting) : GameObject(x, y), id(id), starting(starting) {
+AntNest::AntNest(uint8_t x, uint8_t y, char id, bool starting) : PlayerUnit(x, y), id(id), starting(starting) {
     // make sure ants are being spawned after ant movement
     updatePriority = 192;
+    color = COLOR_WHITE;
 }
 
 void AntNest::draw() const {
@@ -29,20 +30,20 @@ void AntNest::draw() const {
 void AntNest::update() {
     if (ants < 99)
         ants++;
+}
 
-    if (ants > 0) {
-        _game->addObject(
-            new Ant(x, y));
-        ants--;
-    }
+void AntNest::afterAdd() {
+    _game->nestMap[id] = this;
 }
 
 void AntNest::collideWith(GameObject& object) {
-    auto objectP = &object;
+    auto ant = dynamic_cast<Ant*>(&object);
 
-    if (object.color != color && dynamic_cast<Ant*>(objectP)) {
-        ants--;
-        // TODO capture
+    if (ant && ant->player() != player()) {
+        if (ants > 0)
+            ants--;
+        else
+            changePlayer(ant->player());
     }
 }
 
@@ -52,7 +53,7 @@ bool AntNest::serialize(std::ostream& stream) const {
 
 bool AntNest::_serialize(std::ostream& stream) const {
     stream << id << ' ' << starting << ' ' << (unsigned short)ants << ' ';
-    return GameObject::_serialize(stream);
+    return PlayerUnit::_serialize(stream);
 }
 
 bool AntNest::unserialize(std::istream& stream) {
@@ -62,5 +63,5 @@ bool AntNest::unserialize(std::istream& stream) {
     stream >> temp;
     ants = temp;
 
-    return GameObject::unserialize(stream);
+    return PlayerUnit::unserialize(stream);
 }

@@ -13,6 +13,8 @@ void Game::addObject(GameObject* object) {
         ;
 
     _objects.emplace(iter, object);
+
+    object->afterAdd();
 }
 
 void Game::update() {
@@ -53,11 +55,12 @@ void Game::_draw() {
 uint8_t Game::maxPlayers() const {
     uint8_t startingPoints = 0;
 
-    for (const auto& object : _objects) {
-        // TODO maxPlayers
+    for (const auto& nest : nestMap) {
+        if (nest.second->starting)
+            startingPoints++;
     }
 
-    return 5;  // startingPoints;
+    return startingPoints;
 }
 
 std::ostream& Game::log(std::ostream& stream) const {

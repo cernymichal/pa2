@@ -12,6 +12,9 @@ void GameObject::draw() const {
 void GameObject::update() {
 }
 
+void GameObject::afterAdd() {
+}
+
 void GameObject::collideWith(GameObject& object) {
 }
 

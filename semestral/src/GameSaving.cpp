@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include "GameObject/Ant.h"
+#include "GameObject/AntLine.h"
 #include "GameObject/AntNest.h"
 #include "GameObject/ComputerPlayer.h"
 #include "GameObject/GameObject.h"
@@ -17,6 +18,7 @@ std::map<std::string, GameObject* (*)()> GO_NAME_MAP;
 
 void Game::initGONameMap() {
     GO_NAME_MAP["Ant"] = &instantiateGO<Ant>;
+    GO_NAME_MAP["AntLine"] = &instantiateGO<AntLine>;
     GO_NAME_MAP["AntNest"] = &instantiateGO<AntNest>;
     GO_NAME_MAP["ComputerPlayer"] = &instantiateGO<ComputerPlayer>;
     GO_NAME_MAP["Player"] = &instantiateGO<Player>;

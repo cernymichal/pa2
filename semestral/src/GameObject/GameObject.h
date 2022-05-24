@@ -31,6 +31,11 @@ public:
     virtual void update();
 
     /**
+     * @brief called after object is added to game
+     */
+    virtual void afterAdd();
+
+    /**
      * @brief handle collision with other GameObject
      */
     virtual void collideWith(GameObject& object);

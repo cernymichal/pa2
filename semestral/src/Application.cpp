@@ -1,6 +1,6 @@
 #include "Application.h"
 
-#include "GameObject/Ant.h"
+#include "GameObject/ComputerPlayer.h"
 #include "Save.h"
 #include "Screen/Dialog.h"
 #include "Screen/GameScreen.h"
@@ -121,7 +121,7 @@ void Application::openOponentNumberScreen() {
     auto oponents = std::vector<std::string>();
 
     auto max = state.game->maxPlayers();
-    for (uint8_t i = 1; i < max; i++)
+    for (uint8_t i = 0; i < max; i++)
         oponents.push_back(std::to_string(i));
 
     auto onExit = [](Dialog<std::string>& dialog, Application& application) {
@@ -131,7 +131,13 @@ void Application::openOponentNumberScreen() {
         application.closeCurrentScreen();  // close self
         application.closeCurrentScreen();  // close map screen
 
-        // TODO create computer players
+        application.state.game->addObject(
+            new Player(0, "Player"));
+
+        for (uint8_t i = 1; i < dialog.optionIndex; i++)
+            application.state.game->addObject(
+                new ComputerPlayer(i, std::string("AI").append(std::to_string(i))));
+
         application.openGameScreen();
     };
 

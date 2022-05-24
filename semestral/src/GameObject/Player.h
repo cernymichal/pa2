@@ -4,7 +4,14 @@
 
 class Player : public GameObject {
 public:
+    uint8_t id = -1;
+    std::string name;
+
     Player();
+
+    Player(uint8_t id, const std::string& name = "nobody");
+
+    virtual void afterAdd() override;
 
     virtual bool serialize(std::ostream& stream) const override;
 

@@ -66,12 +66,12 @@ void Screen::drawDottedLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2) {
     dx /= d;
     dy /= d;
 
-    float x = x1;
-    float y = y1;
+    float x = (int)x1;
+    float y = (int)y1;
 
     for (uint16_t i = 0;; i++, x += dx, y += dy) {
-        //if (i % 3 == 0)
-            mvaddch((uint8_t)x, (uint8_t)y, '.');
+        if (i % 3 == 0)
+            mvaddch((uint8_t)y, (uint8_t)x, '.');
 
         if ((uint8_t)x == x2 && (uint8_t)y == y2)
             break;

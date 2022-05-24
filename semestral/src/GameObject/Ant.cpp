@@ -9,7 +9,9 @@
 Ant::Ant() {
 }
 
-Ant::Ant(uint8_t x, uint8_t y, int8_t tx, int8_t ty) : GameObject(x, y), tx(tx), ty(ty), mvx(x), mvy(y) {
+Ant::Ant(uint8_t x, uint8_t y, Player* player, int8_t tx, int8_t ty) : PlayerUnit(x, y, player), tx(tx), ty(ty) {
+    mvx = x;
+    mvy = y;
 }
 
 void Ant::draw() const {
@@ -46,7 +48,7 @@ bool Ant::serialize(std::ostream& stream) const {
 
 bool Ant::_serialize(std::ostream& stream) const {
     stream << (short)tx << ' ' << (short)ty << ' ' << mvx << ' ' << mvy << ' ';
-    return GameObject::_serialize(stream);
+    return PlayerUnit::_serialize(stream);
 }
 
 bool Ant::unserialize(std::istream& stream) {
@@ -60,5 +62,5 @@ bool Ant::unserialize(std::istream& stream) {
 
     stream >> mvx >> mvy;
 
-    return GameObject::unserialize(stream);
+    return PlayerUnit::unserialize(stream);
 }

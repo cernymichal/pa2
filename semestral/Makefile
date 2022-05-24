@@ -5,7 +5,7 @@ CXXFLAGS_DEBUG = $(CXXFLAGS) -D PN_DEBUG -g -pg -fPIE
 LIBS = -lncurses # -lstdc++fs
 
 # echo $(find src | grep '.*\.h$' | sed 's/^.*\///' | sed 's/.h/.o/' | sort -f | tr '\n' ' ')
-OBJECTS = Ant.o AntNest.o Application.o ComputerPlayer.o Dialog.o Game.o GameObject.o GameScreen.o log.o Player.o Save.o SaveList.o Screen.o Wall.o
+OBJECTS = Ant.o AntLine.o AntNest.o Application.o ComputerPlayer.o Dialog.o Game.o GameObject.o GameScreen.o log.o Player.o PlayerUnit.o Save.o SaveList.o Screen.o Wall.o
 OBJECTS_MAIN = main.o $(OBJECTS)
 OBJECTS_TEST = test.o $(OBJECTS)
 

@@ -1,24 +1,25 @@
 #pragma once
 
-#include "PlayerUnit.h"
+#include "AntNest.h"
+#include "GameObject.h"
 
-class Ant : public PlayerUnit {
+class AntLine : public GameObject {
 public:
-    int8_t tx = 0;
-    int8_t ty = 0;
+    AntNest* nestB = nullptr;
+    char nestAId;
+    bool nestAActive = false;
 
-    float mvx;
-    float mvy;
+    AntNest* nestA = nullptr;
+    char nestBId;
+    bool nestBActive = false;
 
-    Ant();
+    AntLine();
 
-    Ant(uint8_t x, uint8_t y, Player* player, int8_t tx = 0, int8_t ty = 0);
+    AntLine(char nestA, char nestB);
 
     virtual void draw() const override;
 
     virtual void update() override;
-
-    virtual void collideWith(GameObject& object) override;
 
     virtual bool serialize(std::ostream& stream) const override;
 

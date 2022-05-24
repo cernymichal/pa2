@@ -2,9 +2,11 @@
 
 #include <filesystem>
 #include <list>
+#include <map>
 #include <memory>
 #include <string>
 
+#include "GameObject/AntNest.h"
 #include "GameObject/GameObject.h"
 
 /**
@@ -13,6 +15,8 @@
 class Game {
 public:
     std::string mapName;
+    std::map<char, AntNest*> nestMap;
+    std::map<uint8_t, Player*> playerMap;
 
     /**
      * @brief load Game from file
