@@ -5,10 +5,11 @@
 Player::Player() {
 }
 
-Player::Player(uint8_t id, const std::string& name) : id(id), name(name) {
+Player::Player(uint8_t id, uint8_t color, const std::string& name) : id(id), name(name) {
+    this->color = color;
 }
 
-void Player::afterAdd() {
+void Player::onAdd() {
     _game->playerMap[id] = this;
 }
 

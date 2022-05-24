@@ -12,14 +12,17 @@ void GameObject::draw() const {
 void GameObject::update() {
 }
 
-void GameObject::afterAdd() {
+void GameObject::onAdd() {
+}
+
+void GameObject::onLoad() {
 }
 
 void GameObject::collideWith(GameObject& object) {
 }
 
 bool GameObject::_serialize(std::ostream& stream) const {
-    stream << (unsigned short)x << ' ' << (unsigned short)y << ' ' << (unsigned short)color << ' ' << dead << ' ' << (unsigned short)updatePriority;
+    stream << (unsigned short)x << ' ' << (unsigned short)y << ' ' << (unsigned short)color << ' ' << dead << ' ' << (unsigned short)hitDistance << ' ' << (unsigned short)updatePriority;
     return !stream.fail();
 }
 
@@ -36,6 +39,9 @@ bool GameObject::unserialize(std::istream& stream) {
     color = temp;
 
     stream >> dead;
+
+    stream >> temp;
+    hitDistance = temp;
 
     stream >> temp;
     updatePriority = temp;

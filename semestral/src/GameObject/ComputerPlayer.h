@@ -6,7 +6,7 @@ class ComputerPlayer : public Player {
 public:
     ComputerPlayer();
 
-    ComputerPlayer(uint8_t id, const std::string& name = "nobodyAI");
+    ComputerPlayer(uint8_t id, uint8_t color, const std::string& name = "nobodyAI");
 
     virtual bool serialize(std::ostream& stream) const override;
 

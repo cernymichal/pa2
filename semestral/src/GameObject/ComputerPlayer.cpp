@@ -3,7 +3,7 @@
 ComputerPlayer::ComputerPlayer() {
 }
 
-ComputerPlayer::ComputerPlayer(uint8_t id, const std::string& name) : Player(id, name) {
+ComputerPlayer::ComputerPlayer(uint8_t id, uint8_t color, const std::string& name) : Player(id, color, name) {
 }
 
 bool ComputerPlayer::serialize(std::ostream& stream) const {

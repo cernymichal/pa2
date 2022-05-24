@@ -11,9 +11,6 @@ PlayerUnit::PlayerUnit(uint8_t x, uint8_t y, Player* player) : GameObject(x, y) 
 }
 
 Player* PlayerUnit::player() {
-    if (!_player && _playerId != -1)
-        changePlayer(_game->playerMap[_playerId]);
-
     return _player;
 }
 
@@ -26,6 +23,11 @@ void PlayerUnit::changePlayer(Player* player) {
     }
 
     _player = player;
+}
+
+void PlayerUnit::onLoad() {
+    if (_playerId != -1)
+        changePlayer(_game->playerMap[_playerId]);
 }
 
 bool PlayerUnit::_serialize(std::ostream& stream) const {

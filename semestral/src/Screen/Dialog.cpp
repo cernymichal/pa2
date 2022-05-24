@@ -46,12 +46,15 @@ void Dialog<T>::_onExit() {
 
 template <typename T>
 void Dialog<T>::_draw() const {
+    attrclr();
     clear();
 
     uint8_t offset = 1;
 
     if (showTitle) {
+        attron(A_UNDERLINE);
         mvaddstr(1, 2, title.c_str());
+        attroff(A_UNDERLINE);
         offset = 3;
     }
 

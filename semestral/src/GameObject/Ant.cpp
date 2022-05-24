@@ -1,22 +1,23 @@
 #include "Ant.h"
 
-#include <math.h>
+#include <ncurses.h>
 
 #include "../log.h"
 #include "../utils.cpp"
 #include "AntNest.h"
 
 Ant::Ant() {
+    hitDistance = 1;
 }
 
 Ant::Ant(uint8_t x, uint8_t y, Player* player, int8_t tx, int8_t ty) : PlayerUnit(x, y, player), tx(tx), ty(ty) {
+    hitDistance = 1;
     mvx = x;
     mvy = y;
 }
 
 void Ant::draw() const {
-    init_pair(2, color, COLOR_BLACK);
-    mvaddch(y, x, 'm' | COLOR_PAIR(2));
+    mvaddch(y, x, 'm' | COLOR_PAIR(color));
 }
 
 void Ant::update() {

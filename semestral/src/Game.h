@@ -32,6 +32,10 @@ public:
      */
     void addObject(GameObject* object);
 
+    void onLoad();
+
+    void createPlayers(uint8_t aiPlayers = 0);
+
     /**
      * @brief update all GameObjects and redraw
      */

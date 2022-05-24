@@ -1,6 +1,5 @@
 #include "Screen.h"
 
-#include <math.h>
 #include <ncurses.h>
 
 #include "../utils.cpp"
@@ -24,7 +23,6 @@ void Screen::show() {
         auto dt = newStart - start;
         start = newStart;
 
-        // TODO catch eof ?
         update(dt, getch());
     }
 
@@ -40,7 +38,14 @@ void Screen::initNCurses() {
     curs_set(FALSE);
     start_color();
 
-    init_pair(1, COLOR_WHITE, COLOR_BLACK);
+    init_pair(COLOR_PAIR_WHITE, COLOR_WHITE, COLOR_BLACK);
+    init_pair(COLOR_PAIR_BLUE, COLOR_BLUE, COLOR_BLACK);
+    init_pair(COLOR_PAIR_RED, COLOR_RED, COLOR_BLACK);
+    init_pair(COLOR_PAIR_GREEN, COLOR_GREEN, COLOR_BLACK);
+    init_pair(COLOR_PAIR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(COLOR_PAIR_CYAN, COLOR_CYAN, COLOR_BLACK);
+    init_pair(COLOR_PAIR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(COLOR_PAIR_BLACK, COLOR_BLACK, COLOR_WHITE);
 }
 
 void Screen::exitNCurses() {
@@ -73,7 +78,7 @@ void Screen::drawDottedLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2) {
         if (i % 3 == 0)
             mvaddch((uint8_t)y, (uint8_t)x, '.');
 
-        if ((uint8_t)x == x2 && (uint8_t)y == y2)
+        if (abs((uint8_t)x - x2) <= 1 && abs((uint8_t)y - y2) <= 1)
             break;
     }
 }

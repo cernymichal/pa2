@@ -131,12 +131,7 @@ void Application::openOponentNumberScreen() {
         application.closeCurrentScreen();  // close self
         application.closeCurrentScreen();  // close map screen
 
-        application.state.game->addObject(
-            new Player(0, "Player"));
-
-        for (uint8_t i = 1; i < dialog.optionIndex; i++)
-            application.state.game->addObject(
-                new ComputerPlayer(i, std::string("AI").append(std::to_string(i))));
+        application.state.game->createPlayers(dialog.optionIndex);
 
         application.openGameScreen();
     };
@@ -148,6 +143,8 @@ void Application::openGameScreen() {
     PN_LOGH2("opening gameScreen");
 
     PN_LOG_OBJ(state.game);
+
+    state.game->onLoad();
 
     openScreen(new GameScreen(*this));
 }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <ncurses.h>
-
 #include <iostream>
+
+#include "../Screen/Screen.h"
 
 class Game;
 
@@ -10,8 +10,9 @@ class GameObject {
 public:
     uint8_t x = 0;
     uint8_t y = 0;
-    uint8_t color = COLOR_WHITE;
+    uint8_t color = COLOR_PAIR_WHITE;
     bool dead = false;
+    uint8_t hitDistance = 0;
     uint8_t updatePriority = 128;
 
     Game* _game = nullptr;
@@ -33,7 +34,12 @@ public:
     /**
      * @brief called after object is added to game
      */
-    virtual void afterAdd();
+    virtual void onAdd();
+
+    /**
+     * @brief called after game is loaded
+     */
+    virtual void onLoad();
 
     /**
      * @brief handle collision with other GameObject

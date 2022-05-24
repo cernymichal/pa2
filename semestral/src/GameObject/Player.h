@@ -9,9 +9,9 @@ public:
 
     Player();
 
-    Player(uint8_t id, const std::string& name = "nobody");
+    Player(uint8_t id, uint8_t color, const std::string& name = "nobody");
 
-    virtual void afterAdd() override;
+    virtual void onAdd() override;
 
     virtual bool serialize(std::ostream& stream) const override;
 

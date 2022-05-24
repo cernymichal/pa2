@@ -6,6 +6,17 @@
 
 #include "../log.h"
 
+#define COLOR_PAIR_WHITE 0
+#define COLOR_PAIR_BLUE 1
+#define COLOR_PAIR_RED 2
+#define COLOR_PAIR_GREEN 3
+#define COLOR_PAIR_MAGENTA 4
+#define COLOR_PAIR_CYAN 5
+#define COLOR_PAIR_YELLOW 6
+#define COLOR_PAIR_BLACK 7
+
+#define attrclr() attrset(A_NORMAL | COLOR_PAIR(COLOR_PAIR_WHITE))
+
 class Application;
 
 /**

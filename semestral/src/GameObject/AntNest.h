@@ -1,13 +1,19 @@
 #pragma once
 
+#include <map>
+
 #include "Player.h"
 #include "PlayerUnit.h"
+
+class AntLine;
 
 class AntNest : public PlayerUnit {
 public:
     char id = '?';
     bool starting = false;
     uint8_t ants = 0;
+
+    std::map<char, AntLine*> lineMap;
 
     AntNest();
 
@@ -17,7 +23,7 @@ public:
 
     virtual void update() override;
 
-    virtual void afterAdd() override;
+    virtual void onAdd() override;
 
     virtual void collideWith(GameObject& object) override;
 

@@ -1,30 +1,27 @@
 #include "AntLine.h"
 
+#include <ncurses.h>
+
 #include "../Game.h"
 #include "../Screen/Screen.h"
 #include "Ant.h"
 
 AntLine::AntLine() {
+    // draw line and spaw ants before movement
+    updatePriority = 64;
 }
 
 AntLine::AntLine(char nestAId, char nestBId) : nestAId(nestAId), nestBId(nestBId) {
+    // draw line and spaw ants before movement
+    updatePriority = 64;
 }
 
 void AntLine::draw() const {
-    // TODO colors
-
-    init_pair(1, COLOR_BLACK, color);
-
+    attron(COLOR_PAIR(color));
     Screen::drawDottedLine(nestA->x, nestA->y, nestB->x, nestB->y);
 }
 
 void AntLine::update() {
-    if (!nestA)
-        nestA = _game->nestMap[nestAId];
-
-    if (!nestB)
-        nestB = _game->nestMap[nestBId];
-
     if (nestAActive && nestA->ants > 0) {
         nestA->ants--;
         _game->addObject(
@@ -36,6 +33,14 @@ void AntLine::update() {
         _game->addObject(
             new Ant(nestB->x, nestB->y, nestB->player(), nestA->x, nestA->y));
     }
+}
+
+void AntLine::onLoad() {
+    nestA = _game->nestMap[nestAId];
+    nestB = _game->nestMap[nestBId];
+
+    nestA->lineMap[nestBId] = this;
+    nestB->lineMap[nestAId] = this;
 }
 
 bool AntLine::serialize(std::ostream& stream) const {

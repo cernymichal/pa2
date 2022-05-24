@@ -21,6 +21,8 @@ public:
 
     virtual void update() override;
 
+    virtual void onLoad() override;
+
     virtual bool serialize(std::ostream& stream) const override;
 
     virtual bool unserialize(std::istream& stream) override;

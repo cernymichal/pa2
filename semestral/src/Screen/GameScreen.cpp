@@ -1,5 +1,7 @@
 #include "GameScreen.h"
 
+#include <ncurses.h>
+
 #include "../log.h"
 
 const auto FRAME_TIME = std::chrono::milliseconds(500);

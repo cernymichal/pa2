@@ -13,6 +13,8 @@ public:
 
     void changePlayer(Player* player);
 
+    virtual void onLoad() override;
+
     virtual bool unserialize(std::istream& stream) override;
 
 protected:
