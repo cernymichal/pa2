@@ -49,6 +49,11 @@ public:
     uint8_t maxPlayers() const;
 
     /**
+     * @brief draw all GameObjects
+     */
+    void draw();
+
+    /**
      * @brief save Game to file
      *
      * @param[in] path target
@@ -56,6 +61,10 @@ public:
      * @return success
      */
     bool save(const std::filesystem::path& path) const;
+
+    void disableLinesFrom(uint8_t playerId, char nestId);
+
+    void activateLine(uint8_t playerId, char nestAId, char nestBId);
 
     /**
      * @brief print debug info to stream
@@ -68,11 +77,6 @@ public:
 
 private:
     std::list<std::unique_ptr<GameObject>> _objects;
-
-    /**
-     * @brief draw all GameObjects
-     */
-    void _draw();
 
     /**
      * @brief handle collision between objects

@@ -27,7 +27,7 @@ void Dialog<T>::update(std::chrono::nanoseconds dt, int key) {
                 optionIndex++;
             break;
 
-        case KEY_BACKSPACE:
+        case ';':
             closed = true;
         case KEY_ENTER:
         case '\n':

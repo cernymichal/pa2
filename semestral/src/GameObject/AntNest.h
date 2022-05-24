@@ -19,6 +19,8 @@ public:
 
     AntNest(uint8_t x, uint8_t y, char id, bool starting = false);
 
+    void disableLines();
+
     virtual void draw() const override;
 
     virtual void update() override;
@@ -33,4 +35,7 @@ public:
 
 protected:
     virtual bool _serialize(std::ostream& stream) const override;
+
+private:
+    uint8_t spawnTimer = 0;
 };

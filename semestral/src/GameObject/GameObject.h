@@ -12,7 +12,7 @@ public:
     uint8_t y = 0;
     uint8_t color = COLOR_PAIR_WHITE;
     bool dead = false;
-    uint8_t hitDistance = 0;
+    int16_t hitDistance = -1; // dont check collision
     uint8_t updatePriority = 128;
 
     Game* _game = nullptr;

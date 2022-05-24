@@ -21,7 +21,7 @@ void Ant::draw() const {
 }
 
 void Ant::update() {
-    if (x != tx && y != ty) {
+    if (x != tx || y != ty) {
         float dx = tx - x;
         float dy = ty - y;
         float d = sqrt(dx * dx + dy * dy);
@@ -37,9 +37,16 @@ void Ant::update() {
 }
 
 void Ant::collideWith(GameObject& object) {
-    auto objectP = &object;
+    auto ant = dynamic_cast<Ant*>(&object);
 
-    if (object.color != color && (dynamic_cast<Ant*>(objectP) || dynamic_cast<AntNest*>(objectP)))
+    if (ant && ant->player() != player()) {
+        dead = true;
+        return;
+    }
+
+    auto nest = dynamic_cast<AntNest*>(&object);
+
+    if (nest && nest->x == tx && nest->y == ty)
         dead = true;
 }
 

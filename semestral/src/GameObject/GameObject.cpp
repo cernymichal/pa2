@@ -22,7 +22,7 @@ void GameObject::collideWith(GameObject& object) {
 }
 
 bool GameObject::_serialize(std::ostream& stream) const {
-    stream << (unsigned short)x << ' ' << (unsigned short)y << ' ' << (unsigned short)color << ' ' << dead << ' ' << (unsigned short)hitDistance << ' ' << (unsigned short)updatePriority;
+    stream << (unsigned short)x << ' ' << (unsigned short)y << ' ' << (unsigned short)color << ' ' << dead << ' ' << hitDistance << ' ' << (unsigned short)updatePriority;
     return !stream.fail();
 }
 
@@ -40,8 +40,7 @@ bool GameObject::unserialize(std::istream& stream) {
 
     stream >> dead;
 
-    stream >> temp;
-    hitDistance = temp;
+    stream >> hitDistance;
 
     stream >> temp;
     updatePriority = temp;

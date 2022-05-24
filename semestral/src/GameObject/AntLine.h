@@ -17,6 +17,8 @@ public:
 
     AntLine(char nestA, char nestB);
 
+    void switchSide(AntNest* nest, bool value);
+
     virtual void draw() const override;
 
     virtual void update() override;

@@ -3,10 +3,10 @@ Map 1
 Wall 10 11 0 0 0 128
 Wall 11 11 0 0 0 128
 Wall 12 11 0 0 0 128
-AntNest A 1 0 255 5 2 0 0 2 192
-AntNest B 1 0 255 30 15 0 0 2 192
-AntNest C 1 0 255 55 2 0 0 2 192
-AntNest D 0 10 255 30 7 0 0 2 192
-AntLine A 0 D 0 0 0 0 0 0 64
-AntLine B 0 D 0 0 0 0 0 0 64
-AntLine C 0 D 0 0 0 0 0 0 64
+AntNest A 1 0 0 255 5 2 0 0 2 192
+AntNest B 1 0 0 255 30 15 0 0 2 192
+AntNest C 1 0 0 255 55 2 0 0 2 192
+AntNest D 0 10 0 255 30 7 0 0 2 192
+AntLine A 0 D 0 0 0 0 0 -1 64
+AntLine B 0 D 0 0 0 0 0 -1 64
+AntLine C 0 D 0 0 0 0 0 -1 64

@@ -27,6 +27,14 @@ protected:
 private:
     std::chrono::nanoseconds _dtAccumulator;
     bool _paused = false;
+    char inputBuffer[3] = "  ";
+    uint8_t inputIndex = 0;
 
     void _resetScreen();
+
+    void _resetInputBuffer();
+
+    void _drawInputBuffer();
+
+    void _commitInput();
 };

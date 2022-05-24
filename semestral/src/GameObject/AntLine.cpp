@@ -16,6 +16,13 @@ AntLine::AntLine(char nestAId, char nestBId) : nestAId(nestAId), nestBId(nestBId
     updatePriority = 64;
 }
 
+void AntLine::switchSide(AntNest* nest, bool value) {
+    if (nestA == nest)
+        nestAActive = value;
+    else
+        nestBActive = value;
+}
+
 void AntLine::draw() const {
     attron(COLOR_PAIR(color));
     Screen::drawDottedLine(nestA->x, nestA->y, nestB->x, nestB->y);

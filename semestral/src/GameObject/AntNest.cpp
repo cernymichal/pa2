@@ -22,6 +22,11 @@ AntNest::AntNest(uint8_t x, uint8_t y, char id, bool starting) : PlayerUnit(x, y
         ants = 10;
 }
 
+void AntNest::disableLines() {
+    for (auto& line : lineMap)
+        line.second->switchSide(this, false);
+}
+
 void AntNest::draw() const {
     attron(COLOR_PAIR(color));
     attron(A_BOLD);
@@ -41,8 +46,12 @@ void AntNest::draw() const {
 }
 
 void AntNest::update() {
-    if (ants < 99 && player() != nullptr)
+    spawnTimer %= 3;
+
+    if (ants < 99 && player() != nullptr && spawnTimer == 0)
         ants++;
+
+    spawnTimer++;
 }
 
 void AntNest::onAdd() {
@@ -52,20 +61,20 @@ void AntNest::onAdd() {
 void AntNest::collideWith(GameObject& object) {
     auto ant = dynamic_cast<Ant*>(&object);
 
-    if (ant && ant->player() != player()) {
+    if (!ant)
+        return;
+
+    if (ant->player() != player()) {
         if (ants > 0)
             ants--;
         else {
+            ants = 1;
             changePlayer(ant->player());
-
-            for (auto& line : lineMap) {
-                if (id == line.second->nestAId)
-                    line.second->nestAActive = false;
-                else
-                    line.second->nestBActive = false;
-            }
+            disableLines();
         }
     }
+    else if (ant->tx == x && ant->ty == y && ants < 99)
+        ants++;
 }
 
 bool AntNest::serialize(std::ostream& stream) const {
@@ -73,7 +82,7 @@ bool AntNest::serialize(std::ostream& stream) const {
 }
 
 bool AntNest::_serialize(std::ostream& stream) const {
-    stream << id << ' ' << starting << ' ' << (unsigned short)ants << ' ';
+    stream << id << ' ' << starting << ' ' << (unsigned short)ants << ' ' << (unsigned short)spawnTimer << ' ';
     return PlayerUnit::_serialize(stream);
 }
 
@@ -81,8 +90,12 @@ bool AntNest::unserialize(std::istream& stream) {
     stream >> id >> starting;
 
     unsigned short temp;
+
     stream >> temp;
     ants = temp;
+
+    stream >> temp;
+    spawnTimer = temp;
 
     return PlayerUnit::unserialize(stream);
 }
