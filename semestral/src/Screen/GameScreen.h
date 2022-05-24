@@ -11,7 +11,7 @@
  */
 class GameScreen : public Screen {
 public:
-    GameScreen(Application& application);
+    explicit GameScreen(Application& application);
 
     /**
      * @brief handle input, periodically call game update

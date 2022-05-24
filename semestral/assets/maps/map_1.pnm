@@ -1,12 +1,7 @@
 Map 1
 Map 1
-Ant 0 10 7 128
-Ant 0 11 7 128
-Ant 0 12 7 128
-Ant 0 13 7 128
-Ant 0 14 7 128
-Wall 10 11 7 128
-Wall 11 11 7 128
-Wall 12 11 7 128
-AntNest 5 10 7 192
-AntNest 30 20 7 192
+Wall 10 11 7 0 128
+Wall 11 11 7 0  128
+Wall 12 11 7 0  128
+AntNest A 1 0 5 10 7 0  192
+AntNest B 1 0 30 20 7 0  192

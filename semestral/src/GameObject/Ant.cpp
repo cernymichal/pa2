@@ -1,11 +1,15 @@
 #include "Ant.h"
 
+#include <math.h>
+
 #include "../log.h"
+#include "../utils.cpp"
+#include "AntNest.h"
 
 Ant::Ant() {
 }
 
-Ant::Ant(uint8_t x, uint8_t y) : GameObject(x, y) {
+Ant::Ant(uint8_t x, uint8_t y, int8_t tx, int8_t ty) : GameObject(x, y), tx(tx), ty(ty), mvx(x), mvy(y) {
 }
 
 void Ant::draw() const {
@@ -14,9 +18,26 @@ void Ant::draw() const {
 }
 
 void Ant::update() {
-    // TODO update
+    if (x != tx && y != ty) {
+        float dx = tx - x;
+        float dy = ty - y;
+        float d = sqrt(dx * dx + dy * dy);
+        dx /= d;
+        dy /= d;
 
-    x += 1;
+        mvx += dx;
+        mvy += dy;
+
+        x = mvx;
+        y = mvy;
+    }
+}
+
+void Ant::collideWith(GameObject& object) {
+    auto objectP = &object;
+
+    if (object.color != color && (dynamic_cast<Ant*>(objectP) || dynamic_cast<AntNest*>(objectP)))
+        dead = true;
 }
 
 bool Ant::serialize(std::ostream& stream) const {
@@ -24,9 +45,20 @@ bool Ant::serialize(std::ostream& stream) const {
 }
 
 bool Ant::_serialize(std::ostream& stream) const {
+    stream << (short)tx << ' ' << (short)ty << ' ' << mvx << ' ' << mvy << ' ';
     return GameObject::_serialize(stream);
 }
 
 bool Ant::unserialize(std::istream& stream) {
+    short temp;
+
+    stream >> temp;
+    tx = temp;
+
+    stream >> temp;
+    ty = temp;
+
+    stream >> mvx >> mvy;
+
     return GameObject::unserialize(stream);
 }

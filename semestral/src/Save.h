@@ -15,7 +15,7 @@ public:
      *
      * @param[in] path
      */
-    Save(const std::filesystem::path& path);
+    explicit Save(const std::filesystem::path& path);
 
     /**
      * @param[in] other

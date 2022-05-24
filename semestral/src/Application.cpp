@@ -1,11 +1,11 @@
 #include "Application.h"
 
-#include "Save.h"
 #include "GameObject/Ant.h"
-#include "log.h"
+#include "Save.h"
 #include "Screen/Dialog.h"
 #include "Screen/GameScreen.h"
 #include "Screen/SaveList.h"
+#include "log.h"
 
 Application::Application() {
 }
@@ -118,8 +118,11 @@ void Application::openSaveListScreen() {
 void Application::openOponentNumberScreen() {
     PN_LOGH2("opening oponentNumberScreen");
 
-    // TODO get max oponenents from map
-    std::vector<std::string> oponents({"1", "2", "3"});
+    auto oponents = std::vector<std::string>();
+
+    auto max = state.game->maxPlayers();
+    for (uint8_t i = 1; i < max; i++)
+        oponents.push_back(std::to_string(i));
 
     auto onExit = [](Dialog<std::string>& dialog, Application& application) {
         if (dialog.closed)

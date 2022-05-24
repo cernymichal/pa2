@@ -69,7 +69,7 @@ bool Game::save(const std::filesystem::path& path) const {
     saveFile << path.stem().string() << "\n";
     saveFile << mapName << "\n";
 
-    for (const std::unique_ptr<GameObject>& object : _objects) {
+    for (const auto& object : _objects) {
         object->serialize(saveFile);  // TODO error
         saveFile << "\n";
     }

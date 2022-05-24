@@ -19,7 +19,7 @@ public:
      *
      * @param[in] path save file
      */
-    Game(const std::filesystem::path& path);
+    explicit Game(const std::filesystem::path& path);
 
     /**
      * @brief register GameObject to game
@@ -32,6 +32,13 @@ public:
      * @brief update all GameObjects and redraw
      */
     void update();
+
+    /**
+     * @brief count starting nests
+     *
+     * @return max number of players
+     */
+    uint8_t maxPlayers() const;
 
     /**
      * @brief save Game to file
@@ -58,4 +65,9 @@ private:
      * @brief draw all GameObjects
      */
     void _draw();
+
+    /**
+     * @brief handle collision between objects
+     */
+    void _collision();
 };

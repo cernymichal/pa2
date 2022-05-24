@@ -4,12 +4,17 @@
 
 #include <iostream>
 
+class Game;
+
 class GameObject {
 public:
     uint8_t x = 0;
     uint8_t y = 0;
     uint8_t color = COLOR_WHITE;
+    bool dead = false;
     uint8_t updatePriority = 128;
+
+    Game* _game = nullptr;
 
     GameObject();
 
@@ -26,6 +31,11 @@ public:
     virtual void update();
 
     /**
+     * @brief handle collision with other GameObject
+     */
+    virtual void collideWith(GameObject& object);
+
+    /**
      * @brief serialize game object for game saving
      *
      * uses _serialize
@@ -34,6 +44,7 @@ public:
      */
     virtual bool serialize(std::ostream& stream) const = 0;
 
+    // TODO document format
     /**
      * @brief unserialize game object from save
      *
