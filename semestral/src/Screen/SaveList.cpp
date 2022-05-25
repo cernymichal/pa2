@@ -11,14 +11,17 @@ SaveList::SaveList(Application& application, const std::vector<Save>& options, s
 }
 
 void SaveList::update(std::chrono::nanoseconds dt, int key) {
-    // TODO check for fs errors
-
     if (key == KEY_DC) {
         key = ERR;
 
         PN_LOG("deleting " << options[optionIndex].path);
 
-        std::filesystem::remove(options[optionIndex].path);
+        try {
+            std::filesystem::remove(options[optionIndex].path);
+        }
+        catch (std::filesystem::filesystem_error& _) {
+        }
+
         options.erase(options.begin() + optionIndex);
 
         if (optionIndex >= options.size())

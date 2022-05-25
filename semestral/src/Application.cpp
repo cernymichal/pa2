@@ -45,8 +45,6 @@ void Application::openMainMenuScreen() {
         switch (dialog.optionIndex) {
             case 0:
                 if (Save::emptyMapDirectory()) {
-                    // TODO no map feedback
-
                     PN_LOG("no maps found");
 
                     dialog.exit = false;
@@ -58,8 +56,6 @@ void Application::openMainMenuScreen() {
 
             case 1:
                 if (Save::emptySaveDirectory()) {
-                    // TODO no save feedback
-
                     PN_LOG("no saves found");
 
                     dialog.exit = false;
@@ -90,9 +86,15 @@ void Application::openMapListScreen() {
             return;
         }
 
+        try {
+            application.state.game = std::make_unique<Game>(dialog.options[dialog.optionIndex].path);
+        } catch (SaveException& _) {
+            application.openMainMenuScreen();
+            return;
+        }
+
         dialog.exit = false;
 
-        application.state.game = std::make_unique<Game>(dialog.options[dialog.optionIndex].path);
         application.openOponentNumberScreen();
     };
 
@@ -108,7 +110,13 @@ void Application::openSaveListScreen() {
             return;
         }
 
-        application.state.game = std::make_unique<Game>(dialog.options[dialog.optionIndex].path);
+        try {
+            application.state.game = std::make_unique<Game>(dialog.options[dialog.optionIndex].path);
+        } catch (SaveException& _) {
+            application.openMainMenuScreen();
+            return;
+        }
+
         application.openGameScreen();
     };
 
@@ -152,8 +160,6 @@ void Application::openGameScreen() {
 void Application::openPauseScreen() {
     PN_LOGH2("opening pauseScreen");
 
-    // TODO save feedback
-
     auto onExit = [](Dialog<std::string>& dialog, Application& application) {
         if (dialog.closed)
             return;
@@ -163,9 +169,12 @@ void Application::openPauseScreen() {
                 break;
 
             case 1:
-                application.state.game->save(
-                    Save::createSavePath(application.state.game->mapName));
-                dialog.exit = false;
+                try {
+                    application.state.game->save(
+                        Save::createSavePath(application.state.game->mapName));
+                } catch (SaveException& _) {
+                    dialog.exit = false;
+                }
                 break;
 
             case 2:

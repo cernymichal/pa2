@@ -7,7 +7,7 @@
 #include "Screen.h"
 
 /**
- * @brief get input and call fixed update for game
+ * @brief gets input and call fixed update for game
  */
 class GameScreen : public Screen {
 public:
@@ -30,13 +30,28 @@ private:
     char inputBuffer[3] = "  ";
     uint8_t inputIndex = 0;
 
+    /**
+     * @brief resets Screen variables and _dtAccumulator
+     */
     void _resetScreen();
 
+    /**
+     * @brief resets input command buffer
+     */
     void _resetInputBuffer();
 
+    /**
+     * @brief draws current command to the bottom left
+     */
     void _drawInputBuffer();
 
+    /**
+     * @brief tries to execute command
+     */
     void _commitInput();
 
+    /**
+     * @brief check if winTimer in Game hit 0
+     */
     void _checkWin();
 };

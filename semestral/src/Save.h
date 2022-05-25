@@ -1,7 +1,14 @@
 #pragma once
 
+#include <exception>
 #include <filesystem>
 #include <vector>
+
+/**
+ * @brief exception occuring during loading / saving
+ */
+class SaveException : public std::exception {
+};
 
 /**
  * @brief save file path wrapper

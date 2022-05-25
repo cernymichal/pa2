@@ -32,6 +32,7 @@ void PlayerUnit::onLoad() {
 
 bool PlayerUnit::_serialize(std::ostream& stream) const {
     stream << (unsigned short)_playerId << ' ';
+    
     return GameObject::_serialize(stream);
 }
 

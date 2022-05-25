@@ -9,6 +9,7 @@
 #include "GameObject/GameObject.h"
 #include "GameObject/Player.h"
 #include "GameObject/Wall.h"
+#include "Save.h"
 #include "log.h"
 
 template <typename T>
@@ -28,13 +29,17 @@ void Game::initGONameMap() {
 Game::Game(const std::filesystem::path& path) {
     PN_LOG("loading game from " << path);
 
-    // TODO check for fs errors
-
     std::ifstream saveFile;
     saveFile.open(path, std::fstream::in);
 
+    if (saveFile.fail())
+        throw SaveException();
+
     std::getline(saveFile, mapName);  // skip save name line
     std::getline(saveFile, mapName);
+
+    if (saveFile.fail())
+        throw SaveException();
 
     std::string line;
     while (!std::getline(saveFile, line).fail()) {
@@ -47,10 +52,11 @@ Game::Game(const std::filesystem::path& path) {
 
         auto instantiator = GO_NAME_MAP.find(objectName);
         if (instantiator == GO_NAME_MAP.end())
-            break;  // TODO error
+            throw SaveException();
 
         auto object = (*instantiator->second)();
-        object->unserialize(lineStream);  // TODO error
+        if (!object->unserialize(lineStream))
+            throw SaveException();
 
         addObject(object);
     }
@@ -58,12 +64,14 @@ Game::Game(const std::filesystem::path& path) {
     PN_LOG("loaded game");
 }
 
-bool Game::save(const std::filesystem::path& path) const {
+void Game::save(const std::filesystem::path& path) const {
     PN_LOG("saving game to " << path);
 
-    // TODO check for fs errors
-
-    std::filesystem::create_directories(path.parent_path());
+    try {
+        std::filesystem::create_directories(path.parent_path());
+    } catch (std::filesystem::filesystem_error& _) {
+        throw SaveException();
+    }
 
     std::ofstream saveFile;
     saveFile.open(path, std::fstream::out);
@@ -72,11 +80,13 @@ bool Game::save(const std::filesystem::path& path) const {
     saveFile << mapName << "\n";
 
     for (const auto& object : _objects) {
-        object->serialize(saveFile);  // TODO error
+        if (!object->serialize(saveFile))
+            throw SaveException();
         saveFile << "\n";
     }
 
-    PN_LOG("saved game");
+    if (saveFile.fail())
+        throw SaveException();
 
-    return false;
+    PN_LOG("saved game");
 }

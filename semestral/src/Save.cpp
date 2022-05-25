@@ -17,8 +17,6 @@
 const auto EXECUTABLE_DIRECTORY = std::filesystem::canonical("/proc/self/exe").parent_path();
 
 std::vector<Save> findFiles(const char* directory, const char* extension) {
-    // TODO check for fs errors
-
     std::vector<Save> files;
 
     auto path = std::filesystem::path(EXECUTABLE_DIRECTORY)
@@ -37,8 +35,6 @@ std::vector<Save> findFiles(const char* directory, const char* extension) {
 }
 
 bool filesExist(const char* directory, const char* extension) {
-    // TODO check for fs errors
-
     auto path = std::filesystem::path(EXECUTABLE_DIRECTORY)
                     .append(directory);
 
@@ -82,11 +78,19 @@ std::vector<Save> Save::findMaps() {
 }
 
 bool Save::emptySaveDirectory() {
-    return !filesExist(SAVE_DIRECTORY, SAVE_EXTENSION);
+    try {
+        return !filesExist(SAVE_DIRECTORY, SAVE_EXTENSION);
+    } catch (std::filesystem::filesystem_error& _) {
+        return true;
+    }
 }
 
 bool Save::emptyMapDirectory() {
-    return !filesExist(MAP_DIRECTORY, MAP_EXTENSION);
+    try {
+        return !filesExist(MAP_DIRECTORY, MAP_EXTENSION);
+    } catch (std::filesystem::filesystem_error& _) {
+        return true;
+    }
 }
 
 std::filesystem::path Save::createSavePath(const std::string& mapName) {

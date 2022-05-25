@@ -17,7 +17,7 @@ public:
     Application();
 
     /**
-     * open main menu and run the main program loop
+     * @brief open main menu and run the main program loop
      */
     void start();
 
@@ -30,20 +30,46 @@ public:
      */
     void openScreen(Screen* screen);
 
+    /**
+     * @brief pops screen of the screen stack
+     */
     void closeCurrentScreen();
 
+    /**
+     * resets state
+     */
     void openMainMenuScreen();
 
+    /**
+     * @brief opens a dialog of map in default map dir
+     */
     void openMapListScreen();
 
+    /**
+     * @brief opens a dialog of saves in default save dir
+     */
     void openSaveListScreen();
 
+    /**
+     * - reads maximum nuber of players from game
+     * - expects state.game not to be null
+     */
     void openOponentNumberScreen();
 
+    /**
+     * - calls onLoad in game
+     * - expects state.game not to be null
+     */
     void openGameScreen();
 
+    /**
+     * - expects state.game not to be null
+     */
     void openPauseScreen();
 
+    /**
+     * - expects state.game not to be null
+     */
     void openResultsScreen();
 
 private:

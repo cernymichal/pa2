@@ -39,6 +39,8 @@ void Game::createPlayers(uint8_t aiPlayers) {
         addObject(
             new ComputerPlayer(i, COLOR_PAIR_BLUE + i, std::string("AI").append(std::to_string(i))));
 
+    PN_LOG("created " << (unsigned short)aiPlayers << "ai players");
+
     // randomly choose player starting nests
     std::vector<AntNest*> startingNests;
     for (const auto& nest : nestMap) {
@@ -69,9 +71,8 @@ void Game::update() {
 
     if (winTimer > 0)
         winTimer--;
-    else if(winTimer == 0 && !getWinner())
+    else if (winTimer == 0 && !getWinner())
         winTimer = -1;
-
 }
 
 void Game::_collision() {
@@ -124,13 +125,6 @@ void Game::disableLinesFrom(uint8_t playerId, char nestId) {
         return;
 
     nest->second->disableLines();
-}
-
-void Game::disableLinesFrom(Player* player, AntNest* nest) {
-    if (nest->player() != player)
-        return;
-
-    nest->disableLines();
 }
 
 void Game::activateLine(uint8_t playerId, char nestAId, char nestBId) {

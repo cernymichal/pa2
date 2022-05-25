@@ -16,8 +16,18 @@ public:
 
     virtual void draw() const override;
 
+    /**
+     * @brief move towards (tx, ty)
+     */
     virtual void update() override;
 
+    /**
+     * @brief collide with other ant or nest
+     *
+     * - either way, die
+     *
+     * @param[in] object collided with
+     */
     virtual void collideWith(GameObject& object) override;
 
     virtual bool serialize(std::ostream& stream) const override;
@@ -25,5 +35,12 @@ public:
     virtual bool unserialize(std::istream& stream) override;
 
 protected:
+    /**
+     * @brief serialize without type header
+     *
+     * format: "{tx} {ty} {mvx} {mvy} " + PlayerUnit serialization
+     *
+     * @param[in] stream output stream
+     */
     virtual bool _serialize(std::ostream& stream) const override;
 };

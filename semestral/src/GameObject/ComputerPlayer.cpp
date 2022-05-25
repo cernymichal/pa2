@@ -53,6 +53,7 @@ bool ComputerPlayer::_serialize(std::ostream& stream) const {
         focusedNestId = _focusedNest->id;
 
     stream << (unsigned short)_reactionTimer << ' ' << _defending << ' ' << focusedNestId << ' ';
+    
     return Player::_serialize(stream);
 }
 
@@ -63,6 +64,7 @@ bool ComputerPlayer::unserialize(std::istream& stream) {
     _reactionTimer = temp;
 
     stream >> _defending >> _focusedNestId;
+
     return Player::unserialize(stream);
 }
 

@@ -7,6 +7,9 @@
 #include "Ant.h"
 #include "AntLine.h"
 
+#define SPAWN_PERIOD 3
+#define NEUTRAL_DEFENDERS 10
+
 AntNest::AntNest() {
     // make sure ants are being spawned after ant movement
     updatePriority = 192;
@@ -19,7 +22,7 @@ AntNest::AntNest(uint8_t x, uint8_t y, char id, bool starting) : PlayerUnit(x, y
     hitDistance = 1;
 
     if (!starting)
-        ants = 10;
+        ants = NEUTRAL_DEFENDERS;
 }
 
 void AntNest::disableLines() {
@@ -55,7 +58,7 @@ void AntNest::draw() const {
 }
 
 void AntNest::update() {
-    _spawnTimer %= 3;
+    _spawnTimer %= SPAWN_PERIOD;
     if (_spawnTimer++ == 0 && ants < 99 && player() != nullptr)
         ants++;
 }
@@ -90,6 +93,7 @@ bool AntNest::serialize(std::ostream& stream) const {
 
 bool AntNest::_serialize(std::ostream& stream) const {
     stream << id << ' ' << starting << ' ' << (unsigned short)ants << ' ' << (unsigned short)_spawnTimer << ' ';
+    
     return PlayerUnit::_serialize(stream);
 }
 

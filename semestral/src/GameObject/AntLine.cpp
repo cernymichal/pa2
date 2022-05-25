@@ -74,10 +74,12 @@ bool AntLine::serialize(std::ostream& stream) const {
 
 bool AntLine::_serialize(std::ostream& stream) const {
     stream << nestAId << ' ' << nestAActive << ' ' << nestBId << ' ' << nestBActive << ' ';
+
     return GameObject::_serialize(stream);
 }
 
 bool AntLine::unserialize(std::istream& stream) {
     stream >> nestAId >> nestAActive >> nestBId >> nestBActive;
+    
     return GameObject::unserialize(stream);
 }

@@ -12,7 +12,7 @@ public:
     uint8_t y = 0;
     uint8_t color = COLOR_PAIR_WHITE;
     bool dead = false;
-    int16_t hitDistance = -1; // dont check collision
+    int16_t hitDistance = -1; // dont check collision by default
     uint8_t updatePriority = 128;
 
     Game* _game = nullptr;
@@ -22,7 +22,7 @@ public:
     GameObject(uint8_t x, uint8_t y);
 
     /**
-     * @brief draw game object to the screen with ncurses
+     * @brief draw to the screen with ncurses
      */
     virtual void draw() const;
 
@@ -47,7 +47,7 @@ public:
     virtual void collideWith(GameObject& object);
 
     /**
-     * @brief serialize game object for game saving
+     * @brief serialize for game saving
      *
      * uses _serialize
      *
@@ -55,9 +55,8 @@ public:
      */
     virtual bool serialize(std::ostream& stream) const = 0;
 
-    // TODO document format
     /**
-     * @brief unserialize game object from save
+     * @brief unserialize from save
      *
      * @param[in] stream input stream
      */
@@ -72,7 +71,9 @@ public:
 
 protected:
     /**
-     * @brief serialize game object without type header
+     * @brief serialize without type header
+     * 
+     * format: "{x} {y} {color} {dead} {hitDistance} {updatePriority}"
      *
      * @param[in] stream output stream
      */
