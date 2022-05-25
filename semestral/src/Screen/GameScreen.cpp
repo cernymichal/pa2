@@ -4,7 +4,7 @@
 
 #include "../log.h"
 
-const auto FRAME_TIME = std::chrono::milliseconds(500);
+const auto UPDATE_PERIOD = std::chrono::milliseconds(500);
 
 GameScreen::GameScreen(Application& application) : Screen(application, "game screen") {
     _timeoutDelay = 0;  // non blocking input
@@ -42,8 +42,8 @@ void GameScreen::update(std::chrono::nanoseconds dt, int key) {
 
     _dtAccumulator += dt;
 
-    if (_dtAccumulator > FRAME_TIME) {
-        _dtAccumulator -= FRAME_TIME;
+    if (_dtAccumulator > UPDATE_PERIOD) {
+        _dtAccumulator -= UPDATE_PERIOD;
         _application.state.game->update();
 
         clear();
@@ -51,6 +51,8 @@ void GameScreen::update(std::chrono::nanoseconds dt, int key) {
 
         _drawInputBuffer();
         refreshNeeded = true;
+
+        _checkWin();
     }
 
     if (refreshNeeded)
@@ -69,7 +71,7 @@ void GameScreen::_onExit() {
 void GameScreen::_resetScreen() {
     exit = false;
     _paused = false;
-    _dtAccumulator = FRAME_TIME;
+    _dtAccumulator = UPDATE_PERIOD;
 }
 
 void GameScreen::_resetInputBuffer() {
@@ -83,8 +85,19 @@ void GameScreen::_drawInputBuffer() {
 }
 
 void GameScreen::_commitInput() {
+    PN_LOG("executing command: " << inputBuffer);
+
     if (inputIndex == 1 || inputBuffer[0] == inputBuffer[1])
         _application.state.game->disableLinesFrom(0, inputBuffer[0]);
     else
         _application.state.game->activateLine(0, inputBuffer[0], inputBuffer[1]);
+}
+
+
+void GameScreen::_checkWin() {
+    if(_application.state.game->winTimer == 0) {
+        PN_LOG("winner found");
+        exit = true;
+        _paused = false;
+    }
 }

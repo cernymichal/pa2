@@ -7,11 +7,11 @@
 #include "AntNest.h"
 
 Ant::Ant() {
-    hitDistance = 1;
+    hitDistance = 0;
 }
 
 Ant::Ant(uint8_t x, uint8_t y, Player* player, int8_t tx, int8_t ty) : PlayerUnit(x, y, player), tx(tx), ty(ty) {
-    hitDistance = 1;
+    hitDistance = 0;
     mvx = x;
     mvy = y;
 }
@@ -37,6 +37,9 @@ void Ant::update() {
 }
 
 void Ant::collideWith(GameObject& object) {
+    if (dead)
+        return;
+
     auto ant = dynamic_cast<Ant*>(&object);
 
     if (ant && ant->player() != player()) {

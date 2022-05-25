@@ -1,0 +1,102 @@
+Dark Forest
+Dark Forest
+AntNest A 1 0 0 255 5 17 0 0 1 192
+AntNest B 1 0 0 255 34 2 0 0 1 192
+AntNest C 1 0 0 255 44 15 0 0 1 192
+AntNest D 1 0 0 255 80 25 0 0 1 192
+AntNest E 0 10 0 255 11 10 0 0 1 192
+AntNest F 0 10 0 255 17 16 0 0 1 192
+AntNest G 0 10 0 255 24 22 0 0 1 192
+AntNest H 0 10 0 255 38 23 0 0 1 192
+AntNest I 0 10 0 255 55 24 0 0 1 192
+AntNest J 0 10 0 255 66 21 0 0 1 192
+AntNest K 0 10 0 255 74 18 0 0 1 192
+AntNest L 0 10 0 255 63 15 0 0 1 192
+AntNest M 0 10 0 255 53 10 0 0 1 192
+AntNest N 0 10 0 255 35 8 0 0 1 192
+AntNest O 0 10 0 255 44 6 0 0 1 192
+AntNest P 0 10 0 255 17 6 0 0 1 192
+AntLine A 0 E 0 0 0 0 0 -1 64
+AntLine A 0 F 0 0 0 0 0 -1 64
+AntLine A 0 G 0 0 0 0 0 -1 64
+AntLine E 0 F 0 0 0 0 0 -1 64
+AntLine F 0 G 0 0 0 0 0 -1 64
+AntLine G 0 H 0 0 0 0 0 -1 64
+AntLine H 0 I 0 0 0 0 0 -1 64
+AntLine I 0 J 0 0 0 0 0 -1 64
+AntLine I 0 D 0 0 0 0 0 -1 64
+AntLine J 0 D 0 0 0 0 0 -1 64
+AntLine J 0 K 0 0 0 0 0 -1 64
+AntLine K 0 D 0 0 0 0 0 -1 64
+AntLine K 0 L 0 0 0 0 0 -1 64
+AntLine L 0 C 0 0 0 0 0 -1 64
+AntLine L 0 M 0 0 0 0 0 -1 64
+AntLine C 0 M 0 0 0 0 0 -1 64
+AntLine C 0 N 0 0 0 0 0 -1 64
+AntLine M 0 O 0 0 0 0 0 -1 64
+AntLine M 0 N 0 0 0 0 0 -1 64
+AntLine N 0 O 0 0 0 0 0 -1 64
+AntLine B 0 O 0 0 0 0 0 -1 64
+AntLine N 0 P 0 0 0 0 0 -1 64
+AntLine B 0 P 0 0 0 0 0 -1 64
+AntLine P 0 E 0 0 0 0 0 -1 64
+Wall 53 19 0 0 0 128
+Wall 54 19 0 0 0 128
+Wall 55 19 0 0 0 128
+Wall 56 19 0 0 0 128
+Wall 57 19 0 0 0 128
+Wall 58 19 0 0 0 128
+Wall 53 20 0 0 0 128
+Wall 54 20 0 0 0 128
+Wall 55 20 0 0 0 128
+Wall 56 20 0 0 0 128
+Wall 57 20 0 0 0 128
+Wall 58 20 0 0 0 128
+Wall 54 18 0 0 0 128
+Wall 55 18 0 0 0 128
+Wall 56 18 0 0 0 128
+Wall 57 18 0 0 0 128
+Wall 54 21 0 0 0 128
+Wall 55 21 0 0 0 128
+Wall 56 21 0 0 0 128
+Wall 57 21 0 0 0 128
+Wall 24 11 0 0 0 128
+Wall 25 11 0 0 0 128
+Wall 26 11 0 0 0 128
+Wall 27 11 0 0 0 128
+Wall 28 11 0 0 0 128
+Wall 29 11 0 0 0 128
+Wall 24 12 0 0 0 128
+Wall 25 12 0 0 0 128
+Wall 26 12 0 0 0 128
+Wall 27 12 0 0 0 128
+Wall 28 12 0 0 0 128
+Wall 29 12 0 0 0 128
+Wall 25 10 0 0 0 128
+Wall 26 10 0 0 0 128
+Wall 27 10 0 0 0 128
+Wall 28 10 0 0 0 128
+Wall 25 13 0 0 0 128
+Wall 26 13 0 0 0 128
+Wall 27 13 0 0 0 128
+Wall 28 13 0 0 0 128
+Wall 63 9 0 0 0 128
+Wall 64 9 0 0 0 128
+Wall 65 9 0 0 0 128
+Wall 66 9 0 0 0 128
+Wall 67 9 0 0 0 128
+Wall 68 9 0 0 0 128
+Wall 63 10 0 0 0 128
+Wall 64 10 0 0 0 128
+Wall 65 10 0 0 0 128
+Wall 66 10 0 0 0 128
+Wall 67 10 0 0 0 128
+Wall 68 10 0 0 0 128
+Wall 64 8 0 0 0 128
+Wall 65 8 0 0 0 128
+Wall 66 8 0 0 0 128
+Wall 67 8 0 0 0 128
+Wall 64 11 0 0 0 128
+Wall 65 11 0 0 0 128
+Wall 66 11 0 0 0 128
+Wall 67 11 0 0 0 128

@@ -195,13 +195,17 @@ void Application::openPauseScreen() {
 void Application::openResultsScreen() {
     PN_LOGH2("opening resultsScreen");
 
-    // TODO results screen
+    std::string text = "surrendered";
+
+    auto winner = state.game->getWinner();
+    if (winner)
+        text = std::string(winner->name).append(" won");
 
     auto onExit = [](Dialog<std::string>& dialog, Application& application) {
         application.openMainMenuScreen();
     };
 
-    openScreen(new Dialog<std::string>(*this, "results screen", {"return to main menu"}, onExit));
+    openScreen(new Dialog<std::string>(*this, text, {"return to main menu"}, onExit, true));
 }
 
 void Application::_run() {

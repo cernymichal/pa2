@@ -10,13 +10,13 @@
 AntNest::AntNest() {
     // make sure ants are being spawned after ant movement
     updatePriority = 192;
-    hitDistance = 2;
+    hitDistance = 1;
 }
 
 AntNest::AntNest(uint8_t x, uint8_t y, char id, bool starting) : PlayerUnit(x, y), id(id), starting(starting) {
     // make sure ants are being spawned after ant movement
     updatePriority = 192;
-    hitDistance = 2;
+    hitDistance = 1;
 
     if (!starting)
         ants = 10;
@@ -77,6 +77,7 @@ void AntNest::collideWith(GameObject& object) {
             ants = 1;
             changePlayer(ant->player());
             disableLines();
+            _game->checkWin();
         }
     }
     else if (ant->tx == x && ant->ty == y && ants < 99)

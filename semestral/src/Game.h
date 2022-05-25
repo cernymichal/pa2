@@ -17,6 +17,9 @@ public:
     std::string mapName;
     std::map<char, AntNest*> nestMap;
     std::map<uint8_t, Player*> playerMap;
+    int8_t winTimer = -1;
+
+    Game();
 
     /**
      * @brief load Game from file
@@ -57,6 +60,10 @@ public:
     void activateLine(Player* player, AntNest* nestA, AntNest* nestB);
 
     std::list<AntNest*> getNests(uint8_t playerId);
+
+    void checkWin();
+
+    Player* getWinner();
 
     /**
      * @brief draw all GameObjects

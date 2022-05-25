@@ -37,4 +37,6 @@ private:
     void _drawInputBuffer();
 
     void _commitInput();
+
+    void _checkWin();
 };

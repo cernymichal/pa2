@@ -1,0 +1,57 @@
+2022-05-25 22:05:08 Peaceful meadow
+Peaceful meadow
+AntLine I 0 C 0 0 0 0 0 -1 64
+AntLine G 0 C 1 0 0 0 0 -1 64
+AntLine G 0 I 0 0 0 0 0 -1 64
+AntLine E 0 G 0 0 0 0 0 -1 64
+AntLine B 1 E 0 0 0 0 0 -1 64
+AntLine D 0 G 0 0 0 0 0 -1 64
+AntLine D 0 E 0 0 0 0 0 -1 64
+AntLine D 0 B 0 0 0 0 0 -1 64
+AntLine H 0 I 0 0 0 0 0 -1 64
+AntLine F 0 I 0 0 0 0 0 -1 64
+AntLine F 0 H 0 0 0 0 0 -1 64
+AntLine D 0 F 0 0 0 0 0 -1 64
+AntLine A 0 F 0 0 0 0 0 -1 64
+AntLine A 1 D 0 0 0 0 0 -1 64
+Ant 30 10 7.95442 14.4815 2 7 14 3 0 1 128
+Ant 55 8 51.9051 4.31731 0 51 4 1 0 1 128
+Ant 52 13 72.017 15.6853 1 72 15 2 0 1 128
+Ant 55 8 52.6122 5.02442 0 52 5 1 0 1 128
+Ant 55 8 53.3193 5.73152 0 53 5 1 0 1 128
+Ant 30 10 10.9058 13.9442 2 10 13 3 0 1 128
+Ant 52 13 69.0336 15.3707 1 69 15 2 0 1 128
+Ant 30 10 13.8689 13.4755 2 13 13 3 0 1 128
+Ant 52 13 66.0569 14.9977 1 66 14 2 0 1 128
+ComputerPlayer 2 0 D 2 AI2 0 0 3 0 -1 128
+ComputerPlayer 2 0 G 1 AI1 0 0 2 0 -1 128
+Player 0 Player 0 0 1 0 -1 128
+Wall 8 23 0 0 0 128
+Wall 7 23 0 0 0 128
+Wall 8 22 0 0 0 128
+Wall 7 22 0 0 0 128
+Wall 68 24 0 0 0 128
+Wall 67 24 0 0 0 128
+Wall 68 23 0 0 0 128
+Wall 67 23 0 0 0 128
+Wall 36 17 0 0 0 128
+Wall 35 17 0 0 0 128
+Wall 36 16 0 0 0 128
+Wall 35 16 0 0 0 128
+Wall 34 16 0 0 0 128
+Wall 65 11 0 0 0 128
+Wall 64 11 0 0 0 128
+Wall 65 10 0 0 0 128
+Wall 64 10 0 0 0 128
+Wall 18 6 0 0 0 128
+Wall 17 5 0 0 0 128
+Wall 18 5 0 0 0 128
+AntNest I 0 10 1 255 50 22 0 0 2 192
+AntNest H 0 10 1 255 32 25 0 0 2 192
+AntNest G 0 10 1 255 52 13 0 0 2 192
+AntNest F 0 10 1 255 20 21 0 0 2 192
+AntNest E 0 10 1 255 55 8 0 0 2 192
+AntNest D 0 10 1 255 30 10 0 0 2 192
+AntNest C 1 1 1 1 75 16 2 0 2 192
+AntNest B 1 1 1 0 50 2 1 0 2 192
+AntNest A 1 1 1 2 5 15 3 0 2 192

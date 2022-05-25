@@ -1,0 +1,45 @@
+Peaceful meadow
+Peaceful meadow
+AntNest A 1 0 0 255 5 15 0 0 1 192
+AntNest B 1 0 0 255 50 2 0 0 1 192
+AntNest C 1 0 0 255 75 16 0 0 1 192
+AntNest D 0 10 0 255 30 10 0 0 1 192
+AntNest E 0 10 0 255 55 8 0 0 1 192
+AntNest F 0 10 0 255 20 21 0 0 1 192
+AntNest G 0 10 0 255 52 13 0 0 1 192
+AntNest H 0 10 0 255 32 25 0 0 1 192
+AntNest I 0 10 0 255 50 22 0 0 1 192
+AntLine A 0 D 0 0 0 0 0 -1 64
+AntLine A 0 F 0 0 0 0 0 -1 64
+AntLine D 0 F 0 0 0 0 0 -1 64
+AntLine F 0 H 0 0 0 0 0 -1 64
+AntLine F 0 I 0 0 0 0 0 -1 64
+AntLine H 0 I 0 0 0 0 0 -1 64
+AntLine D 0 B 0 0 0 0 0 -1 64
+AntLine D 0 E 0 0 0 0 0 -1 64
+AntLine D 0 G 0 0 0 0 0 -1 64
+AntLine B 0 E 0 0 0 0 0 -1 64
+AntLine E 0 G 0 0 0 0 0 -1 64
+AntLine G 0 I 0 0 0 0 0 -1 64
+AntLine G 0 C 0 0 0 0 0 -1 64
+AntLine I 0 C 0 0 0 0 0 -1 64
+Wall 18 5 0 0 0 128
+Wall 17 5 0 0 0 128
+Wall 18 6 0 0 0 128
+Wall 64 10 0 0 0 128
+Wall 65 10 0 0 0 128
+Wall 64 11 0 0 0 128
+Wall 65 11 0 0 0 128
+Wall 34 16 0 0 0 128
+Wall 35 16 0 0 0 128
+Wall 36 16 0 0 0 128
+Wall 35 17 0 0 0 128
+Wall 36 17 0 0 0 128
+Wall 67 23 0 0 0 128
+Wall 68 23 0 0 0 128
+Wall 67 24 0 0 0 128
+Wall 68 24 0 0 0 128
+Wall 7 22 0 0 0 128
+Wall 8 22 0 0 0 128
+Wall 7 23 0 0 0 128
+Wall 8 23 0 0 0 128

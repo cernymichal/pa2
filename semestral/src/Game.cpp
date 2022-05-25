@@ -9,6 +9,9 @@
 #include "log.h"
 #include "utils.cpp"
 
+Game::Game() {
+}
+
 void Game::addObject(GameObject* object) {
     object->_game = this;
 
@@ -22,6 +25,8 @@ void Game::addObject(GameObject* object) {
 }
 
 void Game::onLoad() {
+    checkWin();
+
     for (auto& object : _objects)
         object->onLoad();
 }
@@ -61,6 +66,12 @@ void Game::update() {
         if ((*iterA)->dead)
             iterA = _objects.erase(iterA);
     }
+
+    if (winTimer > 0)
+        winTimer--;
+    else if(winTimer == 0 && !getWinner())
+        winTimer = -1;
+
 }
 
 void Game::_collision() {
@@ -148,6 +159,26 @@ void Game::activateLine(Player* player, AntNest* nestA, AntNest* nestB) {
 
     nestA->disableLines();
     line->second->switchSide(nestA, true);
+}
+
+Player* Game::getWinner() {
+    Player* winner = nullptr;
+
+    for (const auto& nest : nestMap) {
+        if (!winner)
+            winner = nest.second->player();
+        else if (nest.second->player() && nest.second->player() != winner)
+            return nullptr;
+    }
+
+    return winner;
+}
+
+void Game::checkWin() {
+    if (!getWinner())
+        return;
+
+    winTimer = 10;  // 5s with period of .5s
 }
 
 std::ostream& Game::log(std::ostream& stream) const {
