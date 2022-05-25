@@ -48,6 +48,16 @@ public:
      */
     uint8_t maxPlayers() const;
 
+    void disableLinesFrom(uint8_t playerId, char nestId);
+
+    void disableLinesFrom(Player* player, AntNest* nest);
+
+    void activateLine(uint8_t playerId, char nestAId, char nestBId);
+
+    void activateLine(Player* player, AntNest* nestA, AntNest* nestB);
+
+    std::list<AntNest*> getNests(uint8_t playerId);
+
     /**
      * @brief draw all GameObjects
      */
@@ -61,10 +71,6 @@ public:
      * @return success
      */
     bool save(const std::filesystem::path& path) const;
-
-    void disableLinesFrom(uint8_t playerId, char nestId);
-
-    void activateLine(uint8_t playerId, char nestAId, char nestBId);
 
     /**
      * @brief print debug info to stream

@@ -95,6 +95,17 @@ uint8_t Game::maxPlayers() const {
     return startingPoints;
 }
 
+std::list<AntNest*> Game::getNests(uint8_t playerId) {
+    std::list<AntNest*> nests;
+
+    for (auto& nest : nestMap) {
+        if (nest.second->player() && nest.second->player()->id == playerId)
+            nests.push_back(nest.second);
+    }
+
+    return nests;
+}
+
 void Game::disableLinesFrom(uint8_t playerId, char nestId) {
     auto nest = nestMap.find(nestId);
 
@@ -102,6 +113,13 @@ void Game::disableLinesFrom(uint8_t playerId, char nestId) {
         return;
 
     nest->second->disableLines();
+}
+
+void Game::disableLinesFrom(Player* player, AntNest* nest) {
+    if (nest->player() != player)
+        return;
+
+    nest->disableLines();
 }
 
 void Game::activateLine(uint8_t playerId, char nestAId, char nestBId) {
@@ -117,6 +135,19 @@ void Game::activateLine(uint8_t playerId, char nestAId, char nestBId) {
 
     nest->second->disableLines();
     line->second->switchSide(nest->second, true);
+}
+
+void Game::activateLine(Player* player, AntNest* nestA, AntNest* nestB) {
+    if (nestA->player() != player)
+        return;
+
+    auto line = nestA->lineMap.find(nestB->id);
+
+    if (line == nestA->lineMap.end())
+        return;
+
+    nestA->disableLines();
+    line->second->switchSide(nestA, true);
 }
 
 std::ostream& Game::log(std::ostream& stream) const {

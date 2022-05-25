@@ -27,6 +27,15 @@ void AntNest::disableLines() {
         line.second->switchSide(this, false);
 }
 
+bool AntNest::contested() {
+    for (const auto& line : lineMap) {
+        if (line.second->otherSideActive(this) && !line.second->friendly())
+            return true;
+    }
+
+    return false;
+}
+
 void AntNest::draw() const {
     attron(COLOR_PAIR(color));
     attron(A_BOLD);
@@ -46,12 +55,9 @@ void AntNest::draw() const {
 }
 
 void AntNest::update() {
-    spawnTimer %= 3;
-
-    if (ants < 99 && player() != nullptr && spawnTimer == 0)
+    _spawnTimer %= 3;
+    if (_spawnTimer++ == 0 && ants < 99 && player() != nullptr)
         ants++;
-
-    spawnTimer++;
 }
 
 void AntNest::onAdd() {
@@ -82,7 +88,7 @@ bool AntNest::serialize(std::ostream& stream) const {
 }
 
 bool AntNest::_serialize(std::ostream& stream) const {
-    stream << id << ' ' << starting << ' ' << (unsigned short)ants << ' ' << (unsigned short)spawnTimer << ' ';
+    stream << id << ' ' << starting << ' ' << (unsigned short)ants << ' ' << (unsigned short)_spawnTimer << ' ';
     return PlayerUnit::_serialize(stream);
 }
 
@@ -95,7 +101,7 @@ bool AntNest::unserialize(std::istream& stream) {
     ants = temp;
 
     stream >> temp;
-    spawnTimer = temp;
+    _spawnTimer = temp;
 
     return PlayerUnit::unserialize(stream);
 }

@@ -23,6 +23,24 @@ void AntLine::switchSide(AntNest* nest, bool value) {
         nestBActive = value;
 }
 
+AntNest* AntLine::otherNest(AntNest* nest) {
+    if (nestA == nest)
+        return nestB;
+    else
+        return nestA;
+}
+
+bool AntLine::otherSideActive(AntNest* nest) {
+    if (nestA == nest)
+        return nestBActive;
+    else
+        return nestAActive;
+}
+
+bool AntLine::friendly() {
+    return nestA->player() == nestB->player();
+}
+
 void AntLine::draw() const {
     attron(COLOR_PAIR(color));
     Screen::drawDottedLine(nestA->x, nestA->y, nestB->x, nestB->y);

@@ -19,6 +19,12 @@ public:
 
     void switchSide(AntNest* nest, bool value);
 
+    AntNest* otherNest(AntNest* nest);
+
+    bool otherSideActive(AntNest* nest);
+
+    bool friendly();
+
     virtual void draw() const override;
 
     virtual void update() override;

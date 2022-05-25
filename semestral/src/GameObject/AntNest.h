@@ -21,6 +21,8 @@ public:
 
     void disableLines();
 
+    bool contested();
+
     virtual void draw() const override;
 
     virtual void update() override;
@@ -37,5 +39,5 @@ protected:
     virtual bool _serialize(std::ostream& stream) const override;
 
 private:
-    uint8_t spawnTimer = 0;
+    uint8_t _spawnTimer = 0;
 };
