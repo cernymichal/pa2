@@ -136,10 +136,10 @@ void Application::openOponentNumberScreen() {
         if (dialog.closed)
             return;
 
+        application.state.game->createPlayers(dialog.optionIndex);
+
         application.closeCurrentScreen();  // close self
         application.closeCurrentScreen();  // close map screen
-
-        application.state.game->createPlayers(dialog.optionIndex);
 
         application.openGameScreen();
     };
