@@ -2,6 +2,11 @@
 
 #include "PlayerUnit.h"
 
+/**
+ * @brief Ant moving towards target
+ * 
+ * real x and y are rounded from mvx and mvy
+ */
 class Ant : public PlayerUnit {
 public:
     int8_t tx = 0;

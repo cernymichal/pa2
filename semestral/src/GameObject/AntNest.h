@@ -7,6 +7,11 @@
 
 class AntLine;
 
+/**
+ * @brief capturable point with Ants inside
+ * 
+ * has id, starting (players should start here) and stationed ant count
+ */
 class AntNest : public PlayerUnit {
 public:
     char id = '?';

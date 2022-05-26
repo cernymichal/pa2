@@ -3,6 +3,11 @@
 #include "AntNest.h"
 #include "GameObject.h"
 
+/**
+ * @brief line between two AntNests
+ * 
+ * sends Ants from AntNests
+ */
 class AntLine : public GameObject {
 public:
     AntNest* nestB = nullptr;

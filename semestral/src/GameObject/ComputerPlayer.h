@@ -6,6 +6,11 @@
 #include "AntNest.h"
 #include "Player.h"
 
+/**
+ * @brief AI Player periodically making moves
+ *
+ * focuses on one AntNest only
+ */
 class ComputerPlayer : public Player {
 public:
     ComputerPlayer();

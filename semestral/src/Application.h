@@ -6,10 +6,16 @@
 #include "Game.h"
 #include "Screen/Screen.h"
 
+/**
+ * @brief holds allocated Game
+ */
 struct ApplicationState {
     std::unique_ptr<Game> game;
 };
 
+/**
+ * @brief manages Screens and holds ApplicationState
+ */
 class Application {
 public:
     ApplicationState state;

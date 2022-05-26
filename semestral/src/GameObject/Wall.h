@@ -2,6 +2,9 @@
 
 #include "GameObject.h"
 
+/**
+ * @brief decoration
+ */
 class Wall : public GameObject {
 public:
     Wall();

@@ -15,6 +15,9 @@
 #define COLOR_PAIR_YELLOW 6
 #define COLOR_PAIR_BLACK 7
 
+/**
+ * @brief set screen attributes to default
+ */
 #define attrclr() attrset(A_NORMAL | COLOR_PAIR(COLOR_PAIR_WHITE))
 
 class Application;
@@ -44,12 +47,24 @@ public:
      */
     void show();
 
+    /**
+     * @brief initialize ncurses
+     */
     static void initNCurses();
 
+    /**
+     * @brief exit ncurses
+     */
     static void exitNCurses();
 
+    /**
+     * @brief draw a box to default screen
+     */
     static void drawBox(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
 
+    /**
+     * @brief draw dotted line between points to default screen
+     */
     static void drawDottedLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
 protected:

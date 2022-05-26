@@ -2,6 +2,11 @@
 
 #include "GameObject.h"
 
+/**
+ * @brief human player
+ * 
+ * has name and id
+ */
 class Player : public GameObject {
 public:
     uint8_t id = -1;

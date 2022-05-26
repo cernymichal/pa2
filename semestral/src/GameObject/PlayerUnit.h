@@ -3,6 +3,9 @@
 #include "GameObject.h"
 #include "Player.h"
 
+/**
+ * @brief GameObject belonging to some Player
+ */
 class PlayerUnit : public GameObject {
 public:
     explicit PlayerUnit(Player* player = nullptr);

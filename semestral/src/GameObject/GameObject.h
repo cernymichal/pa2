@@ -6,6 +6,11 @@
 
 class Game;
 
+/**
+ * @brief abstract root of objects represented in Game
+ * 
+ * has location, color, dead (should be removed from Game?), collision distance and update priority
+ */
 class GameObject {
 public:
     uint8_t x = 0;
