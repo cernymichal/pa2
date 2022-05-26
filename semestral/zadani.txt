@@ -11,8 +11,8 @@ Hra končí, když zůstane jen jedna vítězná kolonie nebo se hráč vzdá. P
 
 ### Kolonie
 
-Každá kolonie začíná na začátku s jedním mraveništěm a pár mravenci.
-Všechny kolonie kromě hráčovi budou ovládány počítačem. Každá kolonie bude mít svou barvu, ty budou předem dané pro startovní pozice.
+Každá kolonie začíná na začátku s jedním mraveništěm.
+Všechny kolonie kromě hráčovi budou ovládány počítačem. Každá kolonie bude mít svou barvu, hráč bude vždycky modrý.
 
 ### Mravenci
 
@@ -66,13 +66,13 @@ Hráč bude hru ovládat jednoduchými příkazy tvaru `XY` + ENTER.
 Příkaz s pouze jedním písmenem bude znamenat zrušení přesunu z mraveniště.
 Neplaté příkazy budou ignorovány.
 
-Pomocí BACKSPACE si hráč hru pozastaví a bude mít možnost ji uložit nebo se vzdát.
+Pomocí ';' si hráč hru pozastaví a bude mít možnost ji uložit nebo se vzdát.
 
 ### Uložení
 
 Hra půjde v průběhu uložit do souboru a následně v menu načíst. Název souboru bude mapa + aktuální čas.
 Program bude pro mapy využívat složku assets a uložené hry složku examples. Uložené hry a mapy budou odlišeny příponou.
-V souboru bude seznam `GameObject`ů a se stavem hry (`GameObject`y mají metodu `Serialize`). Formát mapy a uložené hry se lišit nebude, mapa bude jen výchozí stav hry.
+V souboru bude seznam `GameObject`ů a se stavem hry (`GameObject`y mají metodu `serialize`). Formát mapy a uložené hry se lišit nebude, mapa bude jen výchozí stav hry.
 
 ### Polymorfismus
 
