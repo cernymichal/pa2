@@ -52,8 +52,11 @@ bool ComputerPlayer::serializeState(std::ostream& stream) const {
     if (m_focusedNest)
         focusedNestId = m_focusedNest->m_nestId;
 
-    stream << (unsigned short)m_reactionTimer << ' ' << m_defending << ' ' << focusedNestId << ' ';
-    
+    stream << static_cast<unsigned short>(m_reactionTimer)
+           << ' ' << m_defending
+           << ' ' << focusedNestId
+           << ' ';
+
     return Player::serializeState(stream);
 }
 

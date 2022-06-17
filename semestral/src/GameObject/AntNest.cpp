@@ -94,7 +94,11 @@ bool AntNest::serialize(std::ostream& stream) const {
 }
 
 bool AntNest::serializeState(std::ostream& stream) const {
-    stream << m_nestId << ' ' << m_starting << ' ' << (unsigned short)m_ants << ' ' << (unsigned short)m_spawnTimer << ' ';
+    stream << m_nestId
+           << ' ' << m_starting
+           << ' ' << static_cast<unsigned short>(m_ants)
+           << ' ' << static_cast<unsigned short>(m_spawnTimer)
+           << ' ';
 
     return PlayerUnit::serializeState(stream);
 }

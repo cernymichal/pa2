@@ -20,7 +20,9 @@ bool Player::serialize(std::ostream& stream) const {
 }
 
 bool Player::serializeState(std::ostream& stream) const {
-    stream << (unsigned short)m_playerId << ' ' << m_playerName << ' ';
+    stream << static_cast<unsigned short>(m_playerId)
+           << ' ' << m_playerName
+           << ' ';
 
     return GameObject::serializeState(stream);
 }

@@ -33,7 +33,7 @@ extern std::ostream* g_PNLogStream;
  * @param[in] x printable value
  */
 #define PN_LOGH1(x) PN_DEBUG_ONLY((*g_PNLogStream) << "\n\n" \
-                                                  << "==================== " << x << " ====================" << std::endl)
+                                                   << "==================== " << x << " ====================" << std::endl)
 
 /**
  * @brief log message as a header
@@ -41,7 +41,7 @@ extern std::ostream* g_PNLogStream;
  * @param[in] x printable value
  */
 #define PN_LOGH2(x) PN_DEBUG_ONLY((*g_PNLogStream) << "\n" \
-                                                  << "=> " << x << std::endl)
+                                                   << "=> " << x << std::endl)
 
 /**
  * @brief log object

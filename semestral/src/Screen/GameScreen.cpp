@@ -12,7 +12,7 @@ GameScreen::GameScreen(Application& application) : Screen(application, "game scr
 }
 
 void GameScreen::update(std::chrono::nanoseconds dt, int key) {
-    // PN_LOG("GameScreen::update(" << (long long)dt.count() << ", " << (char)key << ")");¨
+    // PN_LOG("GameScreen::update(" << static_cast<long long>(dt.count()) << ", " << static_cast<char>(key) << ")");¨
     bool refreshNeeded = false;
 
     if (key == ';') {

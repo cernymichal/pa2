@@ -31,8 +31,9 @@ void PlayerUnit::onLoad() {
 }
 
 bool PlayerUnit::serializeState(std::ostream& stream) const {
-    stream << (unsigned short)m_owningPlayerId << ' ';
-    
+    stream << static_cast<unsigned short>(m_owningPlayerId)
+           << ' ';
+
     return GameObject::serializeState(stream);
 }
 

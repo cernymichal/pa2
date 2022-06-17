@@ -35,7 +35,7 @@ void Game::createPlayers(uint8_t aiPlayers) {
     for (uint8_t i = 1; i <= aiPlayers; i++)
         addObject<ComputerPlayer>(i, COLOR_PAIR_BLUE + i, std::string("AI").append(std::to_string(i)));
 
-    PN_LOG("created " << (unsigned short)aiPlayers << "ai players");
+    PN_LOG("created " << static_cast<unsigned short>(aiPlayers) << "ai players");
 
     // randomly choose player starting nests
     std::vector<AntNest*> startingNests;

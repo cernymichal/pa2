@@ -71,7 +71,11 @@ bool AntLine::serialize(std::ostream& stream) const {
 }
 
 bool AntLine::serializeState(std::ostream& stream) const {
-    stream << m_nestAId << ' ' << m_nestAActive << ' ' << m_nestBId << ' ' << m_nestBActive << ' ';
+    stream << m_nestAId
+           << ' ' << m_nestAActive
+           << ' ' << m_nestBId
+           << ' ' << m_nestBActive
+           << ' ';
 
     return GameObject::serializeState(stream);
 }

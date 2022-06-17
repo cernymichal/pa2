@@ -27,8 +27,12 @@ uint8_t GameObject::updatePriority() const {
 }
 
 bool GameObject::serializeState(std::ostream& stream) const {
-    stream << (unsigned short)m_x << ' ' << (unsigned short)m_y << ' ' << (unsigned short)m_color << ' '
-           << m_dead << ' ' << m_hitDistance;
+    stream << static_cast<unsigned short>(m_x)
+           << ' ' << static_cast<unsigned short>(m_y)
+           << ' ' << static_cast<unsigned short>(m_color)
+           << ' ' << m_dead
+           << ' ' << m_hitDistance;
+
     return !stream.fail();
 }
 
@@ -52,6 +56,8 @@ bool GameObject::unserialize(std::istream& stream) {
 }
 
 std::ostream& GameObject::log(std::ostream& stream) const {
-    return stream << typeid(*this).name() << " x: " << (unsigned short)m_x << ", y: " << (unsigned short)m_y
-                  << ", updatePriority: " << (unsigned short)updatePriority();
+    return stream << typeid(*this).name()
+                  << " x: " << static_cast<unsigned short>(m_x)
+                  << ", y: " << static_cast<unsigned short>(m_y)
+                  << ", updatePriority: " << static_cast<unsigned short>(updatePriority());
 }

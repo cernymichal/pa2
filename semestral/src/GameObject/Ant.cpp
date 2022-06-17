@@ -58,8 +58,12 @@ bool Ant::serialize(std::ostream& stream) const {
 }
 
 bool Ant::serializeState(std::ostream& stream) const {
-    stream << (short)m_tx << ' ' << (short)m_ty << ' ' << m_mvx << ' ' << m_mvy << ' ';
-    
+    stream << static_cast<short>(m_tx)
+           << ' ' << static_cast<short>(m_ty)
+           << ' ' << m_mvx
+           << ' ' << m_mvy
+           << ' ';
+
     return PlayerUnit::serializeState(stream);
 }
 
