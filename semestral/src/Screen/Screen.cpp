@@ -12,12 +12,14 @@ void Screen::onExit() {
 }
 
 void Screen::show() {
+    using namespace std::literals::chrono_literals;
+
     timeout(m_timeoutDelay);
 
     auto start = std::chrono::steady_clock::now();
 
     // call first update for drawing
-    update(std::chrono::nanoseconds(0), ERR);
+    update(0ns, ERR);
 
     while (!m_exit) {
         // calculate delta time from last update

@@ -4,7 +4,9 @@
 
 #include "../log.h"
 
-const auto UPDATE_PERIOD = std::chrono::milliseconds(500);
+using namespace std::literals::chrono_literals;
+
+const auto g_updatePeriod = 500ms;
 
 GameScreen::GameScreen(Application& application) : Screen(application, "game screen") {
     m_timeoutDelay = 0;  // non blocking input
@@ -42,8 +44,8 @@ void GameScreen::update(std::chrono::nanoseconds dt, int key) {
 
     m_dtAccumulator += dt;
 
-    if (m_dtAccumulator > UPDATE_PERIOD) {
-        m_dtAccumulator -= UPDATE_PERIOD;
+    if (m_dtAccumulator > g_updatePeriod) {
+        m_dtAccumulator -= g_updatePeriod;
         m_application.m_state.game->update();
 
         clear();
@@ -71,7 +73,7 @@ void GameScreen::onExit() {
 void GameScreen::resetScreen() {
     m_exit = false;
     m_paused = false;
-    m_dtAccumulator = UPDATE_PERIOD;
+    m_dtAccumulator = g_updatePeriod;
 }
 
 void GameScreen::resetInputBuffer() {
