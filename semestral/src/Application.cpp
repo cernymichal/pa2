@@ -22,13 +22,6 @@ void Application::start() {
     Screen::exitNCurses();
 }
 
-void Application::openScreen(Screen* screen) {
-    if (!m_screens.empty() && m_screens.top()->m_exit)
-        closeCurrentScreen();
-
-    m_screens.emplace(screen);
-}
-
 void Application::closeCurrentScreen() {
     m_screens.pop();
 }
@@ -67,14 +60,13 @@ void Application::openMainMenuScreen() {
         }
     };
 
-    openScreen(
-        new Dialog<std::string>(
-            *this, "pins & needles",
-            {"new game",
-             "load",
-             "exit"},
-            onExit,
-            true));
+    openScreen<Dialog<std::string>>(
+        *this, "pins & needles",
+        std::vector<std::string>{"new game",
+                                 "load",
+                                 "exit"},
+        onExit,
+        true);
 }
 
 void Application::openMapListScreen() {
@@ -99,7 +91,7 @@ void Application::openMapListScreen() {
         application.openOponentNumberScreen();
     };
 
-    openScreen(new Dialog<Save>(*this, "map list screen", Save::findMaps(), onExit));
+    openScreen<Dialog<Save>>(*this, "map list screen", Save::findMaps(), onExit);
 }
 
 void Application::openSaveListScreen() {
@@ -122,7 +114,7 @@ void Application::openSaveListScreen() {
         application.openGameScreen();
     };
 
-    openScreen(new SaveList(*this, Save::findSaves(), onExit));
+    openScreen<SaveList>(*this, Save::findSaves(), onExit);
 }
 
 void Application::openOponentNumberScreen() {
@@ -146,7 +138,7 @@ void Application::openOponentNumberScreen() {
         application.openGameScreen();
     };
 
-    openScreen(new Dialog<std::string>(*this, "oponent number screen", oponents, onExit));
+    openScreen<Dialog<std::string>>(*this, "oponent number screen", oponents, onExit);
 }
 
 void Application::openGameScreen() {
@@ -156,7 +148,7 @@ void Application::openGameScreen() {
 
     m_state.game->onLoad();
 
-    openScreen(new GameScreen(*this));
+    openScreen<GameScreen>(*this);
 }
 
 void Application::openPauseScreen() {
@@ -194,14 +186,13 @@ void Application::openPauseScreen() {
         }
     };
 
-    openScreen(
-        new Dialog<std::string>(
-            *this, "pause screen",
-            {"continue",
-             "save",
-             "surrender",
-             "return to main menu"},
-            onExit));
+    openScreen<Dialog<std::string>>(
+        *this, "pause screen",
+        std::vector<std::string>{"continue",
+                                 "save",
+                                 "surrender",
+                                 "return to main menu"},
+        onExit);
 }
 
 void Application::openResultsScreen() {
@@ -217,7 +208,7 @@ void Application::openResultsScreen() {
         application.openMainMenuScreen();
     };
 
-    openScreen(new Dialog<std::string>(*this, text, {"return to main menu"}, onExit, true));
+    openScreen<Dialog<std::string>>(*this, text, std::vector<std::string>{"return to main menu"}, onExit, true);
 }
 
 void Application::run() {

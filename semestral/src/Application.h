@@ -28,13 +28,19 @@ public:
     void start();
 
     /**
-     * @brief add screen on top of the screen stack
+     * @brief construct screen on top of the screen stack
      *
      * pops last screen if set to exit
      *
-     * @param[in] screen pointer to Screen, will be managed by Application
+     * @param[in] args arguments to screen constructor
      */
-    void openScreen(Screen* screen);
+    template <typename T, typename... Ts>
+    void openScreen(Ts&&... args) {
+        if (!m_screens.empty() && m_screens.top()->m_exit)
+            closeCurrentScreen();
+
+        m_screens.push(std::make_unique<T>(std::forward<Ts>(args)...));
+    }
 
     /**
      * @brief pops screen of the screen stack

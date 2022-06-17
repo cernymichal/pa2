@@ -39,8 +39,8 @@ public:
      * @brief add GameObject to game
      */
     template <typename T, typename... Ts>
-    void addObject(Ts... args) {
-        addObject(new T(args...));
+    void addObject(Ts&&... args) {
+        addObject(new T(std::forward<Ts>(args)...));
     }
 
     /**
