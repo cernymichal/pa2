@@ -10,109 +10,109 @@ ComputerPlayer::ComputerPlayer(uint8_t id, uint8_t color, const std::string& nam
 }
 
 void ComputerPlayer::update() {
-    _reactionTimer %= 4;
-    if (_reactionTimer++ != 0)
+    m_reactionTimer %= 4;
+    if (m_reactionTimer++ != 0)
         return;
 
-    auto nests = _game->getNests(id);
+    auto nests = m_game->getNests(m_playerId);
     nests.sort([](const AntNest* a, const AntNest* b) {
-        return a->ants < b->ants;
+        return a->m_ants < b->m_ants;
     });
 
-    PN_DEBUG_ONLY(bool defendingOld = _defending);
+    PN_DEBUG_ONLY(bool defendingOld = m_defending);
 
-    _checkForAttack(nests);
+    checkForAttack(nests);
 
     PN_DEBUG_ONLY(
-        if (defendingOld != _defending) {
-            if (_defending)
-                PN_LOG(name << " defending");
+        if (defendingOld != m_defending) {
+            if (m_defending)
+                PN_LOG(m_playerName << " defending");
 
             else
-                PN_LOG(name << " expanding");
+                PN_LOG(m_playerName << " expanding");
         });
 
-    if (_defending)
-        _defend(nests);
+    if (m_defending)
+        defend(nests);
     else
-        _expand(nests);
+        expand(nests);
 }
 
 void ComputerPlayer::onLoad() {
-    if (_focusedNestId != '?')
-        _focusedNest = _game->nestMap[_focusedNestId];
+    if (m_focusedNestId != '?')
+        m_focusedNest = m_game->m_nestMap[m_focusedNestId];
 }
 
 bool ComputerPlayer::serialize(std::ostream& stream) const {
-    return _serialize(stream << "ComputerPlayer ");
+    return serializeState(stream << "ComputerPlayer ");
 }
 
-bool ComputerPlayer::_serialize(std::ostream& stream) const {
+bool ComputerPlayer::serializeState(std::ostream& stream) const {
     char focusedNestId = '?';
-    if (_focusedNest)
-        focusedNestId = _focusedNest->id;
+    if (m_focusedNest)
+        focusedNestId = m_focusedNest->m_nestId;
 
-    stream << (unsigned short)_reactionTimer << ' ' << _defending << ' ' << focusedNestId << ' ';
+    stream << (unsigned short)m_reactionTimer << ' ' << m_defending << ' ' << focusedNestId << ' ';
     
-    return Player::_serialize(stream);
+    return Player::serializeState(stream);
 }
 
 bool ComputerPlayer::unserialize(std::istream& stream) {
     unsigned short temp;
 
     stream >> temp;
-    _reactionTimer = temp;
+    m_reactionTimer = temp;
 
-    stream >> _defending >> _focusedNestId;
+    stream >> m_defending >> m_focusedNestId;
 
     return Player::unserialize(stream);
 }
 
-void ComputerPlayer::_checkForAttack(std::list<AntNest*>& nests) {
-    _defending = false;
+void ComputerPlayer::checkForAttack(std::list<AntNest*>& nests) {
+    m_defending = false;
     for (const auto& nest : nests) {
         if (nest->contested()) {
-            _defending = true;
-            _focusedNest = nest;
+            m_defending = true;
+            m_focusedNest = nest;
             break;
         }
     }
 }
 
-void ComputerPlayer::_defend(std::list<AntNest*>& nests) {
-    _sendAnts();
+void ComputerPlayer::defend(std::list<AntNest*>& nests) {
+    sendAnts();
 }
 
-void ComputerPlayer::_expand(std::list<AntNest*>& nests) {
-    _focusedNest = nullptr;
+void ComputerPlayer::expand(std::list<AntNest*>& nests) {
+    m_focusedNest = nullptr;
     for (const auto& nest : nests) {
-        for (const auto& line : nest->lineMap) {
+        for (const auto& line : nest->m_lineMap) {
             if (line.second->friendly())
                 continue;
 
             auto otherNest = line.second->otherNest(nest);
-            if (!_focusedNest || _focusedNest->ants > otherNest->ants)
-                _focusedNest = otherNest;
+            if (!m_focusedNest || m_focusedNest->m_ants > otherNest->m_ants)
+                m_focusedNest = otherNest;
         }
     }
 
-    if (_focusedNest)
-        _sendAnts();
+    if (m_focusedNest)
+        sendAnts();
 }
 
-void ComputerPlayer::_sendAnts() {
+void ComputerPlayer::sendAnts() {
     std::set<char> visitedNests;
-    _sendAnts(_focusedNest, visitedNests);
+    sendAnts(m_focusedNest, visitedNests);
 }
 
-void ComputerPlayer::_sendAnts(AntNest* nest, std::set<char>& visitedNests) {
-    visitedNests.insert(nest->id);
+void ComputerPlayer::sendAnts(AntNest* nest, std::set<char>& visitedNests) {
+    visitedNests.insert(nest->m_nestId);
 
-    for (const auto& line : nest->lineMap) {
+    for (const auto& line : nest->m_lineMap) {
         auto otherNest = line.second->otherNest(nest);
-        if ((line.second->friendly() || nest == _focusedNest) && visitedNests.find(otherNest->id) == visitedNests.end()) {
-            _game->activateLine(this, otherNest, nest);
-            _sendAnts(otherNest, visitedNests);
+        if ((line.second->friendly() || nest == m_focusedNest) && visitedNests.find(otherNest->m_nestId) == visitedNests.end()) {
+            m_game->activateLine(this, otherNest, nest);
+            sendAnts(otherNest, visitedNests);
         }
     }
 }

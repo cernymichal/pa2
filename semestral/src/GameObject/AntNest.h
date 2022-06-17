@@ -9,16 +9,16 @@ class AntLine;
 
 /**
  * @brief capturable point with Ants inside
- * 
+ *
  * has id, starting (players should start here) and stationed ant count
  */
 class AntNest : public PlayerUnit {
 public:
-    char id = '?';
-    bool starting = false;
-    uint8_t ants = 0;
+    char m_nestId = '?';
+    bool m_starting = false;
+    uint8_t m_ants = 0;
 
-    std::map<char, AntLine*> lineMap;
+    std::map<char, AntLine*> m_lineMap;
 
     AntNest();
 
@@ -42,9 +42,9 @@ public:
     virtual void update() override;
 
     /**
-     * @brief add this to nestMap in _game
+     * @brief add this to m_nestMap in m_game
      */
-    virtual void onAdd() override;
+    virtual void onAdd(Game* game) override;
 
     /**
      * @brief collide with ant
@@ -55,6 +55,13 @@ public:
      */
     virtual void collideWith(GameObject& object) override;
 
+    /**
+     * make sure ants are being spawned after ant movement
+     *
+     * @returns update priority of object
+     */
+    virtual uint8_t updatePriority() const override;
+
     virtual bool serialize(std::ostream& stream) const override;
 
     virtual bool unserialize(std::istream& stream) override;
@@ -63,12 +70,12 @@ protected:
     /**
      * @brief serialize without type header
      *
-     * format: "{id} {starting} {ants} {_spawnTimer} " + PlayerUnit serialization
+     * format: "{m_nestId} {m_starting} {m_ants} {m_spawnTimer} " + PlayerUnit serialization
      *
      * @param[in] stream output stream
      */
-    virtual bool _serialize(std::ostream& stream) const override;
+    virtual bool serializeState(std::ostream& stream) const override;
 
 private:
-    uint8_t _spawnTimer = 0;
+    uint8_t m_spawnTimer = 0;
 };

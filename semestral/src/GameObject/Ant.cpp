@@ -7,72 +7,72 @@
 #include "AntNest.h"
 
 Ant::Ant() {
-    hitDistance = 0;
+    m_hitDistance = 0;
 }
 
-Ant::Ant(uint8_t x, uint8_t y, Player* player, int8_t tx, int8_t ty) : PlayerUnit(x, y, player), tx(tx), ty(ty) {
-    hitDistance = 0;
-    mvx = x;
-    mvy = y;
+Ant::Ant(uint8_t x, uint8_t y, Player* player, int8_t tx, int8_t ty) : PlayerUnit(x, y, player), m_tx(tx), m_ty(ty) {
+    m_hitDistance = 0;
+    m_mvx = x;
+    m_mvy = y;
 }
 
 void Ant::draw() const {
-    mvaddch(y, x, 'm' | COLOR_PAIR(color));
+    mvaddch(m_y, m_x, 'm' | COLOR_PAIR(m_color));
 }
 
 void Ant::update() {
-    if (x != tx || y != ty) {
-        float dx = tx - x;
-        float dy = ty - y;
+    if (m_x != m_tx || m_y != m_ty) {
+        float dx = m_tx - m_x;
+        float dy = m_ty - m_y;
         float d = sqrt(dx * dx + dy * dy);
         dx /= d;
         dy /= d;
 
-        mvx += dx;
-        mvy += dy;
+        m_mvx += dx;
+        m_mvy += dy;
 
-        x = mvx;
-        y = mvy;
+        m_x = m_mvx;
+        m_y = m_mvy;
     }
 }
 
 void Ant::collideWith(GameObject& object) {
-    if (dead)
+    if (m_dead)
         return;
 
     auto ant = dynamic_cast<Ant*>(&object);
 
     if (ant && ant->player() != player()) {
-        dead = true;
+        m_dead = true;
         return;
     }
 
     auto nest = dynamic_cast<AntNest*>(&object);
 
-    if (nest && nest->x == tx && nest->y == ty)
-        dead = true;
+    if (nest && nest->m_x == m_tx && nest->m_y == m_ty)
+        m_dead = true;
 }
 
 bool Ant::serialize(std::ostream& stream) const {
-    return _serialize(stream << "Ant ");
+    return serializeState(stream << "Ant ");
 }
 
-bool Ant::_serialize(std::ostream& stream) const {
-    stream << (short)tx << ' ' << (short)ty << ' ' << mvx << ' ' << mvy << ' ';
+bool Ant::serializeState(std::ostream& stream) const {
+    stream << (short)m_tx << ' ' << (short)m_ty << ' ' << m_mvx << ' ' << m_mvy << ' ';
     
-    return PlayerUnit::_serialize(stream);
+    return PlayerUnit::serializeState(stream);
 }
 
 bool Ant::unserialize(std::istream& stream) {
     short temp;
 
     stream >> temp;
-    tx = temp;
+    m_tx = temp;
 
     stream >> temp;
-    ty = temp;
+    m_ty = temp;
 
-    stream >> mvx >> mvy;
+    stream >> m_mvx >> m_mvy;
 
     return PlayerUnit::unserialize(stream);
 }

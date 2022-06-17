@@ -9,17 +9,17 @@
 
 #include "log.h"
 
-#define SAVE_EXTENSION ".pns"
-#define MAP_EXTENSION ".pnm"
-#define SAVE_DIRECTORY "examples"
-#define MAP_DIRECTORY "assets/maps"
+const auto g_SaveExtension = ".pns";
+const auto g_MapExtension = ".pnm";
+const auto g_SaveDirectory = "examples";
+const auto g_MapDirectory = "assets/maps";
 
-const auto EXECUTABLE_DIRECTORY = std::filesystem::canonical("/proc/self/exe").parent_path();
+const auto g_executableDirectory = std::filesystem::canonical("/proc/self/exe").parent_path();
 
 std::vector<Save> findFiles(const char* directory, const char* extension) {
     std::vector<Save> files;
 
-    auto path = std::filesystem::path(EXECUTABLE_DIRECTORY)
+    auto path = std::filesystem::path(g_executableDirectory)
                     .append(directory);
 
     PN_LOG("looking for " << extension << " files in " << path);
@@ -35,7 +35,7 @@ std::vector<Save> findFiles(const char* directory, const char* extension) {
 }
 
 bool filesExist(const char* directory, const char* extension) {
-    auto path = std::filesystem::path(EXECUTABLE_DIRECTORY)
+    auto path = std::filesystem::path(g_executableDirectory)
                     .append(directory);
 
     PN_LOG("checking if any " << extension << " files exist in " << path);
@@ -48,11 +48,11 @@ bool filesExist(const char* directory, const char* extension) {
     return false;
 }
 
-Save::Save(const std::filesystem::path& path) : path(path) {
+Save::Save(const std::filesystem::path& path) : m_path(path) {
     std::ifstream saveFile;
     saveFile.open(path, std::fstream::in);
 
-    std::getline(saveFile, _name);
+    std::getline(saveFile, m_name);
 }
 
 bool Save::operator<(const Save& other) const {
@@ -60,26 +60,26 @@ bool Save::operator<(const Save& other) const {
 }
 
 const std::string& Save::name() const {
-    return _name;
+    return m_name;
 }
 
 const char* Save::c_str() const {
-    return _name.c_str();
+    return m_name.c_str();
 }
 
 std::vector<Save> Save::findSaves() {
     PN_LOG("looking for saves");
-    return findFiles(SAVE_DIRECTORY, SAVE_EXTENSION);
+    return findFiles(g_SaveDirectory, g_SaveExtension);
 }
 
 std::vector<Save> Save::findMaps() {
     PN_LOG("looking for maps");
-    return findFiles(MAP_DIRECTORY, MAP_EXTENSION);
+    return findFiles(g_MapDirectory, g_MapExtension);
 }
 
 bool Save::emptySaveDirectory() {
     try {
-        return !filesExist(SAVE_DIRECTORY, SAVE_EXTENSION);
+        return !filesExist(g_SaveDirectory, g_SaveExtension);
     }
     catch (std::filesystem::filesystem_error&) {
         return true;
@@ -88,7 +88,7 @@ bool Save::emptySaveDirectory() {
 
 bool Save::emptyMapDirectory() {
     try {
-        return !filesExist(MAP_DIRECTORY, MAP_EXTENSION);
+        return !filesExist(g_MapDirectory, g_MapExtension);
     }
     catch (std::filesystem::filesystem_error&) {
         return true;
@@ -100,9 +100,9 @@ std::filesystem::path Save::createSavePath(const std::string& mapName) {
     auto tm = *std::localtime(&t);
 
     std::ostringstream oss;
-    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << " " << mapName << SAVE_EXTENSION;
+    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << " " << mapName << g_SaveExtension;
 
-    return std::filesystem::path(EXECUTABLE_DIRECTORY)
-        .append(SAVE_DIRECTORY)
+    return std::filesystem::path(g_executableDirectory)
+        .append(g_SaveDirectory)
         .append(oss.str());
 }

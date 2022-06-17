@@ -12,23 +12,23 @@
 /**
  * @brief holds all game objects and logic
  *
- * - mapName - original loaded map name, for saving
- * - nestMap - map of nest ids to AntNest*
- * - playerMap - map of player ids to Player*
- * - winTimer - if 0 after update game ends
+ * - m_mapName - original loaded map name, for saving
+ * - m_nestMap - map of nest ids to AntNest*
+ * - m_playerMap - map of player ids to Player*
+ * - m_winTimer - if 0 after update game ends
  */
 class Game {
 public:
-    std::string mapName;
-    std::map<char, AntNest*> nestMap;
-    std::map<uint8_t, Player*> playerMap;
-    int8_t winTimer = -1;
+    std::string m_mapName;
+    std::map<char, AntNest*> m_nestMap;
+    std::map<uint8_t, Player*> m_playerMap;
+    int8_t m_winTimer = -1;
 
     Game();
 
     /**
      * @brief load Game from file
-     * 
+     *
      * - throws SaveException on fail
      *
      * @param[in] path save file
@@ -36,7 +36,15 @@ public:
     explicit Game(const std::filesystem::path& path);
 
     /**
-     * @brief register GameObject to game
+     * @brief add GameObject to game
+     */
+    template <typename T, typename... Ts>
+    void addObject(Ts... args) {
+        addObject(new T(args...));
+    }
+
+    /**
+     * @brief add already constructed GameObject to game
      *
      * @param[in] object pointer to GameObject, will be managed by Game
      */
@@ -50,7 +58,7 @@ public:
     /**
      * @brief create players in game
      *
-     * - 1 x Player + aiPlayers x ComputerPlayers
+     * - 1 * Player + aiPlayers * ComputerPlayers
      * - randomly assing starting points
      *
      * @param[in] aiPlayers count of ComputerPlayers
@@ -123,7 +131,7 @@ public:
 
     /**
      * @brief save Game to file
-     * 
+     *
      * - saves save name, map name and serializes all GameObjects
      * - throws SaveException on fail
      *
@@ -139,15 +147,15 @@ public:
     std::ostream& log(std::ostream& stream) const;
 
     /**
-     * @brief initialize map of GameObject headers for loading
+     * @brief initialize map of GameObject names for loading
      */
-    static void initGONameMap();
+    static void initGameObjectInstatiators();
 
 private:
-    std::list<std::unique_ptr<GameObject>> _objects;
+    std::list<std::unique_ptr<GameObject>> m_objects;
 
     /**
      * @brief handle collision between objects
      */
-    void _collision();
+    void collision();
 };

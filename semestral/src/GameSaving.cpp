@@ -15,17 +15,17 @@
 #include "log.h"
 
 template <typename T>
-GameObject* instantiateGO() { return new T; }
+GameObject* instantiateGameObject() { return new T; }
 
-std::map<std::string, GameObject* (*)()> GO_NAME_MAP;
+std::map<std::string, GameObject *(*)()> g_GameObjectInstatiators;
 
-void Game::initGONameMap() {
-    GO_NAME_MAP["Ant"] = &instantiateGO<Ant>;
-    GO_NAME_MAP["AntLine"] = &instantiateGO<AntLine>;
-    GO_NAME_MAP["AntNest"] = &instantiateGO<AntNest>;
-    GO_NAME_MAP["ComputerPlayer"] = &instantiateGO<ComputerPlayer>;
-    GO_NAME_MAP["Player"] = &instantiateGO<Player>;
-    GO_NAME_MAP["Wall"] = &instantiateGO<Wall>;
+void Game::initGameObjectInstatiators() {
+    g_GameObjectInstatiators["Ant"] = &instantiateGameObject<Ant>;
+    g_GameObjectInstatiators["AntLine"] = &instantiateGameObject<AntLine>;
+    g_GameObjectInstatiators["AntNest"] = &instantiateGameObject<AntNest>;
+    g_GameObjectInstatiators["ComputerPlayer"] = &instantiateGameObject<ComputerPlayer>;
+    g_GameObjectInstatiators["Player"] = &instantiateGameObject<Player>;
+    g_GameObjectInstatiators["Wall"] = &instantiateGameObject<Wall>;
 }
 
 Game::Game(const std::filesystem::path& path) {
@@ -37,8 +37,8 @@ Game::Game(const std::filesystem::path& path) {
     if (saveFile.fail())
         throw SaveException();
 
-    std::getline(saveFile, mapName);  // skip save name line
-    std::getline(saveFile, mapName);
+    std::getline(saveFile, m_mapName);  // skip save name line
+    std::getline(saveFile, m_mapName);
 
     if (saveFile.fail())
         throw SaveException();
@@ -52,8 +52,8 @@ Game::Game(const std::filesystem::path& path) {
 
         PN_LOG("loading " << objectName << " from \"" << line << '"');
 
-        auto instantiator = GO_NAME_MAP.find(objectName);
-        if (instantiator == GO_NAME_MAP.end())
+        auto instantiator = g_GameObjectInstatiators.find(objectName);
+        if (instantiator == g_GameObjectInstatiators.end())
             throw SaveException();
 
         auto object = (*instantiator->second)();
@@ -80,9 +80,9 @@ void Game::save(const std::filesystem::path& path) const {
     saveFile.open(path, std::fstream::out);
 
     saveFile << path.stem().string() << "\n";
-    saveFile << mapName << "\n";
+    saveFile << m_mapName << "\n";
 
-    for (const auto& object : _objects) {
+    for (const auto& object : m_objects) {
         if (!object->serialize(saveFile))
             throw SaveException();
         saveFile << "\n";

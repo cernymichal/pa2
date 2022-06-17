@@ -22,36 +22,36 @@ public:
     virtual void update(std::chrono::nanoseconds dt, int key) override;
 
 protected:
-    virtual void _onExit() override;
+    virtual void onExit() override;
 
 private:
-    std::chrono::nanoseconds _dtAccumulator;
-    bool _paused = false;
-    char inputBuffer[3] = "  ";
-    uint8_t inputIndex = 0;
+    std::chrono::nanoseconds m_dtAccumulator;
+    bool m_paused = false;
+    char m_inputBuffer[3] = "  ";
+    uint8_t m_inputIndex = 0;
 
     /**
-     * @brief resets Screen variables and _dtAccumulator
+     * @brief resets Screen variables and m_dtAccumulator
      */
-    void _resetScreen();
+    void resetScreen();
 
     /**
      * @brief resets input command buffer
      */
-    void _resetInputBuffer();
+    void resetInputBuffer();
 
     /**
      * @brief draws current command to the bottom left
      */
-    void _drawInputBuffer();
+    void drawInputBuffer();
 
     /**
      * @brief tries to execute command
      */
-    void _commitInput();
+    void commitInput();
 
     /**
-     * @brief check if winTimer in Game hit 0
+     * @brief check if m_winTimer in Game hit 0
      */
-    void _checkWin();
+    void checkWin();
 };

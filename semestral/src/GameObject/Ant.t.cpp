@@ -11,6 +11,6 @@ void testAnt() {
 
     Ant a(10, 23, nullptr);
 
-    assert(a.x == 10);
-    assert(a.y == 23);
+    assert(a.m_x == 10);
+    assert(a.m_y == 23);
 }

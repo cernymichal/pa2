@@ -3,44 +3,44 @@
 #include "../Game.h"
 
 PlayerUnit::PlayerUnit(Player* player) {
-    changePlayer(player);
+    changeOwningPlayer(player);
 }
 
 PlayerUnit::PlayerUnit(uint8_t x, uint8_t y, Player* player) : GameObject(x, y) {
-    changePlayer(player);
+    changeOwningPlayer(player);
 }
 
 Player* PlayerUnit::player() {
-    return _player;
+    return m_owningPlayer;
 }
 
-void PlayerUnit::changePlayer(Player* player) {
+void PlayerUnit::changeOwningPlayer(Player* player) {
     if (!player)
-        _playerId = -1;
+        m_owningPlayerId = -1;
     else {
-        _playerId = player->id;
-        color = player->color;
+        m_owningPlayerId = player->m_playerId;
+        m_color = player->m_color;
     }
 
-    _player = player;
+    m_owningPlayer = player;
 }
 
 void PlayerUnit::onLoad() {
-    if (_playerId != -1)
-        changePlayer(_game->playerMap[_playerId]);
+    if (m_owningPlayerId != -1)
+        changeOwningPlayer(m_game->m_playerMap[m_owningPlayerId]);
 }
 
-bool PlayerUnit::_serialize(std::ostream& stream) const {
-    stream << (unsigned short)_playerId << ' ';
+bool PlayerUnit::serializeState(std::ostream& stream) const {
+    stream << (unsigned short)m_owningPlayerId << ' ';
     
-    return GameObject::_serialize(stream);
+    return GameObject::serializeState(stream);
 }
 
 bool PlayerUnit::unserialize(std::istream& stream) {
     unsigned short temp;
 
     stream >> temp;
-    _playerId = temp;
+    m_owningPlayerId = temp;
 
     return GameObject::unserialize(stream);
 }

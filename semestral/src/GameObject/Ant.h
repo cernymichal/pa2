@@ -5,15 +5,15 @@
 /**
  * @brief Ant moving towards target
  * 
- * real x and y are rounded from mvx and mvy
+ * real m_x and m_y are rounded from m_mvx and m_mvy
  */
 class Ant : public PlayerUnit {
 public:
-    int8_t tx = 0;
-    int8_t ty = 0;
+    int8_t m_tx = 0;
+    int8_t m_ty = 0;
 
-    float mvx;
-    float mvy;
+    float m_mvx;
+    float m_mvy;
 
     Ant();
 
@@ -22,7 +22,7 @@ public:
     virtual void draw() const override;
 
     /**
-     * @brief move towards (tx, ty)
+     * @brief move towards (m_tx, m_ty)
      */
     virtual void update() override;
 
@@ -43,9 +43,9 @@ protected:
     /**
      * @brief serialize without type header
      *
-     * format: "{tx} {ty} {mvx} {mvy} " + PlayerUnit serialization
+     * format: "{m_tx} {m_ty} {m_mvx} {m_mvy} " + PlayerUnit serialization
      *
      * @param[in] stream output stream
      */
-    virtual bool _serialize(std::ostream& stream) const override;
+    virtual bool serializeState(std::ostream& stream) const override;
 };

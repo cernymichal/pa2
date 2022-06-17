@@ -14,22 +14,22 @@ void SaveList::update(std::chrono::nanoseconds dt, int key) {
     if (key == KEY_DC) {
         key = ERR;
 
-        PN_LOG("deleting " << options[optionIndex].path);
+        PN_LOG("deleting " << m_options[m_optionIndex].m_path);
 
         try {
-            std::filesystem::remove(options[optionIndex].path);
+            std::filesystem::remove(m_options[m_optionIndex].m_path);
         }
         catch (std::filesystem::filesystem_error&) {
         }
 
-        options.erase(options.begin() + optionIndex);
+        m_options.erase(m_options.begin() + m_optionIndex);
 
-        if (optionIndex >= options.size())
-            optionIndex--;
+        if (m_optionIndex >= m_options.size())
+            m_optionIndex--;
 
-        if (options.empty()) {
-            closed = true;
-            exit = true;
+        if (m_options.empty()) {
+            m_closed = true;
+            m_exit = true;
         }
     }
 

@@ -3,7 +3,7 @@
 GameObject::GameObject() {
 }
 
-GameObject::GameObject(uint8_t x, uint8_t y) : x(x), y(y) {
+GameObject::GameObject(uint8_t x, uint8_t y) : m_x(x), m_y(y) {
 }
 
 void GameObject::draw() const {
@@ -12,7 +12,8 @@ void GameObject::draw() const {
 void GameObject::update() {
 }
 
-void GameObject::onAdd() {
+void GameObject::onAdd(Game* game) {
+    m_game = game;
 }
 
 void GameObject::onLoad() {
@@ -21,9 +22,13 @@ void GameObject::onLoad() {
 void GameObject::collideWith(GameObject& object) {
 }
 
-bool GameObject::_serialize(std::ostream& stream) const {
-    stream << (unsigned short)x << ' ' << (unsigned short)y << ' ' << (unsigned short)color << ' '
-           << dead << ' ' << hitDistance << ' ' << (unsigned short)updatePriority;
+uint8_t GameObject::updatePriority() const {
+    return 128;
+}
+
+bool GameObject::serializeState(std::ostream& stream) const {
+    stream << (unsigned short)m_x << ' ' << (unsigned short)m_y << ' ' << (unsigned short)m_color << ' '
+           << m_dead << ' ' << m_hitDistance;
     return !stream.fail();
 }
 
@@ -31,25 +36,22 @@ bool GameObject::unserialize(std::istream& stream) {
     unsigned short temp;
 
     stream >> temp;
-    x = temp;
+    m_x = temp;
 
     stream >> temp;
-    y = temp;
+    m_y = temp;
 
     stream >> temp;
-    color = temp;
+    m_color = temp;
 
-    stream >> dead;
+    stream >> m_dead;
 
-    stream >> hitDistance;
-
-    stream >> temp;
-    updatePriority = temp;
+    stream >> m_hitDistance;
 
     return !stream.fail();
 }
 
 std::ostream& GameObject::log(std::ostream& stream) const {
-    return stream << typeid(*this).name() << " x: " << (unsigned short)x << ", y: " << (unsigned short)y
-                  << ", updatePriority: " << (unsigned short)updatePriority;
+    return stream << typeid(*this).name() << " x: " << (unsigned short)m_x << ", y: " << (unsigned short)m_y
+                  << ", updatePriority: " << (unsigned short)updatePriority();
 }

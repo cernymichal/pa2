@@ -15,7 +15,7 @@ class SaveException : public std::exception {
  */
 class Save {
 public:
-    std::filesystem::path path;
+    std::filesystem::path m_path;
 
     /**
      * @brief load save name from save file
@@ -77,5 +77,5 @@ public:
     static std::filesystem::path createSavePath(const std::string& mapName);
 
 private:
-    std::string _name;
+    std::string m_name;
 };

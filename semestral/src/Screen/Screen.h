@@ -25,12 +25,12 @@ class Application;
 /**
  * @brief handle user input and drawing
  *
- * - _timeoutDelay - input wait
+ * - m_timeoutDelay - input wait
  */
 class Screen {
 public:
-    std::string title;
-    bool exit = false;
+    std::string m_title;
+    bool m_exit = false;
 
     Screen(Application& application, const std::string& title = "untitled screen");
 
@@ -68,11 +68,11 @@ public:
     static void drawDottedLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
 protected:
-    Application& _application;
-    int _timeoutDelay = -1;
+    Application& m_application;
+    int m_timeoutDelay = -1;
 
     /**
      * @brief called from update after exit
      */
-    virtual void _onExit();
+    virtual void onExit();
 };

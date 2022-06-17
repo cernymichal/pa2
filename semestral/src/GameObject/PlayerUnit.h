@@ -13,17 +13,17 @@ public:
     PlayerUnit(uint8_t x, uint8_t y, Player* player = nullptr);
 
     /**
-     * @brief get _player
+     * @brief get m_owningPlayer
      */
     Player* player();
 
     /**
-     * @brief change _player pointer and keep _playerId up to date
+     * @brief change m_owningPlayer pointer and keep m_owningPlayerId up to date
      */
-    void changePlayer(Player* player);
+    void changeOwningPlayer(Player* player);
 
     /**
-     * @brief load _player pointer with _playerId
+     * @brief load m_owningPlayer pointer with m_owningPlayerId
      */
     virtual void onLoad() override;
 
@@ -33,13 +33,13 @@ protected:
     /**
      * @brief serialize without type header
      *
-     * format: "{_playerId} " + GameObject serialization
+     * format: "{m_owningPlayerId} " + GameObject serialization
      *
      * @param[in] stream output stream
      */
-    virtual bool _serialize(std::ostream& stream) const override;
+    virtual bool serializeState(std::ostream& stream) const override;
 
 private:
-    Player* _player = nullptr;
-    uint8_t _playerId = -1;
+    Player* m_owningPlayer = nullptr;
+    uint8_t m_owningPlayerId = -1;
 };

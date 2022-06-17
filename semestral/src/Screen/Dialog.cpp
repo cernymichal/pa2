@@ -18,10 +18,10 @@
 template <typename T>
 class Dialog : public Screen {
 public:
-    std::vector<T> options;
-    bool showTitle;
-    uint8_t optionIndex = 0;
-    bool closed = false;
+    std::vector<T> m_options;
+    bool m_showTitle;
+    uint8_t m_optionIndex = 0;
+    bool m_closed = false;
 
     /**
      * @param[in] application
@@ -32,7 +32,7 @@ public:
      */
     Dialog(Application& application, const std::string& title, const std::vector<T>& options,
            std::function<void(Dialog<T>&, Application&)> onExit, bool showTitle = false)
-        : Screen(application, title), options(options), showTitle(showTitle), _onExitF(onExit) {
+        : Screen(application, title), m_options(options), m_showTitle(showTitle), m_onExitF(onExit) {
     }
 
     /**
@@ -46,61 +46,61 @@ public:
             case KEY_UP:
             case 'w':
             case 'W':
-                if (optionIndex > 0)
-                    optionIndex--;
+                if (m_optionIndex > 0)
+                    m_optionIndex--;
                 break;
 
             case KEY_DOWN:
             case 's':
             case 'S':
-                if (optionIndex < options.size() - 1)
-                    optionIndex++;
+                if (m_optionIndex < m_options.size() - 1)
+                    m_optionIndex++;
                 break;
 
             case ';':
-                closed = true;
+                m_closed = true;
             case KEY_ENTER:
             case '\n':
             case ' ':
-                exit = true;
+                m_exit = true;
                 break;
         }
 
-        _draw();
+        draw();
     }
 
 protected:
     /**
      * @brief call _onExifF after exit
      */
-    virtual void _onExit() override {
-        _onExitF(*this, _application);
+    virtual void onExit() override {
+        m_onExitF(*this, m_application);
     }
 
 private:
-    std::function<void(Dialog<T>&, Application&)> _onExitF;
+    std::function<void(Dialog<T>&, Application&)> m_onExitF;
 
     /**
      * @brief draw dialog to the screen
      */
-    void _draw() const {
+    void draw() const {
         attrclr();
         clear();
 
         uint8_t offset = 1;
 
-        if (showTitle) {
+        if (m_showTitle) {
             attron(A_UNDERLINE);
-            mvaddstr(1, 2, title.c_str());
+            mvaddstr(1, 2, m_title.c_str());
             attroff(A_UNDERLINE);
             offset = 3;
         }
 
-        for (size_t i = 0; i < options.size(); i++)
-            mvaddstr(i + offset, 3, options[i].c_str());
+        for (size_t i = 0; i < m_options.size(); i++)
+            mvaddstr(i + offset, 3, m_options[i].c_str());
 
-        if (options.size() > 0)
-            mvaddch(optionIndex + offset, 2, '>');
+        if (m_options.size() > 0)
+            mvaddch(m_optionIndex + offset, 2, '>');
 
         refresh();
     }

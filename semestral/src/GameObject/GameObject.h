@@ -8,19 +8,16 @@ class Game;
 
 /**
  * @brief abstract root of objects represented in Game
- * 
+ *
  * has location, color, dead (should be removed from Game?), collision distance and update priority
  */
 class GameObject {
 public:
-    uint8_t x = 0;
-    uint8_t y = 0;
-    uint8_t color = COLOR_PAIR_WHITE;
-    bool dead = false;
-    int16_t hitDistance = -1; // dont check collision by default
-    uint8_t updatePriority = 128;
-
-    Game* _game = nullptr;
+    uint8_t m_x = 0;
+    uint8_t m_y = 0;
+    uint8_t m_color = COLOR_PAIR_WHITE;
+    bool m_dead = false;
+    int16_t m_hitDistance = -1;  // dont check collision by default
 
     GameObject();
 
@@ -39,7 +36,7 @@ public:
     /**
      * @brief called after object is added to game
      */
-    virtual void onAdd();
+    virtual void onAdd(Game* game);
 
     /**
      * @brief called after game is loaded
@@ -50,11 +47,16 @@ public:
      * @brief handle collision with other GameObject
      */
     virtual void collideWith(GameObject& object);
+    
+     /**
+     * @returns update priority of object
+     */
+    virtual uint8_t updatePriority() const;
 
     /**
      * @brief serialize for game saving
      *
-     * uses _serialize
+     * uses serializeState
      *
      * @param[in] stream output stream
      */
@@ -75,12 +77,14 @@ public:
     virtual std::ostream& log(std::ostream& stream) const;
 
 protected:
+    Game* m_game = nullptr;
+
     /**
      * @brief serialize without type header
-     * 
-     * format: "{x} {y} {color} {dead} {hitDistance} {updatePriority}"
+     *
+     * format: "{m_x}m_y{y} {m_color} {m_dead} {m_hitDistance}"
      *
      * @param[in] stream output stream
      */
-    virtual bool _serialize(std::ostream& stream) const;
+    virtual bool serializeState(std::ostream& stream) const;
 };

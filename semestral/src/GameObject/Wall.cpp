@@ -3,17 +3,17 @@
 #include <ncurses.h>
 
 Wall::Wall() {
-    hitDistance = 0;
+    m_hitDistance = 0;
 }
 
 Wall::Wall(uint8_t x, uint8_t y) : GameObject(x, y) {
-    hitDistance = 0;
+    m_hitDistance = 0;
 }
 
 void Wall::draw() const {
-    mvaddch(y, x, '#' | COLOR_PAIR(color));
+    mvaddch(m_y, m_x, '#' | COLOR_PAIR(m_color));
 }
 
 bool Wall::serialize(std::ostream& stream) const {
-    return _serialize(stream << "Wall ");
+    return serializeState(stream << "Wall ");
 }

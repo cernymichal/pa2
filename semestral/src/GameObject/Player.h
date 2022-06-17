@@ -4,22 +4,22 @@
 
 /**
  * @brief human player
- * 
+ *
  * has name and id
  */
 class Player : public GameObject {
 public:
-    uint8_t id = -1;
-    std::string name;
+    uint8_t m_playerId = -1;
+    std::string m_playerName;
 
     Player();
 
     Player(uint8_t id, uint8_t color, const std::string& name = "nobody");
 
     /**
-     * @brief add this to playerMap in _game
+     * @brief add this to m_playerMap in m_game
      */
-    virtual void onAdd() override;
+    virtual void onAdd(Game* game) override;
 
     virtual bool serialize(std::ostream& stream) const override;
 
@@ -29,9 +29,9 @@ protected:
     /**
      * @brief serialize without type header
      *
-     * format: "{id} {name} " + GameObject serialization
+     * format: "{m_playerId} {m_playerName} " + GameObject serialization
      *
      * @param[in] stream output stream
      */
-    virtual bool _serialize(std::ostream& stream) const override;
+    virtual bool serializeState(std::ostream& stream) const override;
 };

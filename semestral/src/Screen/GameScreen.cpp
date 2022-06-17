@@ -7,8 +7,8 @@
 const auto UPDATE_PERIOD = std::chrono::milliseconds(500);
 
 GameScreen::GameScreen(Application& application) : Screen(application, "game screen") {
-    _timeoutDelay = 0;  // non blocking input
-    _resetScreen();
+    m_timeoutDelay = 0;  // non blocking input
+    resetScreen();
 }
 
 void GameScreen::update(std::chrono::nanoseconds dt, int key) {
@@ -16,88 +16,88 @@ void GameScreen::update(std::chrono::nanoseconds dt, int key) {
     bool refreshNeeded = false;
 
     if (key == ';') {
-        exit = true;
-        _paused = true;
+        m_exit = true;
+        m_paused = true;
         return;
     }
     else if (key == '\n') {
-        _commitInput();
-        _resetInputBuffer();
-        _drawInputBuffer();
+        commitInput();
+        resetInputBuffer();
+        drawInputBuffer();
         refreshNeeded = true;
     }
-    else if (key == KEY_BACKSPACE && inputIndex > 0) {
-        inputBuffer[--inputIndex] = ' ';
-        _drawInputBuffer();
+    else if (key == KEY_BACKSPACE && m_inputIndex > 0) {
+        m_inputBuffer[--m_inputIndex] = ' ';
+        drawInputBuffer();
         refreshNeeded = true;
     }
     else if (std::isalpha(key)) {
-        if (inputIndex == 2)
-            _resetInputBuffer();
+        if (m_inputIndex == 2)
+            resetInputBuffer();
 
-        inputBuffer[inputIndex++] = toupper(key);
-        _drawInputBuffer();
+        m_inputBuffer[m_inputIndex++] = toupper(key);
+        drawInputBuffer();
         refreshNeeded = true;
     }
 
-    _dtAccumulator += dt;
+    m_dtAccumulator += dt;
 
-    if (_dtAccumulator > UPDATE_PERIOD) {
-        _dtAccumulator -= UPDATE_PERIOD;
-        _application.state.game->update();
+    if (m_dtAccumulator > UPDATE_PERIOD) {
+        m_dtAccumulator -= UPDATE_PERIOD;
+        m_application.m_state.game->update();
 
         clear();
-        _application.state.game->draw();
+        m_application.m_state.game->draw();
 
-        _drawInputBuffer();
+        drawInputBuffer();
         refreshNeeded = true;
 
-        _checkWin();
+        checkWin();
     }
 
     if (refreshNeeded)
         refresh();
 }
 
-void GameScreen::_onExit() {
-    if (_paused) {
-        _resetScreen();
-        _application.openPauseScreen();
+void GameScreen::onExit() {
+    if (m_paused) {
+        resetScreen();
+        m_application.openPauseScreen();
     }
     else
-        _application.openResultsScreen();
+        m_application.openResultsScreen();
 }
 
-void GameScreen::_resetScreen() {
-    exit = false;
-    _paused = false;
-    _dtAccumulator = UPDATE_PERIOD;
+void GameScreen::resetScreen() {
+    m_exit = false;
+    m_paused = false;
+    m_dtAccumulator = UPDATE_PERIOD;
 }
 
-void GameScreen::_resetInputBuffer() {
-    inputBuffer[0] = ' ';
-    inputBuffer[1] = ' ';
-    inputIndex = 0;
+void GameScreen::resetInputBuffer() {
+    m_inputBuffer[0] = ' ';
+    m_inputBuffer[1] = ' ';
+    m_inputIndex = 0;
 }
 
-void GameScreen::_drawInputBuffer() {
-    mvaddstr(LINES - 1, COLS - 2, inputBuffer);
+void GameScreen::drawInputBuffer() {
+    mvaddstr(LINES - 1, COLS - 2, m_inputBuffer);
 }
 
-void GameScreen::_commitInput() {
-    PN_LOG("executing command: " << inputBuffer);
+void GameScreen::commitInput() {
+    PN_LOG("executing command: " << m_inputBuffer);
 
-    if (inputIndex == 1 || inputBuffer[0] == inputBuffer[1])
-        _application.state.game->disableLinesFrom(0, inputBuffer[0]);
+    if (m_inputIndex == 1 || m_inputBuffer[0] == m_inputBuffer[1])
+        m_application.m_state.game->disableLinesFrom(0, m_inputBuffer[0]);
     else
-        _application.state.game->activateLine(0, inputBuffer[0], inputBuffer[1]);
+        m_application.m_state.game->activateLine(0, m_inputBuffer[0], m_inputBuffer[1]);
 }
 
 
-void GameScreen::_checkWin() {
-    if(_application.state.game->winTimer == 0) {
+void GameScreen::checkWin() {
+    if(m_application.m_state.game->m_winTimer == 0) {
         PN_LOG("winner found");
-        exit = true;
-        _paused = false;
+        m_exit = true;
+        m_paused = false;
     }
 }

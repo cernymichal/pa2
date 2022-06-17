@@ -4,7 +4,7 @@
 
 #include <fstream>
 
-std::ofstream PN_LOGFILE = std::ofstream();
-std::ostream* PN_LOGSTREAM = &PN_LOGFILE;
+std::ofstream g_PNLogFile = std::ofstream();
+std::ostream* g_PNLogStream = &g_PNLogFile;
 
 #endif

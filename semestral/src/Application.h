@@ -18,7 +18,7 @@ struct ApplicationState {
  */
 class Application {
 public:
-    ApplicationState state;
+    ApplicationState m_state;
 
     Application();
 
@@ -79,12 +79,12 @@ public:
     void openResultsScreen();
 
 private:
-    std::stack<std::unique_ptr<Screen>> _screens;
+    std::stack<std::unique_ptr<Screen>> m_screens;
 
     /**
      * @brief main program loop
      *
      * shows top screen
      */
-    void _run();
+    void run();
 };

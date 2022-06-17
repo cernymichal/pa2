@@ -5,31 +5,33 @@
 Player::Player() {
 }
 
-Player::Player(uint8_t id, uint8_t color, const std::string& name) : id(id), name(name) {
-    this->color = color;
+Player::Player(uint8_t id, uint8_t color, const std::string& name) : m_playerId(id), m_playerName(name) {
+    this->m_color = color;
 }
 
-void Player::onAdd() {
-    _game->playerMap[id] = this;
+void Player::onAdd(Game* game) {
+    GameObject::onAdd(game);
+
+    m_game->m_playerMap[m_playerId] = this;
 }
 
 bool Player::serialize(std::ostream& stream) const {
-    return _serialize(stream << "Player ");
+    return serializeState(stream << "Player ");
 }
 
-bool Player::_serialize(std::ostream& stream) const {
-    stream << (unsigned short)id << ' ' << name << ' ';
-    
-    return GameObject::_serialize(stream);
+bool Player::serializeState(std::ostream& stream) const {
+    stream << (unsigned short)m_playerId << ' ' << m_playerName << ' ';
+
+    return GameObject::serializeState(stream);
 }
 
 bool Player::unserialize(std::istream& stream) {
     unsigned short temp;
 
     stream >> temp;
-    id = temp;
+    m_playerId = temp;
 
-    stream >> name;
+    stream >> m_playerName;
 
     return GameObject::unserialize(stream);
 }

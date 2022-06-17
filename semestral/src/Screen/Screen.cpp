@@ -5,21 +5,21 @@
 #include "../utils.cpp"
 
 Screen::Screen(Application& application, const std::string& title)
-    : title(title), _application(application) {
+    : m_title(title), m_application(application) {
 }
 
-void Screen::_onExit() {
+void Screen::onExit() {
 }
 
 void Screen::show() {
-    timeout(_timeoutDelay);
+    timeout(m_timeoutDelay);
 
     auto start = std::chrono::steady_clock::now();
 
     // call first update for drawing
     update(std::chrono::nanoseconds(0), ERR);
 
-    while (!exit) {
+    while (!m_exit) {
         // calculate delta time from last update
         auto newStart = std::chrono::steady_clock::now();
         auto dt = newStart - start;
@@ -28,7 +28,7 @@ void Screen::show() {
         update(dt, getch());
     }
 
-    _onExit();
+    onExit();
 }
 
 void Screen::initNCurses() {

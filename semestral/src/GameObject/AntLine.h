@@ -5,18 +5,18 @@
 
 /**
  * @brief line between two AntNests
- * 
+ *
  * sends Ants from AntNests
  */
 class AntLine : public GameObject {
 public:
-    AntNest* nestB = nullptr;
-    char nestAId;
-    bool nestAActive = false;
+    AntNest* m_nestB = nullptr;
+    char m_nestAId;
+    bool m_nestAActive = false;
 
-    AntNest* nestA = nullptr;
-    char nestBId;
-    bool nestBActive = false;
+    AntNest* m_nestA = nullptr;
+    char m_nestBId;
+    bool m_nestBActive = false;
 
     AntLine();
 
@@ -32,14 +32,14 @@ public:
 
     /**
      * @param[in] nest
-     * 
+     *
      * @returns nest opposite of nest
      */
     AntNest* otherNest(AntNest* nest);
 
     /**
      * @param[in] nest
-     * 
+     *
      * @returns is other side sending ants?
      */
     bool otherSideActive(AntNest* nest);
@@ -61,6 +61,13 @@ public:
      */
     virtual void onLoad() override;
 
+    /**
+     * draw line and spawn ants before movement
+     *
+     * @returns update priority of object
+     */
+    virtual uint8_t updatePriority() const override;
+
     virtual bool serialize(std::ostream& stream) const override;
 
     virtual bool unserialize(std::istream& stream) override;
@@ -69,9 +76,9 @@ protected:
     /**
      * @brief serialize without type header
      *
-     * format: "{nestAId} {nestAActive} {nestBId} {nestBActive} " + GameObject serialization
+     * format: "{m_nestAId} {m_nestAActive} {m_nestBId} {m_nestBActive} " + GameObject serialization
      *
      * @param[in] stream output stream
      */
-    virtual bool _serialize(std::ostream& stream) const override;
+    virtual bool serializeState(std::ostream& stream) const override;
 };

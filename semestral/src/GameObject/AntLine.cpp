@@ -7,79 +7,77 @@
 #include "Ant.h"
 
 AntLine::AntLine() {
-    // draw line and spaw ants before movement
-    updatePriority = 64;
 }
 
-AntLine::AntLine(char nestAId, char nestBId) : nestAId(nestAId), nestBId(nestBId) {
-    // draw line and spaw ants before movement
-    updatePriority = 64;
+AntLine::AntLine(char nestAId, char nestBId) : m_nestAId(nestAId), m_nestBId(nestBId) {
 }
 
 void AntLine::switchSide(AntNest* nest, bool value) {
-    if (nestA == nest)
-        nestAActive = value;
+    if (m_nestA == nest)
+        m_nestAActive = value;
     else
-        nestBActive = value;
+        m_nestBActive = value;
 }
 
 AntNest* AntLine::otherNest(AntNest* nest) {
-    if (nestA == nest)
-        return nestB;
+    if (m_nestA == nest)
+        return m_nestB;
     else
-        return nestA;
+        return m_nestA;
 }
 
 bool AntLine::otherSideActive(AntNest* nest) {
-    if (nestA == nest)
-        return nestBActive;
+    if (m_nestA == nest)
+        return m_nestBActive;
     else
-        return nestAActive;
+        return m_nestAActive;
 }
 
 bool AntLine::friendly() {
-    return nestA->player() == nestB->player();
+    return m_nestA->player() == m_nestB->player();
 }
 
 void AntLine::draw() const {
-    attron(COLOR_PAIR(color));
-    Screen::drawDottedLine(nestA->x, nestA->y, nestB->x, nestB->y);
+    attron(COLOR_PAIR(m_color));
+    Screen::drawDottedLine(m_nestA->m_x, m_nestA->m_y, m_nestB->m_x, m_nestB->m_y);
 }
 
 void AntLine::update() {
-    if (nestAActive && nestA->ants > 0) {
-        nestA->ants--;
-        _game->addObject(
-            new Ant(nestA->x, nestA->y, nestA->player(), nestB->x, nestB->y));
+    if (m_nestAActive && m_nestA->m_ants > 0) {
+        m_nestA->m_ants--;
+        m_game->addObject<Ant>(m_nestA->m_x, m_nestA->m_y, m_nestA->player(), m_nestB->m_x, m_nestB->m_y);
     }
 
-    if (nestBActive && nestB->ants > 0) {
-        nestB->ants--;
-        _game->addObject(
-            new Ant(nestB->x, nestB->y, nestB->player(), nestA->x, nestA->y));
+    if (m_nestBActive && m_nestB->m_ants > 0) {
+        m_nestB->m_ants--;
+        m_game->addObject<Ant>(m_nestB->m_x, m_nestB->m_y, m_nestB->player(), m_nestA->m_x, m_nestA->m_y);
     }
 }
 
 void AntLine::onLoad() {
-    nestA = _game->nestMap[nestAId];
-    nestB = _game->nestMap[nestBId];
+    m_nestA = m_game->m_nestMap[m_nestAId];
+    m_nestB = m_game->m_nestMap[m_nestBId];
 
-    nestA->lineMap[nestBId] = this;
-    nestB->lineMap[nestAId] = this;
+    m_nestA->m_lineMap[m_nestBId] = this;
+    m_nestB->m_lineMap[m_nestAId] = this;
+}
+
+uint8_t AntLine::updatePriority() const {
+    return 64;
 }
 
 bool AntLine::serialize(std::ostream& stream) const {
-    return _serialize(stream << "AntLine ");
+    return serializeState(stream << "AntLine ");
 }
 
-bool AntLine::_serialize(std::ostream& stream) const {
-    stream << nestAId << ' ' << nestAActive << ' ' << nestBId << ' ' << nestBActive << ' ';
+bool AntLine::serializeState(std::ostream& stream) const {
+    stream << m_nestAId << ' ' << m_nestAActive << ' ' << m_nestBId << ' ' << m_nestBActive << ' ';
 
-    return GameObject::_serialize(stream);
+    return GameObject::serializeState(stream);
 }
 
 bool AntLine::unserialize(std::istream& stream) {
-    stream >> nestAId >> nestAActive >> nestBId >> nestBActive;
-    
+    stream >> m_nestAId >> m_nestAActive >> m_nestBId >> m_nestBActive;
+
     return GameObject::unserialize(stream);
 }
