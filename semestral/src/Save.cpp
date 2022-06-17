@@ -80,7 +80,8 @@ std::vector<Save> Save::findMaps() {
 bool Save::emptySaveDirectory() {
     try {
         return !filesExist(SAVE_DIRECTORY, SAVE_EXTENSION);
-    } catch (std::filesystem::filesystem_error& _) {
+    }
+    catch (std::filesystem::filesystem_error&) {
         return true;
     }
 }
@@ -88,7 +89,8 @@ bool Save::emptySaveDirectory() {
 bool Save::emptyMapDirectory() {
     try {
         return !filesExist(MAP_DIRECTORY, MAP_EXTENSION);
-    } catch (std::filesystem::filesystem_error& _) {
+    }
+    catch (std::filesystem::filesystem_error&) {
         return true;
     }
 }

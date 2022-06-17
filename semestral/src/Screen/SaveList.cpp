@@ -19,7 +19,7 @@ void SaveList::update(std::chrono::nanoseconds dt, int key) {
         try {
             std::filesystem::remove(options[optionIndex].path);
         }
-        catch (std::filesystem::filesystem_error& _) {
+        catch (std::filesystem::filesystem_error&) {
         }
 
         options.erase(options.begin() + optionIndex);

@@ -2,7 +2,7 @@
 
 #include "GameObject/ComputerPlayer.h"
 #include "Save.h"
-#include "Screen/Dialog.h"
+#include "Screen/Dialog.cpp"
 #include "Screen/GameScreen.h"
 #include "Screen/SaveList.h"
 #include "log.h"
@@ -88,7 +88,8 @@ void Application::openMapListScreen() {
 
         try {
             application.state.game = std::make_unique<Game>(dialog.options[dialog.optionIndex].path);
-        } catch (SaveException& _) {
+        }
+        catch (SaveException&) {
             application.openMainMenuScreen();
             return;
         }
@@ -112,7 +113,8 @@ void Application::openSaveListScreen() {
 
         try {
             application.state.game = std::make_unique<Game>(dialog.options[dialog.optionIndex].path);
-        } catch (SaveException& _) {
+        }
+        catch (SaveException&) {
             application.openMainMenuScreen();
             return;
         }
@@ -172,7 +174,8 @@ void Application::openPauseScreen() {
                 try {
                     application.state.game->save(
                         Save::createSavePath(application.state.game->mapName));
-                } catch (SaveException& _) {
+                }
+                catch (SaveException&) {
                     dialog.exit = false;
                 }
                 break;

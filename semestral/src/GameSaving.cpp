@@ -1,3 +1,5 @@
+#pragma once
+
 #include <fstream>
 #include <map>
 
@@ -69,7 +71,8 @@ void Game::save(const std::filesystem::path& path) const {
 
     try {
         std::filesystem::create_directories(path.parent_path());
-    } catch (std::filesystem::filesystem_error& _) {
+    }
+    catch (std::filesystem::filesystem_error&) {
         throw SaveException();
     }
 

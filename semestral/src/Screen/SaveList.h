@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Save.h"
-#include "Dialog.h"
+#include "Dialog.cpp"
 
 /**
  * @brief dialog with file deletion
