@@ -15,8 +15,6 @@ class SaveException : public std::exception {
  */
 class Save {
 public:
-    std::filesystem::path m_path;
-
     /**
      * @brief load save name from save file
      *
@@ -30,6 +28,11 @@ public:
      * @returns this save name < other save name
      */
     bool operator<(const Save& other) const;
+
+    /**
+     * @returns save path
+     */
+    const std::filesystem::path& path() const;
 
     /**
      * @returns save name
@@ -77,5 +80,6 @@ public:
     static std::filesystem::path createSavePath(const std::string& mapName);
 
 private:
+    std::filesystem::path m_path;
     std::string m_name;
 };

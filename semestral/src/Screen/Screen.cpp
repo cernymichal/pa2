@@ -8,6 +8,14 @@ Screen::Screen(Application& application, const std::string& title)
     : m_title(title), m_application(application) {
 }
 
+const std::string& Screen::title() const {
+    return m_title;
+}
+
+bool Screen::exited() const {
+    return m_exit;
+}
+
 void Screen::onExit() {
 }
 
@@ -33,13 +41,17 @@ void Screen::show() {
     onExit();
 }
 
+void Screen::reset() {
+    m_exit = false;
+}
+
 void Screen::initNCurses() {
     initscr();
     cbreak();
-    noecho(); // dont echo written characters
-    keypad(stdscr, TRUE); // catch keypad input
-    scrollok(stdscr, FALSE); // dont scroll on new line
-    curs_set(FALSE); // invisible cursor
+    noecho();                 // dont echo written characters
+    keypad(stdscr, TRUE);     // catch keypad input
+    scrollok(stdscr, FALSE);  // dont scroll on new line
+    curs_set(FALSE);          // invisible cursor
     start_color();
 
     // init color pairs

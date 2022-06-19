@@ -59,6 +59,10 @@ bool Save::operator<(const Save& other) const {
     return name() < other.name();
 }
 
+const std::filesystem::path& Save::path() const {
+    return m_path;
+}
+
 const std::string& Save::name() const {
     return m_name;
 }

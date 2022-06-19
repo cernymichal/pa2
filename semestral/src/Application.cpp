@@ -32,15 +32,15 @@ void Application::openMainMenuScreen() {
     m_state = ApplicationState();
 
     auto onExit = [](Dialog<std::string>& dialog, Application& application) {
-        if (dialog.m_closed)
+        if (dialog.closed())
             return;
 
-        switch (dialog.m_optionIndex) {
+        switch (dialog.selectedIndex()) {
             case 0:
                 if (Save::emptyMapDirectory()) {
                     PN_LOG("no maps found");
 
-                    dialog.m_exit = false;
+                    dialog.reset();
 
                     break;
                 }
@@ -51,7 +51,7 @@ void Application::openMainMenuScreen() {
                 if (Save::emptySaveDirectory()) {
                     PN_LOG("no saves found");
 
-                    dialog.m_exit = false;
+                    dialog.reset();
 
                     break;
                 }
@@ -73,20 +73,20 @@ void Application::openMapListScreen() {
     PN_LOGH2("opening mapListScreen");
 
     auto onExit = [](Dialog<Save>& dialog, Application& application) {
-        if (dialog.m_closed) {
+        if (dialog.closed()) {
             application.openMainMenuScreen();
             return;
         }
 
         try {
-            application.m_state.game = std::make_unique<Game>(dialog.m_options[dialog.m_optionIndex].m_path);
+            application.m_state.game = std::make_unique<Game>(dialog.selectedOption().path());
         }
         catch (SaveException&) {
             application.openMainMenuScreen();
             return;
         }
 
-        dialog.m_exit = false;
+        dialog.reset();
 
         application.openOponentNumberScreen();
     };
@@ -98,13 +98,13 @@ void Application::openSaveListScreen() {
     PN_LOGH2("opening saveListScreen");
 
     auto onExit = [](Dialog<Save>& dialog, Application& application) {
-        if (dialog.m_closed) {
+        if (dialog.closed()) {
             application.openMainMenuScreen();
             return;
         }
 
         try {
-            application.m_state.game = std::make_unique<Game>(dialog.m_options[dialog.m_optionIndex].m_path);
+            application.m_state.game = std::make_unique<Game>(dialog.selectedOption().path());
         }
         catch (SaveException&) {
             application.openMainMenuScreen();
@@ -127,10 +127,10 @@ void Application::openOponentNumberScreen() {
         oponents.push_back(std::to_string(i));
 
     auto onExit = [](Dialog<std::string>& dialog, Application& application) {
-        if (dialog.m_closed)
+        if (dialog.closed())
             return;
 
-        application.m_state.game->createPlayers(dialog.m_optionIndex);
+        application.m_state.game->createPlayers(dialog.selectedIndex());
 
         application.closeCurrentScreen();  // close self
         application.closeCurrentScreen();  // close map screen
@@ -155,10 +155,10 @@ void Application::openPauseScreen() {
     PN_LOGH2("opening pauseScreen");
 
     auto onExit = [](Dialog<std::string>& dialog, Application& application) {
-        if (dialog.m_closed)
+        if (dialog.closed())
             return;
 
-        switch (dialog.m_optionIndex) {
+        switch (dialog.selectedIndex()) {
             case 0:
                 break;
 
@@ -168,7 +168,7 @@ void Application::openPauseScreen() {
                         Save::createSavePath(application.m_state.game->m_mapName));
                 }
                 catch (SaveException&) {
-                    dialog.m_exit = false;
+                    dialog.reset();
                 }
                 break;
 
@@ -213,12 +213,12 @@ void Application::openResultsScreen() {
 
 void Application::run() {
     while (!m_screens.empty()) {
-        if (m_screens.top()->m_exit) {
+        if (m_screens.top()->exited()) {
             closeCurrentScreen();
             continue;
         }
 
-        PN_LOG("showing " << m_screens.top()->m_title);
+        PN_LOG("showing " << m_screens.top()->title());
 
         m_screens.top()->show();
     }

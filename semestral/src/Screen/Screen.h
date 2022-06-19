@@ -29,10 +29,11 @@ class Application;
  */
 class Screen {
 public:
-    std::string m_title;
-    bool m_exit = false;
-
     Screen(Application& application, const std::string& title = "untitled screen");
+
+    const std::string& title() const;
+
+    bool exited() const;
 
     /**
      * @brief update screen and handle input
@@ -46,6 +47,11 @@ public:
      * @brief catch input and call update
      */
     void show();
+
+    /**
+     * @brief reset exit state
+     */
+    virtual void reset();
 
     /**
      * @brief initialize ncurses
@@ -68,6 +74,8 @@ public:
     static void drawDottedLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
 
 protected:
+    std::string m_title;
+    bool m_exit = false;
     Application& m_application;
     int m_timeoutDelay = -1;
 

@@ -10,7 +10,7 @@ const auto g_updatePeriod = 500ms;
 
 GameScreen::GameScreen(Application& application) : Screen(application, "game screen") {
     m_timeoutDelay = 0;  // non blocking input
-    resetScreen();
+    reset();
 }
 
 void GameScreen::update(std::chrono::nanoseconds dt, int key) {
@@ -61,19 +61,19 @@ void GameScreen::update(std::chrono::nanoseconds dt, int key) {
         refresh();
 }
 
+void GameScreen::reset() {
+    Screen::reset();
+    m_paused = false;
+    m_dtAccumulator = g_updatePeriod;
+}
+
 void GameScreen::onExit() {
     if (m_paused) {
-        resetScreen();
+        reset();
         m_application.openPauseScreen();
     }
     else
         m_application.openResultsScreen();
-}
-
-void GameScreen::resetScreen() {
-    m_exit = false;
-    m_paused = false;
-    m_dtAccumulator = g_updatePeriod;
 }
 
 void GameScreen::resetInputBuffer() {
@@ -95,9 +95,8 @@ void GameScreen::commitInput() {
         m_application.m_state.game->activateLine(0, m_inputBuffer[0], m_inputBuffer[1]);
 }
 
-
 void GameScreen::checkWin() {
-    if(m_application.m_state.game->m_winTimer == 0) {
+    if (m_application.m_state.game->m_winTimer == 0) {
         PN_LOG("winner found");
         m_exit = true;
         m_paused = false;

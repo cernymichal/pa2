@@ -18,11 +18,6 @@
 template <typename T>
 class Dialog : public Screen {
 public:
-    std::vector<T> m_options;
-    bool m_showTitle;
-    uint8_t m_optionIndex = 0;
-    bool m_closed = false;
-
     /**
      * @param[in] application
      * @param[in] title
@@ -33,6 +28,18 @@ public:
     Dialog(Application& application, const std::string& title, const std::vector<T>& options,
            std::function<void(Dialog<T>&, Application&)> onExit, bool showTitle = false)
         : Screen(application, title), m_options(options), m_showTitle(showTitle), m_onExitF(onExit) {
+    }
+
+    bool closed() const {
+        return m_closed;
+    }
+
+    uint8_t selectedIndex() const {
+        return m_optionIndex;
+    }
+
+    const T& selectedOption() const {
+        return m_options[m_optionIndex];
     }
 
     /**
@@ -69,7 +76,17 @@ public:
         draw();
     }
 
+    virtual void reset() override {
+        Screen::reset();
+        m_closed = false;
+    }
+
 protected:
+    std::vector<T> m_options;
+    bool m_showTitle;
+    uint8_t m_optionIndex = 0;
+    bool m_closed = false;
+
     /**
      * @brief call _onExifF after exit
      */

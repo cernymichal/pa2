@@ -21,6 +21,11 @@ public:
      */
     virtual void update(std::chrono::nanoseconds dt, int key) override;
 
+    /**
+     * @brief resets Screen variables and m_dtAccumulator
+     */
+    virtual void reset() override;
+
 protected:
     virtual void onExit() override;
 
@@ -29,11 +34,6 @@ private:
     bool m_paused = false;
     char m_inputBuffer[3] = "  ";
     uint8_t m_inputIndex = 0;
-
-    /**
-     * @brief resets Screen variables and m_dtAccumulator
-     */
-    void resetScreen();
 
     /**
      * @brief resets input command buffer

@@ -36,7 +36,7 @@ public:
      */
     template <typename T, typename... Ts>
     void openScreen(Ts&&... args) {
-        if (!m_screens.empty() && m_screens.top()->m_exit)
+        if (!m_screens.empty() && m_screens.top()->exited())
             closeCurrentScreen();
 
         m_screens.push(std::make_unique<T>(std::forward<Ts>(args)...));
