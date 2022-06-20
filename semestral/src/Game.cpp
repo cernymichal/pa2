@@ -40,7 +40,7 @@ void Game::createPlayers(uint8_t aiPlayers) {
     // randomly choose player starting nests
     std::vector<AntNest*> startingNests;
     for (const auto& nest : m_nestMap) {
-        if (nest.second->m_starting)
+        if (nest.second->starting())
             startingNests.push_back(nest.second);
     }
 
@@ -96,7 +96,7 @@ uint8_t Game::maxPlayers() const {
     uint8_t startingPoints = 0;
 
     for (const auto& nest : m_nestMap) {
-        if (nest.second->m_starting)
+        if (nest.second->starting())
             startingPoints++;
     }
 
@@ -142,7 +142,7 @@ void Game::activateLine(Player* player, AntNest* nestA, AntNest* nestB) {
     if (nestA->player() != player)
         return;
 
-    auto line = nestA->m_lineMap.find(nestB->m_nestId);
+    auto line = nestA->m_lineMap.find(nestB->nestId());
 
     if (line == nestA->m_lineMap.end())
         return;

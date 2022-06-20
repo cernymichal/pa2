@@ -12,28 +12,28 @@ AntLine::AntLine() {
 AntLine::AntLine(char nestAId, char nestBId) : m_nestAId(nestAId), m_nestBId(nestBId) {
 }
 
-void AntLine::switchSide(AntNest* nest, bool value) {
+void AntLine::switchSide(const AntNest* nest, bool value) {
     if (m_nestA == nest)
         m_nestAActive = value;
     else
         m_nestBActive = value;
 }
 
-AntNest* AntLine::otherNest(AntNest* nest) {
+AntNest* AntLine::otherNest(const AntNest* nest) const {
     if (m_nestA == nest)
         return m_nestB;
     else
         return m_nestA;
 }
 
-bool AntLine::otherSideActive(AntNest* nest) {
+bool AntLine::otherSideActive(const AntNest* nest) const {
     if (m_nestA == nest)
         return m_nestBActive;
     else
         return m_nestAActive;
 }
 
-bool AntLine::friendly() {
+bool AntLine::friendly() const {
     return m_nestA->player() == m_nestB->player();
 }
 
@@ -43,15 +43,11 @@ void AntLine::draw() const {
 }
 
 void AntLine::update() {
-    if (m_nestAActive && m_nestA->m_ants > 0) {
-        m_nestA->m_ants--;
-        m_game->addObject<Ant>(m_nestA->location(), m_nestA->player(), m_nestB->location());
-    }
+    if (m_nestAActive)
+        m_nestA->spawnAnt(m_nestB);
 
-    if (m_nestBActive && m_nestB->m_ants > 0) {
-        m_nestB->m_ants--;
-        m_game->addObject<Ant>(m_nestB->location(), m_nestB->player(), m_nestA->location());
-    }
+    if (m_nestBActive)
+        m_nestB->spawnAnt(m_nestA);
 }
 
 void AntLine::onLoad() {

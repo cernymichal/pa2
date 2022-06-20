@@ -14,15 +14,17 @@ class AntLine;
  */
 class AntNest : public PlayerUnit {
 public:
-    char m_nestId = '?';
-    bool m_starting = false;
-    uint8_t m_ants = 0;
-
     std::map<char, AntLine*> m_lineMap;
 
     AntNest();
 
     AntNest(const Vector2<uint8_t>& location, char id, bool starting = false);
+
+    char nestId() const;
+
+    bool starting() const;
+
+    uint8_t ants() const;
 
     /**
      * @brief disables all AntLines originating here
@@ -33,6 +35,8 @@ public:
      * @returns is fought over?
      */
     bool contested();
+
+    void spawnAnt(const AntNest* targetNest);
 
     virtual void draw() const override;
 
@@ -77,5 +81,8 @@ protected:
     virtual bool serializeState(std::ostream& stream) const override;
 
 private:
+    char m_nestId = '?';
+    bool m_starting = false;
+    uint8_t m_ants = 0;
     uint8_t m_spawnTimer = 0;
 };

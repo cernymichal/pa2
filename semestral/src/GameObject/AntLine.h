@@ -10,14 +10,6 @@
  */
 class AntLine : public GameObject {
 public:
-    AntNest* m_nestB = nullptr;
-    char m_nestAId;
-    bool m_nestAActive = false;
-
-    AntNest* m_nestA = nullptr;
-    char m_nestBId;
-    bool m_nestBActive = false;
-
     AntLine();
 
     AntLine(char nestA, char nestB);
@@ -28,26 +20,26 @@ public:
      * @param[in] nest side
      * @param[in] value activate / disable
      */
-    void switchSide(AntNest* nest, bool value);
+    void switchSide(const AntNest* nest, bool value);
 
     /**
      * @param[in] nest
      *
      * @returns nest opposite of nest
      */
-    AntNest* otherNest(AntNest* nest);
+    AntNest* otherNest(const AntNest* nest) const;
 
     /**
      * @param[in] nest
      *
      * @returns is other side sending ants?
      */
-    bool otherSideActive(AntNest* nest);
+    bool otherSideActive(const AntNest* nest) const;
 
     /**
      * @returns both sides are owned by the same player
      */
-    bool friendly();
+    bool friendly() const;
 
     virtual void draw() const override;
 
@@ -73,6 +65,14 @@ public:
     virtual bool unserialize(std::istream& stream) override;
 
 protected:
+    AntNest* m_nestB = nullptr;
+    char m_nestAId;
+    bool m_nestAActive = false;
+
+    AntNest* m_nestA = nullptr;
+    char m_nestBId;
+    bool m_nestBActive = false;
+
     /**
      * @brief serialize without type header
      *

@@ -16,7 +16,7 @@ void ComputerPlayer::update() {
 
     auto nests = m_game->getNests(playerId());
     nests.sort([](const AntNest* a, const AntNest* b) {
-        return a->m_ants < b->m_ants;
+        return a->ants() < b->ants();
     });
 
     PN_DEBUG_ONLY(bool defendingOld = m_defending);
@@ -50,7 +50,7 @@ bool ComputerPlayer::serialize(std::ostream& stream) const {
 bool ComputerPlayer::serializeState(std::ostream& stream) const {
     char focusedNestId = '?';
     if (m_focusedNest)
-        focusedNestId = m_focusedNest->m_nestId;
+        focusedNestId = m_focusedNest->nestId();
 
     stream << static_cast<unsigned short>(m_reactionTimer)
            << ' ' << m_defending
@@ -94,7 +94,7 @@ void ComputerPlayer::expand(std::list<AntNest*>& nests) {
                 continue;
 
             auto otherNest = line.second->otherNest(nest);
-            if (!m_focusedNest || m_focusedNest->m_ants > otherNest->m_ants)
+            if (!m_focusedNest || m_focusedNest->ants() > otherNest->ants())
                 m_focusedNest = otherNest;
         }
     }
@@ -109,11 +109,11 @@ void ComputerPlayer::sendAnts() {
 }
 
 void ComputerPlayer::sendAnts(AntNest* nest, std::set<char>& visitedNests) {
-    visitedNests.insert(nest->m_nestId);
+    visitedNests.insert(nest->nestId());
 
     for (const auto& line : nest->m_lineMap) {
         auto otherNest = line.second->otherNest(nest);
-        if ((line.second->friendly() || nest == m_focusedNest) && visitedNests.find(otherNest->m_nestId) == visitedNests.end()) {
+        if ((line.second->friendly() || nest == m_focusedNest) && visitedNests.find(otherNest->nestId()) == visitedNests.end()) {
             m_game->activateLine(this, otherNest, nest);
             sendAnts(otherNest, visitedNests);
         }

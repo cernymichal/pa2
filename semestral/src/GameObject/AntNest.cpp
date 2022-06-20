@@ -22,6 +22,18 @@ AntNest::AntNest(const Vector2<uint8_t>& location, char id, bool starting)
         m_ants = NEUTRAL_DEFENDERS;
 }
 
+char AntNest::nestId() const {
+    return m_nestId;
+}
+
+bool AntNest::starting() const {
+    return m_starting;
+}
+
+uint8_t AntNest::ants() const {
+    return m_ants;
+}
+
 void AntNest::disableLines() {
     for (auto& line : m_lineMap)
         line.second->switchSide(this, false);
@@ -34,6 +46,13 @@ bool AntNest::contested() {
     }
 
     return false;
+}
+
+void AntNest::spawnAnt(const AntNest* targetNest) {
+    if (m_ants > 0) {
+        m_ants--;
+        m_game->addObject<Ant>(m_location, player(), targetNest->location());
+    }
 }
 
 void AntNest::draw() const {
