@@ -4,6 +4,7 @@
 #include <stack>
 
 #include "Game.h"
+#include "GameBuilder.h"
 #include "Screen/Screen.h"
 
 /**
@@ -11,6 +12,7 @@
  */
 struct ApplicationState {
     std::unique_ptr<Game> game;
+    GameBuilder gameBuilder;
 };
 
 /**

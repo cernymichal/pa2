@@ -8,7 +8,7 @@ OBJECTS = $(shell find src | grep '.*\.h$$' | sed 's/^.*\///' | sed 's/.h/.o/' |
 OBJECTS_MAIN = main.o $(OBJECTS)
 OBJECTS_TEST = test.o $(OBJECTS)
 
-TARGET = p&n
+TARGET = PinsAndNeedles
 TARGET_TEST = $(TARGET)_test
 SRC_DIR = src
 BUILD_DIR = build
@@ -44,6 +44,15 @@ doc: $(SRC_DIR)/* $(SRC_DIR)/**/*
 lc:
 	find "$(SRC_DIR)" -type f | sort -f | xargs wc -l
 
+dist: $(TARGET).zip
+
+$(TARGET).zip: $(TARGET)
+	rm -rf "/tmp/$(TARGET)"
+	mkdir -p "/tmp/$(TARGET)"
+	cp -r "$(TARGET)" assets examples README.md "/tmp/$(TARGET)/"
+	cd /tmp && \
+	zip -rmT "$(shell pwd)/$(TARGET).zip" "$(TARGET)"
+
 $(TARGET): $(OBJECTS_MAIN)
 	cd "$(BUILD_DIR)" && \
 	$(LD) -o "../$(TARGET)" $(OBJECTS_MAIN) $(LIBS)
@@ -63,6 +72,6 @@ $(TARGET_TEST): $(OBJECTS_TEST)
 Makefile.d: $(SRC_DIR)/*.cpp $(SRC_DIR)/**/*.cpp
 	$(CXX) -MM $(SRC_DIR)/*.cpp $(SRC_DIR)/**/*.cpp > Makefile.d
 
-.PHONY: all clean compile compile_debug debug lc log run test
+.PHONY: all clean compile compile_debug debug dist lc log run test
 
 include Makefile.d

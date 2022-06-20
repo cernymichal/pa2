@@ -1,11 +1,10 @@
 #include "Game.h"
 
-#include <algorithm>
 #include <iostream>
-#include <random>
 #include <vector>
 
-#include "GameSaving.cpp"
+#include "GameObject/AntLine.h"
+#include "GameObject/ComputerPlayer.h"
 #include "log.h"
 #include "utils.cpp"
 
@@ -27,31 +26,6 @@ void Game::onLoad() {
 
     for (auto& object : m_objects)
         object->onLoad();
-}
-
-void Game::createPlayers(uint8_t aiPlayers) {
-    addObject<Player>(0, COLOR_PAIR_BLUE, "Player");
-
-    for (uint8_t i = 1; i <= aiPlayers; i++)
-        addObject<ComputerPlayer>(i, COLOR_PAIR_BLUE + i, std::string("AI").append(std::to_string(i)));
-
-    PN_LOG("created " << static_cast<unsigned short>(aiPlayers) << "ai players");
-
-    // randomly choose player starting nests
-    std::vector<AntNest*> startingNests;
-    for (const auto& nest : m_nestMap) {
-        if (nest.second->starting())
-            startingNests.push_back(nest.second);
-    }
-
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(startingNests.begin(), startingNests.end(), g);
-
-    auto nestIter = startingNests.begin();
-    auto playerIter = m_playerMap.begin();
-    for (; playerIter != m_playerMap.end(); playerIter++, nestIter++)
-        (*nestIter)->changeOwningPlayer(playerIter->second);
 }
 
 void Game::update() {
@@ -90,17 +64,6 @@ void Game::collision() {
 void Game::draw() {
     for (auto& object : m_objects)
         object->draw();
-}
-
-uint8_t Game::maxPlayers() const {
-    uint8_t startingPoints = 0;
-
-    for (const auto& nest : m_nestMap) {
-        if (nest.second->starting())
-            startingPoints++;
-    }
-
-    return startingPoints;
 }
 
 std::list<AntNest*> Game::getNests(uint8_t playerId) {
@@ -169,6 +132,14 @@ void Game::checkWin() {
         return;
 
     m_winTimer = 10;  // 5s with period of .5s
+}
+
+bool Game::won() const {
+    return m_winTimer == 0;
+}
+
+const std::string& Game::mapName() const {
+    return m_mapName;
 }
 
 std::ostream& Game::log(std::ostream& stream) const {

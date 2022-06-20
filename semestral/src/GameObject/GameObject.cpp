@@ -6,6 +6,9 @@ GameObject::GameObject() {
 GameObject::GameObject(const Vector2<uint8_t>& location) : m_location(location) {
 }
 
+GameObject::~GameObject() {
+}
+
 const Vector2<uint8_t>& GameObject::location() const {
     return m_location;
 }

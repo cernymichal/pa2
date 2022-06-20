@@ -96,7 +96,7 @@ void GameScreen::commitInput() {
 }
 
 void GameScreen::checkWin() {
-    if (m_application.m_state.game->m_winTimer == 0) {
+    if (m_application.m_state.game->won()) {
         PN_LOG("winner found");
         m_exit = true;
         m_paused = false;

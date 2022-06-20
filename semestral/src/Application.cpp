@@ -13,7 +13,7 @@ Application::Application() {
 void Application::start() {
     PN_LOGH1("Application::start()");
 
-    Game::initGameObjectInstatiators();
+    GameBuilder::initGameObjectInstatiators();
     Screen::initNCurses();
 
     openMainMenuScreen();
@@ -79,7 +79,7 @@ void Application::openMapListScreen() {
         }
 
         try {
-            application.m_state.game = std::make_unique<Game>(dialog.selectedOption().path());
+            application.m_state.gameBuilder.loadFromFile(dialog.selectedOption().path());
         }
         catch (SaveException&) {
             application.openMainMenuScreen();
@@ -104,7 +104,7 @@ void Application::openSaveListScreen() {
         }
 
         try {
-            application.m_state.game = std::make_unique<Game>(dialog.selectedOption().path());
+            application.m_state.gameBuilder.loadFromFile(dialog.selectedOption().path());
         }
         catch (SaveException&) {
             application.openMainMenuScreen();
@@ -122,7 +122,7 @@ void Application::openOponentNumberScreen() {
 
     auto oponents = std::vector<std::string>();
 
-    auto max = m_state.game->maxPlayers();
+    auto max = m_state.gameBuilder.maxPlayers();
     for (uint8_t i = 0; i < max; i++)
         oponents.push_back(std::to_string(i));
 
@@ -130,7 +130,7 @@ void Application::openOponentNumberScreen() {
         if (dialog.closed())
             return;
 
-        application.m_state.game->createPlayers(dialog.selectedIndex());
+        application.m_state.gameBuilder.createPlayers(dialog.selectedIndex());
 
         application.closeCurrentScreen();  // close self
         application.closeCurrentScreen();  // close map screen
@@ -143,6 +143,9 @@ void Application::openOponentNumberScreen() {
 
 void Application::openGameScreen() {
     PN_LOGH2("opening gameScreen");
+
+    PN_LOG("getting game from builder");
+    m_state.game = m_state.gameBuilder.getGame();
 
     PN_LOG_OBJ(m_state.game);
 
@@ -164,8 +167,9 @@ void Application::openPauseScreen() {
 
             case 1:
                 try {
-                    application.m_state.game->save(
-                        Save::createSavePath(application.m_state.game->m_mapName));
+                    GameBuilder::saveToFile(
+                        *application.m_state.game,
+                        Save::createSavePath(application.m_state.game->mapName()));
                 }
                 catch (SaveException&) {
                     dialog.reset();

@@ -21,6 +21,8 @@ public:
 
     explicit GameObject(const Vector2<uint8_t>& location);
 
+    virtual ~GameObject();
+
     const Vector2<uint8_t>& location() const;
 
     bool dead() const;

@@ -34,6 +34,8 @@ public:
 
     Screen(Application& application, const std::string& title = "untitled screen");
 
+    virtual ~Screen();
+
     bool exited() const;
 
     /**

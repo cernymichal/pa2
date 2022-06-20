@@ -6,6 +6,9 @@ Screen::Screen(Application& application, const std::string& title)
     : m_title(title), m_application(application) {
 }
 
+Screen::~Screen() {
+}
+
 bool Screen::exited() const {
     return m_exit;
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <filesystem>
 #include <list>
 #include <map>
 #include <memory>
@@ -8,6 +7,8 @@
 
 #include "GameObject/AntNest.h"
 #include "GameObject/GameObject.h"
+
+class GameBuilder;
 
 /**
  * @brief holds all game objects and logic
@@ -22,18 +23,6 @@ public:
     std::string m_mapName;
     std::map<char, AntNest*> m_nestMap;
     std::map<uint8_t, Player*> m_playerMap;
-    int8_t m_winTimer = -1;
-
-    Game();
-
-    /**
-     * @brief load Game from file
-     *
-     * - throws SaveException on fail
-     *
-     * @param[in] path save file
-     */
-    explicit Game(const std::filesystem::path& path);
 
     /**
      * @brief add GameObject to game
@@ -56,26 +45,14 @@ public:
     void onLoad();
 
     /**
-     * @brief create players in game
-     *
-     * - 1 * Player + aiPlayers * ComputerPlayers
-     * - randomly assing starting points
-     *
-     * @param[in] aiPlayers count of ComputerPlayers
-     */
-    void createPlayers(uint8_t aiPlayers = 0);
-
-    /**
      * @brief update all GameObjects and redraw
      */
     void update();
 
     /**
-     * @brief count starting nests
-     *
-     * @return max number of players
+     * @brief draw all GameObjects
      */
-    uint8_t maxPlayers() const;
+    void draw();
 
     /**
      * @brief disable all lines going from nest
@@ -124,20 +101,9 @@ public:
      */
     Player* getWinner();
 
-    /**
-     * @brief draw all GameObjects
-     */
-    void draw();
+    bool won() const;
 
-    /**
-     * @brief save Game to file
-     *
-     * - saves save name, map name and serializes all GameObjects
-     * - throws SaveException on fail
-     *
-     * @param[in] path target
-     */
-    void save(const std::filesystem::path& path) const;
+    const std::string& mapName() const;
 
     /**
      * @brief print debug info to stream
@@ -146,16 +112,16 @@ public:
      */
     std::ostream& log(std::ostream& stream) const;
 
-    /**
-     * @brief initialize map of GameObject names for loading
-     */
-    static void initGameObjectInstatiators();
-
 private:
+    int8_t m_winTimer = -1;
     std::list<std::unique_ptr<GameObject>> m_objects;
+
+    Game();
 
     /**
      * @brief handle collision between objects
      */
     void collision();
+
+    friend class GameBuilder;
 };
