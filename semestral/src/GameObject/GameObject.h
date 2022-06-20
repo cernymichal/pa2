@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "../Screen/Screen.h"
+#include "../utils.cpp"
 
 class Game;
 
@@ -13,15 +14,18 @@ class Game;
  */
 class GameObject {
 public:
-    uint8_t m_x = 0;
-    uint8_t m_y = 0;
     uint8_t m_color = COLOR_PAIR_WHITE;
-    bool m_dead = false;
     int16_t m_hitDistance = -1;  // dont check collision by default
 
-    GameObject();
+    explicit GameObject();
 
-    GameObject(uint8_t x, uint8_t y);
+    explicit GameObject(const Vector2<uint8_t>& location);
+
+    const Vector2<uint8_t>& location() const;
+
+    bool dead() const;
+
+    void kill();
 
     /**
      * @brief draw to the screen with ncurses
@@ -47,8 +51,8 @@ public:
      * @brief handle collision with other GameObject
      */
     virtual void collideWith(GameObject& object);
-    
-     /**
+
+    /**
      * @returns update priority of object
      */
     virtual uint8_t updatePriority() const;
@@ -77,6 +81,8 @@ public:
     virtual std::ostream& log(std::ostream& stream) const;
 
 protected:
+    Vector2<uint8_t> m_location = {0, 0};
+    bool m_dead = false;
     Game* m_game = nullptr;
 
     /**

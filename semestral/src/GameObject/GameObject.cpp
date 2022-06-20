@@ -3,7 +3,19 @@
 GameObject::GameObject() {
 }
 
-GameObject::GameObject(uint8_t x, uint8_t y) : m_x(x), m_y(y) {
+GameObject::GameObject(const Vector2<uint8_t>& location) : m_location(location) {
+}
+
+const Vector2<uint8_t>& GameObject::location() const {
+    return m_location;
+}
+
+bool GameObject::dead() const {
+    return m_dead;
+}
+
+void GameObject::kill() {
+    m_dead = true;
 }
 
 void GameObject::draw() const {
@@ -27,8 +39,8 @@ uint8_t GameObject::updatePriority() const {
 }
 
 bool GameObject::serializeState(std::ostream& stream) const {
-    stream << static_cast<unsigned short>(m_x)
-           << ' ' << static_cast<unsigned short>(m_y)
+    stream << static_cast<unsigned short>(m_location.x)
+           << ' ' << static_cast<unsigned short>(m_location.y)
            << ' ' << static_cast<unsigned short>(m_color)
            << ' ' << m_dead
            << ' ' << m_hitDistance;
@@ -40,10 +52,10 @@ bool GameObject::unserialize(std::istream& stream) {
     unsigned short temp;
 
     stream >> temp;
-    m_x = temp;
+    m_location.x = temp;
 
     stream >> temp;
-    m_y = temp;
+    m_location.y = temp;
 
     stream >> temp;
     m_color = temp;
@@ -57,7 +69,7 @@ bool GameObject::unserialize(std::istream& stream) {
 
 std::ostream& GameObject::log(std::ostream& stream) const {
     return stream << typeid(*this).name()
-                  << " x: " << static_cast<unsigned short>(m_x)
-                  << ", y: " << static_cast<unsigned short>(m_y)
+                  << " x: " << static_cast<unsigned short>(m_location.x)
+                  << ", y: " << static_cast<unsigned short>(m_location.y)
                   << ", updatePriority: " << static_cast<unsigned short>(updatePriority());
 }

@@ -5,6 +5,7 @@
 #include <string>
 
 #include "../log.h"
+#include "../utils.cpp"
 
 #define COLOR_PAIR_WHITE 0
 #define COLOR_PAIR_BLUE 1
@@ -29,9 +30,9 @@ class Application;
  */
 class Screen {
 public:
-    Screen(Application& application, const std::string& title = "untitled screen");
+    std::string m_title;
 
-    const std::string& title() const;
+    Screen(Application& application, const std::string& title = "untitled screen");
 
     bool exited() const;
 
@@ -66,15 +67,14 @@ public:
     /**
      * @brief draw a box to default screen
      */
-    static void drawBox(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+    static void drawBox(const Vector2<uint8_t>& location, const Vector2<uint8_t>& size);
 
     /**
      * @brief draw dotted line between points to default screen
      */
-    static void drawDottedLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+    static void drawDottedLine(const Vector2<uint8_t>& a, const Vector2<uint8_t>& b);
 
 protected:
-    std::string m_title;
     bool m_exit = false;
     Application& m_application;
     int m_timeoutDelay = -1;

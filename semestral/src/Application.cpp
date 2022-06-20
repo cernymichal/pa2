@@ -218,7 +218,7 @@ void Application::run() {
             continue;
         }
 
-        PN_LOG("showing " << m_screens.top()->title());
+        PN_LOG("showing " << m_screens.top()->m_title);
 
         m_screens.top()->show();
     }

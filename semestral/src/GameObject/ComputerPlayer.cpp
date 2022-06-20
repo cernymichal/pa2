@@ -14,7 +14,7 @@ void ComputerPlayer::update() {
     if (m_reactionTimer++ != 0)
         return;
 
-    auto nests = m_game->getNests(m_playerId);
+    auto nests = m_game->getNests(playerId());
     nests.sort([](const AntNest* a, const AntNest* b) {
         return a->m_ants < b->m_ants;
     });

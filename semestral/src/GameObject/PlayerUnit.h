@@ -10,7 +10,7 @@ class PlayerUnit : public GameObject {
 public:
     explicit PlayerUnit(Player* player = nullptr);
 
-    PlayerUnit(uint8_t x, uint8_t y, Player* player = nullptr);
+    PlayerUnit(const Vector2<uint8_t>& location, Player* player = nullptr);
 
     /**
      * @brief get m_owningPlayer

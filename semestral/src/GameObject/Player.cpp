@@ -5,8 +5,12 @@
 Player::Player() {
 }
 
-Player::Player(uint8_t id, uint8_t color, const std::string& name) : m_playerId(id), m_playerName(name) {
+Player::Player(uint8_t id, uint8_t color, const std::string& name) : m_playerName(name), m_playerId(id) {
     this->m_color = color;
+}
+
+uint8_t Player::playerId() const {
+    return m_playerId;
 }
 
 void Player::onAdd(Game* game) {

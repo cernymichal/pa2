@@ -10,7 +10,7 @@
  * @return exit code
  */
 int main() {
-    PN_DEBUG_ONLY(PN_LOGSTREAM = &std::cout);
+    PN_DEBUG_ONLY(g_PNLogStream = &std::cout);
 
     testAnt();
 

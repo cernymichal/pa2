@@ -9,12 +9,13 @@
  */
 class Player : public GameObject {
 public:
-    uint8_t m_playerId = -1;
     std::string m_playerName;
 
     Player();
 
     Player(uint8_t id, uint8_t color, const std::string& name = "nobody");
+
+    uint8_t playerId() const;
 
     /**
      * @brief add this to m_playerMap in m_game
@@ -34,4 +35,7 @@ protected:
      * @param[in] stream output stream
      */
     virtual bool serializeState(std::ostream& stream) const override;
+
+private:
+    uint8_t m_playerId = -1;
 };

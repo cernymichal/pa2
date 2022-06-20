@@ -6,7 +6,7 @@ PlayerUnit::PlayerUnit(Player* player) {
     changeOwningPlayer(player);
 }
 
-PlayerUnit::PlayerUnit(uint8_t x, uint8_t y, Player* player) : GameObject(x, y) {
+PlayerUnit::PlayerUnit(const Vector2<uint8_t>& location, Player* player) : GameObject(location) {
     changeOwningPlayer(player);
 }
 
@@ -18,7 +18,7 @@ void PlayerUnit::changeOwningPlayer(Player* player) {
     if (!player)
         m_owningPlayerId = -1;
     else {
-        m_owningPlayerId = player->m_playerId;
+        m_owningPlayerId = player->playerId();
         m_color = player->m_color;
     }
 

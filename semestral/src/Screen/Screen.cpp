@@ -2,14 +2,8 @@
 
 #include <ncurses.h>
 
-#include "../utils.cpp"
-
 Screen::Screen(Application& application, const std::string& title)
     : m_title(title), m_application(application) {
-}
-
-const std::string& Screen::title() const {
-    return m_title;
 }
 
 bool Screen::exited() const {
@@ -69,36 +63,32 @@ void Screen::exitNCurses() {
     endwin();
 }
 
-void Screen::drawBox(uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
+void Screen::drawBox(const Vector2<uint8_t>& location, const Vector2<uint8_t>& size) {
     // sides
-    mvhline(y, x + 1, '-', width - 1);
-    mvhline(y + height - 1, x + 1, '-', width - 1);
-    mvvline(y + 1, x, '|', height - 2);
-    mvvline(y + 1, x + width - 1, '|', height - 2);
+    mvhline(location.y, location.x + 1, '-', size.x - 1);
+    mvhline(location.y + size.y - 1, location.x + 1, '-', size.x - 1);
+    mvvline(location.y + 1, location.x, '|', size.y - 2);
+    mvvline(location.y + 1, location.x + size.x - 1, '|', size.y - 2);
 
     // corners
-    mvaddch(y, x, '+');
-    mvaddch(y + height - 1, x, '+');
-    mvaddch(y + height - 1, x + width - 1, '+');
-    mvaddch(y, x + width - 1, '+');
+    mvaddch(location.y, location.x, '+');
+    mvaddch(location.y + size.y - 1, location.x, '+');
+    mvaddch(location.y + size.y - 1, location.x + size.x - 1, '+');
+    mvaddch(location.y, location.x + size.x - 1, '+');
 }
 
-void Screen::drawDottedLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2) {
-    float dx = x2 - x1;
-    float dy = y2 - y1;
-    float d = sqrt(dx * dx + dy * dy);
-    dx /= d;
-    dy /= d;
+void Screen::drawDottedLine(const Vector2<uint8_t>& a, const Vector2<uint8_t>& b) {
+    Vector2<double> delta = b - a;
+    delta /= delta.length();
 
-    float x = (int)x1;
-    float y = (int)y1;
+    Vector2<double> position = a;
 
     // walk on line leaving dots every 3 steps
-    for (uint16_t i = 0;; i++, x += dx, y += dy) {
+    for (uint16_t i = 0;; i++, position += delta) {
         if (i % 3 == 0)
-            mvaddch((uint8_t)y, (uint8_t)x, '.');
+            mvaddch((uint8_t)position.y, (uint8_t)position.x, '.');
 
-        if (abs((uint8_t)x - x2) <= 1 && abs((uint8_t)y - y2) <= 1)
+        if (abs((uint8_t)position.x - b.x) <= 1 && abs((uint8_t)position.y - b.y) <= 1)
             break;
     }
 }

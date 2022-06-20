@@ -61,7 +61,7 @@ void Game::update() {
     collision();
 
     for (auto iterA = m_objects.begin(); iterA != m_objects.end(); iterA++) {
-        if ((*iterA)->m_dead)
+        if ((*iterA)->dead())
             iterA = m_objects.erase(iterA);
     }
 
@@ -78,7 +78,7 @@ void Game::collision() {
             if ((*iterA)->m_hitDistance < 0 || (*iterB)->m_hitDistance < 0)
                 continue;
 
-            auto d = distance((*iterA)->m_x, (*iterA)->m_y, (*iterB)->m_x, (*iterB)->m_y);
+            auto d = distance((*iterA)->location(), (*iterB)->location());
             if (d <= std::max((*iterA)->m_hitDistance, (*iterB)->m_hitDistance)) {
                 (*iterA)->collideWith(**iterB);
                 (*iterB)->collideWith(**iterA);
@@ -107,7 +107,7 @@ std::list<AntNest*> Game::getNests(uint8_t playerId) {
     std::list<AntNest*> nests;
 
     for (auto& nest : m_nestMap) {
-        if (nest.second->player() && nest.second->player()->m_playerId == playerId)
+        if (nest.second->player() && nest.second->player()->playerId() == playerId)
             nests.push_back(nest.second);
     }
 
@@ -117,7 +117,7 @@ std::list<AntNest*> Game::getNests(uint8_t playerId) {
 void Game::disableLinesFrom(uint8_t playerId, char nestId) {
     auto nest = m_nestMap.find(nestId);
 
-    if (nest == m_nestMap.end() || !nest->second->player() || nest->second->player()->m_playerId != playerId)
+    if (nest == m_nestMap.end() || !nest->second->player() || nest->second->player()->playerId() != playerId)
         return;
 
     nest->second->disableLines();
@@ -126,7 +126,7 @@ void Game::disableLinesFrom(uint8_t playerId, char nestId) {
 void Game::activateLine(uint8_t playerId, char nestAId, char nestBId) {
     auto nest = m_nestMap.find(nestAId);
 
-    if (nest == m_nestMap.end() || !nest->second->player() || nest->second->player()->m_playerId != playerId)
+    if (nest == m_nestMap.end() || !nest->second->player() || nest->second->player()->playerId() != playerId)
         return;
 
     auto line = nest->second->m_lineMap.find(nestBId);

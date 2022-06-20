@@ -39,18 +39,18 @@ bool AntLine::friendly() {
 
 void AntLine::draw() const {
     attron(COLOR_PAIR(m_color));
-    Screen::drawDottedLine(m_nestA->m_x, m_nestA->m_y, m_nestB->m_x, m_nestB->m_y);
+    Screen::drawDottedLine(m_nestA->location(), m_nestB->location());
 }
 
 void AntLine::update() {
     if (m_nestAActive && m_nestA->m_ants > 0) {
         m_nestA->m_ants--;
-        m_game->addObject<Ant>(m_nestA->m_x, m_nestA->m_y, m_nestA->player(), m_nestB->m_x, m_nestB->m_y);
+        m_game->addObject<Ant>(m_nestA->location(), m_nestA->player(), m_nestB->location());
     }
 
     if (m_nestBActive && m_nestB->m_ants > 0) {
         m_nestB->m_ants--;
-        m_game->addObject<Ant>(m_nestB->m_x, m_nestB->m_y, m_nestB->player(), m_nestA->m_x, m_nestA->m_y);
+        m_game->addObject<Ant>(m_nestB->location(), m_nestB->player(), m_nestA->location());
     }
 }
 

@@ -10,29 +10,28 @@ Ant::Ant() {
     m_hitDistance = 0;
 }
 
-Ant::Ant(uint8_t x, uint8_t y, Player* player, int8_t tx, int8_t ty) : PlayerUnit(x, y, player), m_tx(tx), m_ty(ty) {
+Ant::Ant(const Vector2<uint8_t>& location, Player* player, Vector2<uint8_t> targetLocation)
+    : PlayerUnit(location, player), m_targetLocation(targetLocation) {
     m_hitDistance = 0;
-    m_mvx = x;
-    m_mvy = y;
+    m_mvLocation = m_location;
+}
+
+const Vector2<uint8_t>& Ant::target() const {
+    return m_targetLocation;
 }
 
 void Ant::draw() const {
-    mvaddch(m_y, m_x, 'm' | COLOR_PAIR(m_color));
+    mvaddch(m_location.y, m_location.x, 'm' | COLOR_PAIR(m_color));
 }
 
 void Ant::update() {
-    if (m_x != m_tx || m_y != m_ty) {
-        float dx = m_tx - m_x;
-        float dy = m_ty - m_y;
-        float d = sqrt(dx * dx + dy * dy);
-        dx /= d;
-        dy /= d;
+    if (m_location != m_targetLocation) {
+        Vector2<double> delta = m_targetLocation - m_mvLocation;
+        delta /= delta.length();
 
-        m_mvx += dx;
-        m_mvy += dy;
+        m_mvLocation += delta;
 
-        m_x = m_mvx;
-        m_y = m_mvy;
+        m_location = m_mvLocation;
     }
 }
 
@@ -49,7 +48,7 @@ void Ant::collideWith(GameObject& object) {
 
     auto nest = dynamic_cast<AntNest*>(&object);
 
-    if (nest && nest->m_x == m_tx && nest->m_y == m_ty)
+    if (nest && nest->location() == m_targetLocation)
         m_dead = true;
 }
 
@@ -58,10 +57,10 @@ bool Ant::serialize(std::ostream& stream) const {
 }
 
 bool Ant::serializeState(std::ostream& stream) const {
-    stream << static_cast<short>(m_tx)
-           << ' ' << static_cast<short>(m_ty)
-           << ' ' << m_mvx
-           << ' ' << m_mvy
+    stream << static_cast<short>(m_targetLocation.x)
+           << ' ' << static_cast<short>(m_targetLocation.y)
+           << ' ' << m_mvLocation.x
+           << ' ' << m_mvLocation.y
            << ' ';
 
     return PlayerUnit::serializeState(stream);
@@ -71,12 +70,12 @@ bool Ant::unserialize(std::istream& stream) {
     short temp;
 
     stream >> temp;
-    m_tx = temp;
+    m_targetLocation.x = temp;
 
     stream >> temp;
-    m_ty = temp;
+    m_targetLocation.y = temp;
 
-    stream >> m_mvx >> m_mvy;
+    stream >> m_mvLocation.x >> m_mvLocation.y;
 
     return PlayerUnit::unserialize(stream);
 }

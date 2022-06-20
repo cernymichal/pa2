@@ -9,7 +9,7 @@ class Wall : public GameObject {
 public:
     Wall();
 
-    Wall(uint8_t x, uint8_t y);
+    Wall(const Vector2<uint8_t>& location);
 
     virtual void draw() const override;
 

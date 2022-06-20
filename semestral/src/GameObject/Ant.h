@@ -4,25 +4,21 @@
 
 /**
  * @brief Ant moving towards target
- * 
+ *
  * real m_x and m_y are rounded from m_mvx and m_mvy
  */
 class Ant : public PlayerUnit {
 public:
-    int8_t m_tx = 0;
-    int8_t m_ty = 0;
-
-    float m_mvx;
-    float m_mvy;
-
     Ant();
 
-    Ant(uint8_t x, uint8_t y, Player* player, int8_t tx = 0, int8_t ty = 0);
+    Ant(const Vector2<uint8_t>& location, Player* player, Vector2<uint8_t> targetLocation = {0, 0});
+
+    const Vector2<uint8_t>& target() const; 
 
     virtual void draw() const override;
 
     /**
-     * @brief move towards (m_tx, m_ty)
+     * @brief move towards m_targetLocation
      */
     virtual void update() override;
 
@@ -43,9 +39,13 @@ protected:
     /**
      * @brief serialize without type header
      *
-     * format: "{m_tx} {m_ty} {m_mvx} {m_mvy} " + PlayerUnit serialization
+     * format: "{m_targetLocation.x} {m_targetLocation.y} {m_mvLocation.x} {m_mvLocation.y} " + PlayerUnit serialization
      *
      * @param[in] stream output stream
      */
     virtual bool serializeState(std::ostream& stream) const override;
+
+private:
+    Vector2<uint8_t> m_targetLocation;
+    Vector2<double> m_mvLocation;
 };

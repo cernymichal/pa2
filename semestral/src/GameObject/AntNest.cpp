@@ -14,7 +14,8 @@ AntNest::AntNest() {
     m_hitDistance = 1;
 }
 
-AntNest::AntNest(uint8_t x, uint8_t y, char id, bool starting) : PlayerUnit(x, y), m_nestId(id), m_starting(starting) {
+AntNest::AntNest(const Vector2<uint8_t>& location, char id, bool starting)
+    : PlayerUnit(location), m_nestId(id), m_starting(starting) {
     m_hitDistance = 1;
 
     if (!starting)
@@ -39,18 +40,18 @@ void AntNest::draw() const {
     attron(COLOR_PAIR(m_color));
     attron(A_BOLD);
 
-    mvaddch(m_y, m_x - 1, m_nestId);
+    mvaddch(m_location.y, m_location.x - 1, m_nestId);
 
     attroff(A_BOLD);
 
-    mvaddstr(m_y, m_x,
+    mvaddstr(m_location.y, m_location.x,
              std::string(m_ants < 10 ? 1 : 0, '0')
                  .append(std::to_string(m_ants))
                  .c_str());
 
     attrclr();
 
-    Screen::drawBox(m_x - 2, m_y - 1, 5, 3);
+    Screen::drawBox(m_location - Vector2<uint8_t>(2, 1), {5, 3});
 }
 
 void AntNest::update() {
@@ -81,7 +82,7 @@ void AntNest::collideWith(GameObject& object) {
             m_game->checkWin();
         }
     }
-    else if (ant->m_tx == m_x && ant->m_ty == m_y && m_ants < 99)
+    else if (ant->target() == m_location && m_ants < 99)
         m_ants++;
 }
 

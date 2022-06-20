@@ -22,7 +22,7 @@ public:
 
     AntNest();
 
-    AntNest(uint8_t x, uint8_t y, char id, bool starting = false);
+    AntNest(const Vector2<uint8_t>& location, char id, bool starting = false);
 
     /**
      * @brief disables all AntLines originating here
