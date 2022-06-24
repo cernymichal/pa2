@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "GameObject/Ant.t.cpp"
-#include "log.h"
+#include "utils/log.h"
 
 /**
  * @brief testing entry point

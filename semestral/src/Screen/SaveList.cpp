@@ -4,7 +4,7 @@
 
 #include <filesystem>
 
-#include "../log.h"
+#include "../utils/log.h"
 
 SaveList::SaveList(Application& application, const std::vector<Save>& options, std::function<void(Dialog<Save>&, Application&)> onExit)
     : Dialog<Save>(application, "save list screen", options, onExit) {

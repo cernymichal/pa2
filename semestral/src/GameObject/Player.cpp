@@ -19,10 +19,6 @@ void Player::onAdd(Game* game) {
     m_game->m_playerMap[m_playerId] = this;
 }
 
-bool Player::serialize(std::ostream& stream) const {
-    return serializeState(stream << "Player ");
-}
-
 bool Player::serializeState(std::ostream& stream) const {
     stream << static_cast<unsigned short>(m_playerId)
            << ' ' << m_playerName

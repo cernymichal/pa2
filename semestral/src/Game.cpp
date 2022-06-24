@@ -1,12 +1,10 @@
 #include "Game.h"
 
 #include <iostream>
-#include <vector>
 
 #include "GameObject/AntLine.h"
 #include "GameObject/ComputerPlayer.h"
-#include "log.h"
-#include "utils.cpp"
+#include "utils/log.h"
 
 Game::Game() {
 }
@@ -34,9 +32,11 @@ void Game::update() {
 
     collision();
 
-    for (auto iterA = m_objects.begin(); iterA != m_objects.end(); iterA++) {
+    for (auto iterA = m_objects.begin(); iterA != m_objects.end();) {
         if ((*iterA)->dead())
             iterA = m_objects.erase(iterA);
+        else
+            iterA++;
     }
 
     if (m_winTimer > 0)
@@ -52,7 +52,7 @@ void Game::collision() {
             if ((*iterA)->m_hitDistance < 0 || (*iterB)->m_hitDistance < 0)
                 continue;
 
-            auto d = distance((*iterA)->location(), (*iterB)->location());
+            auto d = ((*iterA)->location() - (*iterB)->location()).length();
             if (d <= std::max((*iterA)->m_hitDistance, (*iterB)->m_hitDistance)) {
                 (*iterA)->collideWith(**iterB);
                 (*iterB)->collideWith(**iterA);

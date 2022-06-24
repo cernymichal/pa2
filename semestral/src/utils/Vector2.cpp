@@ -69,30 +69,3 @@ struct Vector2 {
         return sqrt(x * x + y * y);
     }
 };
-
-/**
- * @brief signum of x
- *
- * @param[in] x
- */
-template <typename T>
-int sgn(T x) {
-    if (x > T(0))
-        return 1;
-
-    if (x < T(0))
-        return -1;
-
-    return 0;
-}
-
-/**
- * @brief euklidian distance between points
- *
- * @param[in] a
- * @param[in] b
- */
-template <typename T>
-float distance(const Vector2<T>& a, const Vector2<T>& b) {
-    return (b - a).length();
-}

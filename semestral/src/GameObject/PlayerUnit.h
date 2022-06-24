@@ -31,7 +31,7 @@ public:
 
 protected:
     /**
-     * @brief serialize without type header
+     * @brief serialize for game saving
      *
      * format: "{m_owningPlayerId} " + GameObject serialization
      *

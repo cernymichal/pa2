@@ -1,11 +1,17 @@
 #include "Application.h"
 
+#include "GameObject/Ant.h"
+#include "GameObject/AntLine.h"
+#include "GameObject/AntNest.h"
 #include "GameObject/ComputerPlayer.h"
+#include "GameObject/GameObject.h"
+#include "GameObject/Player.h"
+#include "GameObject/Wall.h"
 #include "Save.h"
 #include "Screen/Dialog.cpp"
 #include "Screen/GameScreen.h"
 #include "Screen/SaveList.h"
-#include "log.h"
+#include "utils/log.h"
 
 Application::Application() {
 }
@@ -13,7 +19,13 @@ Application::Application() {
 void Application::start() {
     PN_LOGH1("Application::start()");
 
-    GameBuilder::initGameObjectInstatiators();
+    GameBuilder::registerGameObject<Ant>();
+    GameBuilder::registerGameObject<AntLine>();
+    GameBuilder::registerGameObject<AntNest>();
+    GameBuilder::registerGameObject<ComputerPlayer>();
+    GameBuilder::registerGameObject<Player>();
+    GameBuilder::registerGameObject<Wall>();
+
     Screen::initNCurses();
 
     openMainMenuScreen();
@@ -27,7 +39,7 @@ void Application::closeCurrentScreen() {
 }
 
 void Application::openMainMenuScreen() {
-    PN_LOGH2("opening mainMenuScreen");
+    PN_LOGH2("Application::openMainMenuScreen()");
 
     m_state = ApplicationState();
 
@@ -70,7 +82,7 @@ void Application::openMainMenuScreen() {
 }
 
 void Application::openMapListScreen() {
-    PN_LOGH2("opening mapListScreen");
+    PN_LOGH2("Application::openMapListScreen()");
 
     auto onExit = [](Dialog<Save>& dialog, Application& application) {
         if (dialog.closed()) {
@@ -95,7 +107,7 @@ void Application::openMapListScreen() {
 }
 
 void Application::openSaveListScreen() {
-    PN_LOGH2("opening saveListScreen");
+    PN_LOGH2("Application::openSaveListScreen()");
 
     auto onExit = [](Dialog<Save>& dialog, Application& application) {
         if (dialog.closed()) {
@@ -118,7 +130,7 @@ void Application::openSaveListScreen() {
 }
 
 void Application::openOponentNumberScreen() {
-    PN_LOGH2("opening oponentNumberScreen");
+    PN_LOGH2("Application::openOponentNumberScreen()");
 
     auto oponents = std::vector<std::string>();
 
@@ -142,7 +154,7 @@ void Application::openOponentNumberScreen() {
 }
 
 void Application::openGameScreen() {
-    PN_LOGH2("opening gameScreen");
+    PN_LOGH2("Application::openGameScreen()");
 
     PN_LOG("getting game from builder");
     m_state.game = m_state.gameBuilder.getGame();
@@ -155,7 +167,7 @@ void Application::openGameScreen() {
 }
 
 void Application::openPauseScreen() {
-    PN_LOGH2("opening pauseScreen");
+    PN_LOGH2("Application::openPauseScreen()");
 
     auto onExit = [](Dialog<std::string>& dialog, Application& application) {
         if (dialog.closed())
@@ -200,7 +212,7 @@ void Application::openPauseScreen() {
 }
 
 void Application::openResultsScreen() {
-    PN_LOGH2("opening resultsScreen");
+    PN_LOGH2("Application::openResultsScreen()");
 
     std::string text = "surrendered";
 

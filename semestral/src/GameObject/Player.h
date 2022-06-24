@@ -22,13 +22,11 @@ public:
      */
     virtual void onAdd(Game* game) override;
 
-    virtual bool serialize(std::ostream& stream) const override;
-
     virtual bool unserialize(std::istream& stream) override;
 
 protected:
     /**
-     * @brief serialize without type header
+     * @brief serialize for game saving
      *
      * format: "{m_playerId} {m_playerName} " + GameObject serialization
      *

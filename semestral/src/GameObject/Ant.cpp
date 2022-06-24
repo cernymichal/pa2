@@ -2,8 +2,7 @@
 
 #include <ncurses.h>
 
-#include "../log.h"
-#include "../utils.cpp"
+#include "../utils/log.h"
 #include "AntNest.h"
 
 Ant::Ant() {
@@ -50,10 +49,6 @@ void Ant::collideWith(GameObject& object) {
 
     if (nest && nest->location() == m_targetLocation)
         m_dead = true;
-}
-
-bool Ant::serialize(std::ostream& stream) const {
-    return serializeState(stream << "Ant ");
 }
 
 bool Ant::serializeState(std::ostream& stream) const {

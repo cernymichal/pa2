@@ -13,7 +13,7 @@ public:
 
     Ant(const Vector2<uint8_t>& location, Player* player, Vector2<uint8_t> targetLocation = {0, 0});
 
-    const Vector2<uint8_t>& target() const; 
+    const Vector2<uint8_t>& target() const;
 
     virtual void draw() const override;
 
@@ -31,13 +31,11 @@ public:
      */
     virtual void collideWith(GameObject& object) override;
 
-    virtual bool serialize(std::ostream& stream) const override;
-
     virtual bool unserialize(std::istream& stream) override;
 
 protected:
     /**
-     * @brief serialize without type header
+     * @brief serialize for game saving
      *
      * format: "{m_targetLocation.x} {m_targetLocation.y} {m_mvLocation.x} {m_mvLocation.y} " + PlayerUnit serialization
      *

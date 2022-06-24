@@ -66,13 +66,11 @@ public:
      */
     virtual uint8_t updatePriority() const override;
 
-    virtual bool serialize(std::ostream& stream) const override;
-
     virtual bool unserialize(std::istream& stream) override;
 
 protected:
     /**
-     * @brief serialize without type header
+     * @brief serialize for game saving
      *
      * format: "{m_nestId} {m_starting} {m_ants} {m_spawnTimer} " + PlayerUnit serialization
      *

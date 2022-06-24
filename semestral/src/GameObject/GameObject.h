@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "../Screen/Screen.h"
-#include "../utils.cpp"
+#include "../utils/Vector2.cpp"
 
 class Game;
 
@@ -60,13 +60,18 @@ public:
     virtual uint8_t updatePriority() const;
 
     /**
-     * @brief serialize for game saving
+     * @returns demangled class name
+     */
+    std::string name() const;
+
+    /**
+     * @brief prefix serialization with class name
      *
      * uses serializeState
      *
      * @param[in] stream output stream
      */
-    virtual bool serialize(std::ostream& stream) const = 0;
+    bool serialize(std::ostream& stream) const;
 
     /**
      * @brief unserialize from save
@@ -88,7 +93,7 @@ protected:
     Game* m_game = nullptr;
 
     /**
-     * @brief serialize without type header
+     * @brief serialize for game saving
      *
      * format: "{m_x}m_y{y} {m_color} {m_dead} {m_hitDistance}"
      *

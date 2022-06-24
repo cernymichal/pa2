@@ -27,15 +27,13 @@ public:
      */
     virtual void onLoad() override;
 
-    virtual bool serialize(std::ostream& stream) const override;
-
     virtual bool unserialize(std::istream& stream) override;
 
 protected:
     /**
-     * @brief serialize without type header
+     * @brief serialize for game saving
      *
-     * format: "{m_reactionTimer} {m_defending} {focusedNestId} " + Player serialization
+     *  format: "{m_reactionTimer} {m_defending} {focusedNestId} " + Player serialization
      *
      * @param[in] stream output stream
      */

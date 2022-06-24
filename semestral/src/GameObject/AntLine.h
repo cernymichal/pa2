@@ -60,8 +60,6 @@ public:
      */
     virtual uint8_t updatePriority() const override;
 
-    virtual bool serialize(std::ostream& stream) const override;
-
     virtual bool unserialize(std::istream& stream) override;
 
 protected:
@@ -74,7 +72,7 @@ protected:
     bool m_nestBActive = false;
 
     /**
-     * @brief serialize without type header
+     * @brief serialize for game saving
      *
      * format: "{m_nestAId} {m_nestAActive} {m_nestBId} {m_nestBActive} " + GameObject serialization
      *

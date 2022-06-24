@@ -4,7 +4,7 @@ CXXFLAGS = -std=c++17 -Wall -pedantic -Wno-long-long -O2
 CXXFLAGS_DEBUG = $(CXXFLAGS) -D PN_DEBUG -g -pg -fPIE
 LIBS = -lncurses -lstdc++fs
 
-OBJECTS = $(shell find src | grep '.*\.h$$' | sed 's/^.*\///' | sed 's/.h/.o/' | tr '\n' ' ')
+OBJECTS = $(shell find src | grep '.*\.h$$' | sed 's/^.*\///' | sed 's/\.h$$/.o/' | tr '\n' ' ')
 OBJECTS_MAIN = main.o $(OBJECTS)
 OBJECTS_TEST = test.o $(OBJECTS)
 
@@ -66,11 +66,11 @@ $(TARGET_TEST): $(OBJECTS_TEST)
 	$(CXX) $(CXXFLAGS) -c -o "$(BUILD_DIR)/$@" "$<"
 
 %.o: $(SRC_DIR)/**/%.cpp
-	mkdir -p $(BUILD_DIR)
+	mkdir -p "$(BUILD_DIR)"
 	$(CXX) $(CXXFLAGS) -c -o "$(BUILD_DIR)/$@" "$<"
 
 Makefile.d: $(SRC_DIR)/*.cpp $(SRC_DIR)/**/*.cpp
-	$(CXX) -MM $(SRC_DIR)/*.cpp $(SRC_DIR)/**/*.cpp > Makefile.d
+	$(CXX) -MM "$(SRC_DIR)"/*.cpp "$(SRC_DIR)"/**/*.cpp > Makefile.d
 
 .PHONY: all clean compile compile_debug debug dist lc log run test
 

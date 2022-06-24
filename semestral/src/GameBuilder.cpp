@@ -4,34 +4,15 @@
 #include <fstream>
 #include <random>
 
-#include "GameObject/Ant.h"
-#include "GameObject/AntLine.h"
-#include "GameObject/AntNest.h"
 #include "GameObject/ComputerPlayer.h"
-#include "GameObject/GameObject.h"
-#include "GameObject/Player.h"
-#include "GameObject/Wall.h"
 #include "Save.h"
-#include "log.h"
 
-template <typename T>
-GameObject* instantiateGameObject() { return new T; }
-
-std::map<std::string, GameObject* (*)()> g_GameObjectInstatiators;
-
-void GameBuilder::initGameObjectInstatiators() {
-    g_GameObjectInstatiators["Ant"] = &instantiateGameObject<Ant>;
-    g_GameObjectInstatiators["AntLine"] = &instantiateGameObject<AntLine>;
-    g_GameObjectInstatiators["AntNest"] = &instantiateGameObject<AntNest>;
-    g_GameObjectInstatiators["ComputerPlayer"] = &instantiateGameObject<ComputerPlayer>;
-    g_GameObjectInstatiators["Player"] = &instantiateGameObject<Player>;
-    g_GameObjectInstatiators["Wall"] = &instantiateGameObject<Wall>;
-}
+std::map<std::string, GameObject* (*)()> GameBuilder::s_GameObjectInstatiators = std::map<std::string, GameObject* (*)()>();
 
 GameBuilder::GameBuilder() {
 }
 
-std::unique_ptr<Game>&& GameBuilder::getGame() {
+std::unique_ptr<Game> GameBuilder::getGame() {
     return std::move(m_game);
 }
 
@@ -58,6 +39,8 @@ void GameBuilder::createPlayers(uint8_t aiPlayers) {
     auto playerIter = m_game->m_playerMap.begin();
     for (; playerIter != m_game->m_playerMap.end(); playerIter++, nestIter++)
         (*nestIter)->changeOwningPlayer(playerIter->second);
+
+    PN_LOG("shuffled starting nests");
 }
 
 uint8_t GameBuilder::maxPlayers() const {
@@ -72,9 +55,9 @@ uint8_t GameBuilder::maxPlayers() const {
 }
 
 void GameBuilder::loadFromFile(const std::filesystem::path& path) {
-    m_game = std::unique_ptr<Game>(new Game());
+    PN_LOG("GameBuilder::loadFromFile(" << path << ")");
 
-    PN_LOG("loading game from " << path);
+    m_game = std::unique_ptr<Game>(new Game());
 
     std::ifstream saveFile;
     saveFile.open(path, std::fstream::in);
@@ -95,10 +78,10 @@ void GameBuilder::loadFromFile(const std::filesystem::path& path) {
         std::string objectName;
         lineStream >> objectName;
 
-        PN_LOG("loading " << objectName << " from \"" << line << '"');
+        PN_LOG("loading " << objectName << " from \"" << line << "\"");
 
-        auto instantiator = g_GameObjectInstatiators.find(objectName);
-        if (instantiator == g_GameObjectInstatiators.end())
+        auto instantiator = GameBuilder::s_GameObjectInstatiators.find(objectName);
+        if (instantiator == GameBuilder::s_GameObjectInstatiators.end())
             throw SaveException();
 
         auto object = (*instantiator->second)();
@@ -112,7 +95,7 @@ void GameBuilder::loadFromFile(const std::filesystem::path& path) {
 }
 
 void GameBuilder::saveToFile(const Game& game, const std::filesystem::path& path) {
-    PN_LOG("saving game to " << path);
+    PN_LOG("GameBuilder::saveToFile(game, " << path << ")");
 
     try {
         std::filesystem::create_directories(path.parent_path());

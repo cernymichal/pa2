@@ -7,22 +7,23 @@
 #include <iostream>
 #include <sstream>
 
-#include "log.h"
+#include "utils/executablePath.h"
+#include "utils/log.h"
 
 const auto g_SaveExtension = ".pns";
 const auto g_MapExtension = ".pnm";
 const auto g_SaveDirectory = "examples";
 const auto g_MapDirectory = "assets/maps";
 
-const auto g_executableDirectory = std::filesystem::canonical("/proc/self/exe").parent_path();
+const auto g_executableDirectory = getExecutablePath().parent_path();
 
 std::vector<Save> findFiles(const char* directory, const char* extension) {
-    std::vector<Save> files;
-
     auto path = std::filesystem::path(g_executableDirectory)
                     .append(directory);
 
-    PN_LOG("looking for " << extension << " files in " << path);
+    PN_LOG("findFiles(" << path << ", \"" << extension << "\")");
+
+    std::vector<Save> files;
 
     for (const auto& entry : std::filesystem::directory_iterator(path)) {
         if (entry.is_regular_file() && entry.path().extension() == extension)
@@ -38,7 +39,7 @@ bool filesExist(const char* directory, const char* extension) {
     auto path = std::filesystem::path(g_executableDirectory)
                     .append(directory);
 
-    PN_LOG("checking if any " << extension << " files exist in " << path);
+    PN_LOG("filesExist(" << path << ", \"" << extension << "\")");
 
     for (const auto& entry : std::filesystem::directory_iterator(path)) {
         if (entry.is_regular_file() && entry.path().extension() == extension)
@@ -72,12 +73,12 @@ const char* Save::c_str() const {
 }
 
 std::vector<Save> Save::findSaves() {
-    PN_LOG("looking for saves");
+    PN_LOG("Save::findSaves()");
     return findFiles(g_SaveDirectory, g_SaveExtension);
 }
 
 std::vector<Save> Save::findMaps() {
-    PN_LOG("looking for maps");
+    PN_LOG("Save::findMaps()");
     return findFiles(g_MapDirectory, g_MapExtension);
 }
 

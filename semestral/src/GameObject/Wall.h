@@ -12,6 +12,4 @@ public:
     Wall(const Vector2<uint8_t>& location);
 
     virtual void draw() const override;
-
-    virtual bool serialize(std::ostream& stream) const override;
 };

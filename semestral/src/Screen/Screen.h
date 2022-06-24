@@ -4,8 +4,7 @@
 #include <cstdint>
 #include <string>
 
-#include "../log.h"
-#include "../utils.cpp"
+#include "../utils/Vector2.cpp"
 
 #define COLOR_PAIR_WHITE 0
 #define COLOR_PAIR_BLUE 1

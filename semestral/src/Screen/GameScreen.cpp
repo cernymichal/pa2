@@ -2,7 +2,7 @@
 
 #include <ncurses.h>
 
-#include "../log.h"
+#include "../utils/log.h"
 
 using namespace std::literals::chrono_literals;
 
@@ -14,7 +14,7 @@ GameScreen::GameScreen(Application& application) : Screen(application, "game scr
 }
 
 void GameScreen::update(std::chrono::nanoseconds dt, int key) {
-    // PN_LOG("GameScreen::update(" << static_cast<long long>(dt.count()) << ", " << static_cast<char>(key) << ")");¨
+    // PN_LOG("GameScreen::update(" << static_cast<long long>(dt.count()) << ", " << static_cast<char>(key) << ")");
     bool refreshNeeded = false;
 
     if (key == ';') {
@@ -87,7 +87,7 @@ void GameScreen::drawInputBuffer() {
 }
 
 void GameScreen::commitInput() {
-    PN_LOG("executing command: " << m_inputBuffer);
+    PN_LOG("GameScreen::commitInput() - \"" << m_inputBuffer << "\"");
 
     if (m_inputIndex == 1 || m_inputBuffer[0] == m_inputBuffer[1])
         m_application.m_state.game->disableLinesFrom(0, m_inputBuffer[0]);

@@ -62,10 +62,6 @@ uint8_t AntLine::updatePriority() const {
     return 64;
 }
 
-bool AntLine::serialize(std::ostream& stream) const {
-    return serializeState(stream << "AntLine ");
-}
-
 bool AntLine::serializeState(std::ostream& stream) const {
     stream << m_nestAId
            << ' ' << m_nestAActive

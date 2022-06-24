@@ -1,5 +1,7 @@
 #include "GameObject.h"
 
+#include <cxxabi.h>
+
 GameObject::GameObject() {
 }
 
@@ -41,6 +43,19 @@ uint8_t GameObject::updatePriority() const {
     return 128;
 }
 
+std::string GameObject::name() const {
+    // https://gcc.gnu.org/onlinedocs/libstdc++/manual/ext_demangling.html
+    int status;
+    auto realName = abi::__cxa_demangle(typeid(*this).name(), 0, 0, &status);
+    std::string str(realName);
+    free(realName);
+    return str;
+}
+
+bool GameObject::serialize(std::ostream& stream) const {
+    return serializeState(stream << name() << " ");
+}
+
 bool GameObject::serializeState(std::ostream& stream) const {
     stream << static_cast<unsigned short>(m_location.x)
            << ' ' << static_cast<unsigned short>(m_location.y)
@@ -71,7 +86,7 @@ bool GameObject::unserialize(std::istream& stream) {
 }
 
 std::ostream& GameObject::log(std::ostream& stream) const {
-    return stream << typeid(*this).name()
+    return stream << name()
                   << " x: " << static_cast<unsigned short>(m_location.x)
                   << ", y: " << static_cast<unsigned short>(m_location.y)
                   << ", updatePriority: " << static_cast<unsigned short>(updatePriority());

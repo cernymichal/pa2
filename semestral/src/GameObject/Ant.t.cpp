@@ -2,10 +2,10 @@
 
 #include <cassert>
 
-#include "../log.h"
+#include "../utils/log.h"
 
 void testAnt() {
-    PN_LOGH1("testing ant");
+    PN_LOGH1("testAnt()");
 
     PN_LOGH2("#1");
 

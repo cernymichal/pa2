@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "log.h"
+#include "utils/log.h"
 
 /**
  * @brief entry point
@@ -11,7 +11,7 @@
  *
  * @return exit code
  */
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     PN_INIT_LOG();
 
     Application().start();

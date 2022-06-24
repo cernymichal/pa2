@@ -109,10 +109,6 @@ uint8_t AntNest::updatePriority() const {
     return 192;
 }
 
-bool AntNest::serialize(std::ostream& stream) const {
-    return serializeState(stream << "AntNest ");
-}
-
 bool AntNest::serializeState(std::ostream& stream) const {
     stream << m_nestId
            << ' ' << m_starting

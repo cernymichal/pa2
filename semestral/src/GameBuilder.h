@@ -3,12 +3,13 @@
 #include <filesystem>
 
 #include "Game.h"
+#include "utils/log.h"
 
 class GameBuilder {
 public:
     GameBuilder();
 
-    std::unique_ptr<Game>&& getGame();
+    std::unique_ptr<Game> getGame();
 
     /**
      * @brief create players in game
@@ -48,10 +49,20 @@ public:
     static void saveToFile(const Game& game, const std::filesystem::path& path);
 
     /**
-     * @brief initialize map of GameObject names for loading
+     * @brief register GameObject for loading
      */
-    static void initGameObjectInstatiators();
+    template <typename T>
+    static void registerGameObject() {
+        auto name = T().name();
+        PN_LOG("GameBuilder::registerGameObject<" << name << ">()");
+        s_GameObjectInstatiators[T().name()] = &instantiateGameObject<T>;
+    }
 
 private:
     std::unique_ptr<Game> m_game;
+
+    static std::map<std::string, GameObject* (*)()> s_GameObjectInstatiators;
+
+    template <typename T>
+    static GameObject* instantiateGameObject() { return new T; }
 };

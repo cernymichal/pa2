@@ -1,6 +1,7 @@
 #include "ComputerPlayer.h"
 
 #include "../Game.h"
+#include "../utils/log.h"
 #include "AntLine.h"
 
 ComputerPlayer::ComputerPlayer() {
@@ -41,10 +42,6 @@ void ComputerPlayer::update() {
 void ComputerPlayer::onLoad() {
     if (m_focusedNestId != '?')
         m_focusedNest = m_game->m_nestMap[m_focusedNestId];
-}
-
-bool ComputerPlayer::serialize(std::ostream& stream) const {
-    return serializeState(stream << "ComputerPlayer ");
 }
 
 bool ComputerPlayer::serializeState(std::ostream& stream) const {
