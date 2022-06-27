@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include "GameObject/AntLine.h"
-#include "GameObject/ComputerPlayer.h"
 #include "utils/log.h"
 
 Game::Game() {
@@ -64,54 +62,6 @@ void Game::collision() {
 void Game::draw() {
     for (auto& object : m_objects)
         object->draw();
-}
-
-std::list<AntNest*> Game::getNests(uint8_t playerId) {
-    std::list<AntNest*> nests;
-
-    for (auto& nest : m_nestMap) {
-        if (nest.second->player() && nest.second->player()->playerId() == playerId)
-            nests.push_back(nest.second);
-    }
-
-    return nests;
-}
-
-void Game::disableLinesFrom(uint8_t playerId, char nestId) {
-    auto nest = m_nestMap.find(nestId);
-
-    if (nest == m_nestMap.end() || !nest->second->player() || nest->second->player()->playerId() != playerId)
-        return;
-
-    nest->second->disableLines();
-}
-
-void Game::activateLine(uint8_t playerId, char nestAId, char nestBId) {
-    auto nest = m_nestMap.find(nestAId);
-
-    if (nest == m_nestMap.end() || !nest->second->player() || nest->second->player()->playerId() != playerId)
-        return;
-
-    auto line = nest->second->m_lineMap.find(nestBId);
-
-    if (line == nest->second->m_lineMap.end())
-        return;
-
-    nest->second->disableLines();
-    line->second->switchSide(nest->second, true);
-}
-
-void Game::activateLine(Player* player, AntNest* nestA, AntNest* nestB) {
-    if (nestA->player() != player)
-        return;
-
-    auto line = nestA->m_lineMap.find(nestB->nestId());
-
-    if (line == nestA->m_lineMap.end())
-        return;
-
-    nestA->disableLines();
-    line->second->switchSide(nestA, true);
 }
 
 Player* Game::getWinner() {

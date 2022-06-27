@@ -4,6 +4,7 @@
 
 #include "../Application.h"
 #include "../Game.h"
+#include "../PlayerInput.h"
 #include "Screen.h"
 
 /**
@@ -21,6 +22,8 @@ public:
      */
     virtual void update(std::chrono::nanoseconds dt, int key) override;
 
+    void fixedUpdate();
+
     /**
      * @brief resets Screen variables and m_dtAccumulator
      */
@@ -32,26 +35,5 @@ protected:
 private:
     std::chrono::nanoseconds m_dtAccumulator;
     bool m_paused = false;
-    char m_inputBuffer[3] = "  ";
-    uint8_t m_inputIndex = 0;
-
-    /**
-     * @brief resets input command buffer
-     */
-    void resetInputBuffer();
-
-    /**
-     * @brief draws current command to the bottom left
-     */
-    void drawInputBuffer();
-
-    /**
-     * @brief tries to execute command
-     */
-    void commitInput();
-
-    /**
-     * @brief check if m_winTimer in Game hit 0
-     */
-    void checkWin();
+    std::unique_ptr<PlayerInput> m_playerInput;
 };

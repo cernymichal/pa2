@@ -41,5 +41,6 @@ protected:
 
 private:
     Player* m_owningPlayer = nullptr;
+    // TODO remove -1
     uint8_t m_owningPlayerId = -1;
 };

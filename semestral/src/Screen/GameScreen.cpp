@@ -8,7 +8,8 @@ using namespace std::literals::chrono_literals;
 
 const auto g_updatePeriod = 500ms;
 
-GameScreen::GameScreen(Application& application) : Screen(application, "game screen") {
+GameScreen::GameScreen(Application& application) : Screen(application, "game screen"),
+                                                   m_playerInput(std::make_unique<PlayerInput>(*m_application.m_state.game)) {
     m_timeoutDelay = 0;  // non blocking input
     reset();
 }
@@ -22,43 +23,34 @@ void GameScreen::update(std::chrono::nanoseconds dt, int key) {
         m_paused = true;
         return;
     }
-    else if (key == '\n') {
-        commitInput();
-        resetInputBuffer();
-        drawInputBuffer();
-        refreshNeeded = true;
-    }
-    else if (key == KEY_BACKSPACE && m_inputIndex > 0) {
-        m_inputBuffer[--m_inputIndex] = ' ';
-        drawInputBuffer();
-        refreshNeeded = true;
-    }
-    else if (std::isalpha(key)) {
-        if (m_inputIndex == 2)
-            resetInputBuffer();
-
-        m_inputBuffer[m_inputIndex++] = toupper(key);
-        drawInputBuffer();
+    else if (m_playerInput->input(key)) {
         refreshNeeded = true;
     }
 
     m_dtAccumulator += dt;
-
     if (m_dtAccumulator > g_updatePeriod) {
         m_dtAccumulator -= g_updatePeriod;
-        m_application.m_state.game->update();
-
-        clear();
-        m_application.m_state.game->draw();
-
-        drawInputBuffer();
+        fixedUpdate();
         refreshNeeded = true;
-
-        checkWin();
     }
 
-    if (refreshNeeded)
+    if (refreshNeeded) {
+        mvaddstr(LINES - 1, COLS - 2, m_playerInput->bufferContent());
         refresh();
+    }
+}
+
+void GameScreen::fixedUpdate() {
+    m_application.m_state.game->update();
+
+    clear();
+    m_application.m_state.game->draw();
+
+    if (m_application.m_state.game->won()) {
+        PN_LOG("winner found");
+        m_exit = true;
+        m_paused = false;
+    }
 }
 
 void GameScreen::reset() {
@@ -74,31 +66,4 @@ void GameScreen::onExit() {
     }
     else
         m_application.openResultsScreen();
-}
-
-void GameScreen::resetInputBuffer() {
-    m_inputBuffer[0] = ' ';
-    m_inputBuffer[1] = ' ';
-    m_inputIndex = 0;
-}
-
-void GameScreen::drawInputBuffer() {
-    mvaddstr(LINES - 1, COLS - 2, m_inputBuffer);
-}
-
-void GameScreen::commitInput() {
-    PN_LOG("GameScreen::commitInput() - \"" << m_inputBuffer << "\"");
-
-    if (m_inputIndex == 1 || m_inputBuffer[0] == m_inputBuffer[1])
-        m_application.m_state.game->disableLinesFrom(0, m_inputBuffer[0]);
-    else
-        m_application.m_state.game->activateLine(0, m_inputBuffer[0], m_inputBuffer[1]);
-}
-
-void GameScreen::checkWin() {
-    if (m_application.m_state.game->won()) {
-        PN_LOG("winner found");
-        m_exit = true;
-        m_paused = false;
-    }
 }

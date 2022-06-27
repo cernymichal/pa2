@@ -1,6 +1,7 @@
 #include "ComputerPlayer.h"
 
 #include "../Game.h"
+#include "../GameController.h"
 #include "../utils/log.h"
 #include "AntLine.h"
 
@@ -15,7 +16,7 @@ void ComputerPlayer::update() {
     if (m_reactionTimer++ != 0)
         return;
 
-    auto nests = m_game->getNests(playerId());
+    auto nests = m_gameController->getNests();
     nests.sort([](const AntNest* a, const AntNest* b) {
         return a->ants() < b->ants();
     });
@@ -111,7 +112,7 @@ void ComputerPlayer::sendAnts(AntNest* nest, std::set<char>& visitedNests) {
     for (const auto& line : nest->m_lineMap) {
         auto otherNest = line.second->otherNest(nest);
         if ((line.second->friendly() || nest == m_focusedNest) && visitedNests.find(otherNest->nestId()) == visitedNests.end()) {
-            m_game->activateLine(this, otherNest, nest);
+            m_gameController->activateLine(otherNest, nest);
             sendAnts(otherNest, visitedNests);
         }
     }

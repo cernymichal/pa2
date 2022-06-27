@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "../Game.h"
+#include "../GameController.h"
 
 Player::Player() {
 }
@@ -17,6 +18,8 @@ void Player::onAdd(Game* game) {
     GameObject::onAdd(game);
 
     m_game->m_playerMap[m_playerId] = this;
+
+    m_gameController = std::make_unique<GameController>(game, this);
 }
 
 bool Player::serializeState(std::ostream& stream) const {

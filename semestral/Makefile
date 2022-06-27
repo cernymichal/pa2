@@ -42,7 +42,7 @@ doc: $(SRC_DIR)/* $(SRC_DIR)/**/*
 	doxygen Doxyfile
 
 lc:
-	find "$(SRC_DIR)" -type f | sort -f | xargs wc -l
+	find "$(SRC_DIR)" -type f | xargs wc -l | sort -n
 
 dist: $(TARGET).zip
 

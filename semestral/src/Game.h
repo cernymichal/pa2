@@ -9,6 +9,7 @@
 #include "GameObject/GameObject.h"
 
 class GameBuilder;
+class GameController;
 
 /**
  * @brief holds all game objects and logic
@@ -20,6 +21,7 @@ class GameBuilder;
  */
 class Game {
 public:
+    // TODO private
     std::string m_mapName;
     std::map<char, AntNest*> m_nestMap;
     std::map<uint8_t, Player*> m_playerMap;
@@ -53,39 +55,6 @@ public:
      * @brief draw all GameObjects
      */
     void draw();
-
-    /**
-     * @brief disable all lines going from nest
-     *
-     * @param[in] playerId user, must own nest
-     * @param[in] nestId
-     */
-    void disableLinesFrom(uint8_t playerId, char nestId);
-
-    /**
-     * @brief activate AntLine from A to B
-     *
-     * @param[in] playerId user, must own nestA
-     * @param[in] nestAId
-     * @param[in] nestBId
-     */
-    void activateLine(uint8_t playerId, char nestAId, char nestBId);
-
-    /**
-     * @brief activate AntLine from A to B
-     *
-     * @param[in] player user, must own nestA
-     * @param[in] nestA
-     * @param[in] nestB
-     */
-    void activateLine(Player* player, AntNest* nestA, AntNest* nestB);
-
-    /**
-     * @param[in] playerId player to check
-     *
-     * @returns list of nests captured by player
-     */
-    std::list<AntNest*> getNests(uint8_t playerId);
 
     /**
      * @brief check if winner can be decided
@@ -124,4 +93,5 @@ private:
     void collision();
 
     friend class GameBuilder;
+    friend class GameController;
 };

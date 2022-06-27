@@ -1,6 +1,11 @@
 #pragma once
 
+#include <memory>
+
+#include "../GameController.h"
 #include "GameObject.h"
+
+class PlayerInput;
 
 /**
  * @brief human player
@@ -25,6 +30,8 @@ public:
     virtual bool unserialize(std::istream& stream) override;
 
 protected:
+    std::unique_ptr<GameController> m_gameController;
+
     /**
      * @brief serialize for game saving
      *
@@ -36,4 +43,6 @@ protected:
 
 private:
     uint8_t m_playerId = -1;
+
+    friend class PlayerInput;
 };
