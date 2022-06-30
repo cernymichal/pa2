@@ -92,6 +92,10 @@ const std::string& Game::mapName() const {
     return m_mapName;
 }
 
+GameController Game::createPlayerController(uint8_t playerID) {
+    return GameController(this, m_playerMap.at(playerID));
+}
+
 std::ostream& Game::log(std::ostream& stream) const {
     stream << "objects: {" << std::endl;
 

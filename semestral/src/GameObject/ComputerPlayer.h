@@ -1,8 +1,10 @@
 #pragma once
 
 #include <list>
+#include <memory>
 #include <set>
 
+#include "../GameController.h"
 #include "AntNest.h"
 #include "Player.h"
 
@@ -44,6 +46,7 @@ private:
     bool m_defending = false;
     AntNest* m_focusedNest = nullptr;
     char m_focusedNestId = '?';
+    std::unique_ptr<GameController> m_gameController;
 
     /**
      * @brief check captured nests for incoming attacks

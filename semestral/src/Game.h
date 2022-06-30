@@ -5,11 +5,11 @@
 #include <memory>
 #include <string>
 
+#include "GameController.h"
 #include "GameObject/AntNest.h"
 #include "GameObject/GameObject.h"
 
 class GameBuilder;
-class GameController;
 
 /**
  * @brief holds all game objects and logic
@@ -73,6 +73,8 @@ public:
     bool won() const;
 
     const std::string& mapName() const;
+
+    GameController createPlayerController(uint8_t playerID);
 
     /**
      * @brief print debug info to stream

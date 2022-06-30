@@ -16,7 +16,7 @@ public:
     bool input(int key);
 
 private:
-    GameController* const m_gameController;
+    GameController m_gameController;
     char m_inputBuffer[3] = "  ";
     uint8_t m_inputIndex = 0;
 

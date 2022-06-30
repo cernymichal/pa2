@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "../Application.h"
 #include "../Game.h"
 #include "../PlayerInput.h"
@@ -35,5 +33,5 @@ protected:
 private:
     std::chrono::nanoseconds m_dtAccumulator;
     bool m_paused = false;
-    std::unique_ptr<PlayerInput> m_playerInput;
+    PlayerInput m_playerInput;
 };

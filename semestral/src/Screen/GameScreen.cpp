@@ -9,7 +9,7 @@ using namespace std::literals::chrono_literals;
 const auto g_updatePeriod = 500ms;
 
 GameScreen::GameScreen(Application& application) : Screen(application, "game screen"),
-                                                   m_playerInput(std::make_unique<PlayerInput>(*m_application.m_state.game)) {
+                                                   m_playerInput(*m_application.m_state.game) {
     m_timeoutDelay = 0;  // non blocking input
     reset();
 }
@@ -23,7 +23,7 @@ void GameScreen::update(std::chrono::nanoseconds dt, int key) {
         m_paused = true;
         return;
     }
-    else if (m_playerInput->input(key)) {
+    else if (m_playerInput.input(key)) {
         refreshNeeded = true;
     }
 
@@ -35,7 +35,7 @@ void GameScreen::update(std::chrono::nanoseconds dt, int key) {
     }
 
     if (refreshNeeded) {
-        mvaddstr(LINES - 1, COLS - 2, m_playerInput->bufferContent());
+        mvaddstr(LINES - 1, COLS - 2, m_playerInput.bufferContent());
         refresh();
     }
 }

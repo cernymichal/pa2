@@ -6,7 +6,7 @@
 #include "GameController.h"
 #include "utils/log.h"
 
-PlayerInput::PlayerInput(Game& game) : m_gameController(game.m_playerMap[0]->m_gameController.get()) {
+PlayerInput::PlayerInput(Game& game) : m_gameController(game.createPlayerController(0)) {
 }
 
 const char* PlayerInput::bufferContent() const {
@@ -47,7 +47,7 @@ void PlayerInput::commitInput() {
     PN_LOG("PlayerInput::commitInput() - \"" << m_inputBuffer << "\"");
 
     if (m_inputIndex == 1 || m_inputBuffer[0] == m_inputBuffer[1])
-        m_gameController->disableLinesFrom(m_inputBuffer[0]);
+        m_gameController.disableLinesFrom(m_inputBuffer[0]);
     else
-        m_gameController->activateLine(m_inputBuffer[0], m_inputBuffer[1]);
+        m_gameController.activateLine(m_inputBuffer[0], m_inputBuffer[1]);
 }

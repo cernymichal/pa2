@@ -8,8 +8,6 @@ class AntNest;
 
 class GameController {
 public:
-    GameController(Game* game, const Player* player);
-
     /**
      * @param[in] playerId player to check
      *
@@ -43,7 +41,12 @@ public:
      */
     void activateLine(AntNest* nestA, AntNest* nestB);
 
+protected:
+    GameController(Game* game, const Player* player);
+
 private:
     Game* const m_game;
     const Player* const m_player;
+
+    friend class Game;
 };

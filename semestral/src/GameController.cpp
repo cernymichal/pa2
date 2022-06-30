@@ -10,7 +10,7 @@ std::list<AntNest*> GameController::getNests() {
     std::list<AntNest*> nests;
 
     for (auto& nest : m_game->m_nestMap) {
-        if (nest.second->player() && nest.second->player()->playerId() == m_player->playerId())
+        if (nest.second->player() && nest.second->player() == m_player)
             nests.push_back(nest.second);
     }
 
@@ -20,7 +20,7 @@ std::list<AntNest*> GameController::getNests() {
 void GameController::disableLinesFrom(char nestId) {
     auto nest = m_game->m_nestMap.find(nestId);
 
-    if (nest == m_game->m_nestMap.end() || !nest->second->player() || nest->second->player()->playerId() != m_player->playerId())
+    if (nest == m_game->m_nestMap.end() || !nest->second->player() || nest->second->player() != m_player)
         return;
 
     nest->second->disableLines();
@@ -29,7 +29,7 @@ void GameController::disableLinesFrom(char nestId) {
 void GameController::activateLine(char nestAId, char nestBId) {
     auto nest = m_game->m_nestMap.find(nestAId);
 
-    if (nest == m_game->m_nestMap.end() || !nest->second->player() || nest->second->player()->playerId() != m_player->playerId())
+    if (nest == m_game->m_nestMap.end() || !nest->second->player() || nest->second->player() != m_player)
         return;
 
     auto line = nest->second->m_lineMap.find(nestBId);
