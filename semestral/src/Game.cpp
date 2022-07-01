@@ -18,8 +18,6 @@ void Game::addObject(GameObject* object) {
 }
 
 void Game::onLoad() {
-    checkWin();
-
     for (auto& object : m_objects)
         object->onLoad();
 }
@@ -30,32 +28,32 @@ void Game::update() {
 
     collision();
 
-    for (auto iterA = m_objects.begin(); iterA != m_objects.end();) {
-        if ((*iterA)->dead())
-            iterA = m_objects.erase(iterA);
-        else
-            iterA++;
-    }
-
-    if (m_winTimer > 0)
-        m_winTimer--;
-    else if (m_winTimer == 0 && !getWinner())
-        m_winTimer = -1;
+    pruneObjects();
 }
 
 void Game::collision() {
     for (auto iterA = m_objects.begin(); iterA != m_objects.end(); iterA++) {
         auto iterB = iterA;
         for (iterB++; iterB != m_objects.end(); iterB++) {
-            if ((*iterA)->m_hitDistance < 0 || (*iterB)->m_hitDistance < 0)
+            if (!(*iterA)->collisionEnabled() || !(*iterB)->collisionEnabled())
                 continue;
 
-            auto d = ((*iterA)->location() - (*iterB)->location()).length();
-            if (d <= std::max((*iterA)->m_hitDistance, (*iterB)->m_hitDistance)) {
+            if (((*iterA)->location() - (*iterB)->location()) == Vector2<uint8_t>(0, 0)) {
                 (*iterA)->collideWith(**iterB);
                 (*iterB)->collideWith(**iterA);
             }
         }
+    }
+}
+
+void Game::pruneObjects() {
+    for (auto iterA = m_objects.begin(); iterA != m_objects.end();) {
+        if ((*iterA)->destroyed()) {
+            (*iterA)->onErase();
+            iterA = m_objects.erase(iterA);
+        }
+        else
+            iterA++;
     }
 }
 
@@ -64,28 +62,30 @@ void Game::draw() {
         object->draw();
 }
 
-Player* Game::getWinner() {
+bool Game::ended() const {
+    uint8_t notDefeated = 0;
+
+    for (const auto& el : m_playerMap) {
+        if (!el.second->defeated())
+            notDefeated++;
+    }
+
+    return notDefeated < 2;
+}
+
+const Player* Game::getWinner() const {
     Player* winner = nullptr;
 
-    for (const auto& nest : m_nestMap) {
-        if (!winner)
-            winner = nest.second->player();
-        else if (nest.second->player() && nest.second->player() != winner)
-            return nullptr;
+    for (const auto& el : m_playerMap) {
+        if (!el.second->defeated()) {
+            if (!winner)
+                winner = el.second;
+            else
+                return nullptr;
+        }
     }
 
     return winner;
-}
-
-void Game::checkWin() {
-    if (!getWinner())
-        return;
-
-    m_winTimer = 10;  // 5s with period of .5s
-}
-
-bool Game::won() const {
-    return m_winTimer == 0;
 }
 
 const std::string& Game::mapName() const {

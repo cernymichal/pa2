@@ -2,6 +2,7 @@
 
 #include "../Game.h"
 #include "../GameController.h"
+#include "../utils/log.h"
 
 Player::Player() {
 }
@@ -14,10 +15,25 @@ uint8_t Player::playerId() const {
     return m_playerId;
 }
 
+bool Player::defeated() const {
+    PN_LOG(m_playerName << " - " << static_cast<unsigned>(m_unitCount));
+    return m_unitCount == 0;
+}
+
+void Player::incUnitCount() {
+    if (m_unitCount < std::numeric_limits<uint16_t>::max())
+        m_unitCount++;
+}
+
+void Player::decUnitCount() {
+    if (m_unitCount > 0)
+        m_unitCount--;
+}
+
 void Player::onAdd(Game* game) {
     GameObject::onAdd(game);
 
-    m_game->m_playerMap[m_playerId] = this;
+    game->m_playerMap[m_playerId] = this;
 }
 
 bool Player::serializeState(std::ostream& stream) const {

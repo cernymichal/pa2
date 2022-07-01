@@ -15,12 +15,12 @@ const Vector2<uint8_t>& GameObject::location() const {
     return m_location;
 }
 
-bool GameObject::dead() const {
-    return m_dead;
+bool GameObject::destroyed() const {
+    return m_destroyed;
 }
 
-void GameObject::kill() {
-    m_dead = true;
+void GameObject::destroy() {
+    m_destroyed = true;
 }
 
 void GameObject::draw() const {
@@ -34,6 +34,13 @@ void GameObject::onAdd(Game* game) {
 }
 
 void GameObject::onLoad() {
+}
+
+void GameObject::onErase() {
+}
+
+bool GameObject::collisionEnabled() const {
+    return m_collision;
 }
 
 void GameObject::collideWith(GameObject& object) {
@@ -52,6 +59,10 @@ std::string GameObject::name() const {
     return str;
 }
 
+Game* GameObject::game() const {
+    return m_game;
+}
+
 bool GameObject::serialize(std::ostream& stream) const {
     return serializeState(stream << name() << " ");
 }
@@ -60,7 +71,7 @@ bool GameObject::serializeState(std::ostream& stream) const {
     stream << static_cast<unsigned short>(m_location.x)
            << ' ' << static_cast<unsigned short>(m_location.y)
            << ' ' << static_cast<unsigned short>(m_color)
-           << ' ' << m_dead
+           << ' ' << m_destroyed
            << ' ' << m_hitDistance;
 
     return !stream.fail();
@@ -78,7 +89,7 @@ bool GameObject::unserialize(std::istream& stream) {
     stream >> temp;
     m_color = temp;
 
-    stream >> m_dead;
+    stream >> m_destroyed;
 
     stream >> m_hitDistance;
 

@@ -10,7 +10,7 @@ class Game;
 /**
  * @brief abstract root of objects represented in Game
  *
- * has location, color, dead (should be removed from Game?), collision distance and update priority
+ * has location, color, destroyed (should be removed from Game?), collision distance and update priority
  */
 class GameObject {
 public:
@@ -25,9 +25,9 @@ public:
 
     const Vector2<uint8_t>& location() const;
 
-    bool dead() const;
+    bool destroyed() const;
 
-    void kill();
+    void destroy();
 
     /**
      * @brief draw to the screen with ncurses
@@ -48,6 +48,10 @@ public:
      * @brief called after game is loaded
      */
     virtual void onLoad();
+
+    virtual void onErase();
+
+    bool collisionEnabled() const;
 
     /**
      * @brief handle collision with other GameObject
@@ -89,15 +93,20 @@ public:
 
 protected:
     Vector2<uint8_t> m_location = {0, 0};
-    bool m_dead = false;
-    Game* m_game = nullptr;
+    bool m_collision = false;
+
+    Game* game() const;
 
     /**
      * @brief serialize for game saving
      *
-     * format: "{m_x}m_y{y} {m_color} {m_dead} {m_hitDistance}"
+     * format: "{m_x}m_y{y} {m_color} {m_destroyed} {m_hitDistance}"
      *
      * @param[in] stream output stream
      */
     virtual bool serializeState(std::ostream& stream) const;
+
+private:
+    bool m_destroyed = false;
+    Game* m_game = nullptr;
 };

@@ -46,7 +46,7 @@ void GameScreen::fixedUpdate() {
     clear();
     m_application.m_state.game->draw();
 
-    if (m_application.m_state.game->won()) {
+    if (m_application.m_state.game->ended()) {
         PN_LOG("winner found");
         m_exit = true;
         m_paused = false;

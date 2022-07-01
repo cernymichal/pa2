@@ -22,7 +22,6 @@ class GameBuilder;
 class Game {
 public:
     // TODO private
-    std::string m_mapName;
     std::map<char, AntNest*> m_nestMap;
     std::map<uint8_t, Player*> m_playerMap;
 
@@ -56,21 +55,12 @@ public:
      */
     void draw();
 
-    /**
-     * @brief check if winner can be decided
-     *
-     * - will start a timer after which the winner will or won't be decided
-     */
-    void checkWin();
+    bool ended() const;
 
     /**
-     * if only one player has nests, return them
-     *
      * @returns winner
      */
-    Player* getWinner();
-
-    bool won() const;
+    const Player* getWinner() const;
 
     const std::string& mapName() const;
 
@@ -84,8 +74,8 @@ public:
     std::ostream& log(std::ostream& stream) const;
 
 private:
-    int8_t m_winTimer = -1;
     std::list<std::unique_ptr<GameObject>> m_objects;
+    std::string m_mapName;
 
     Game();
 
@@ -93,6 +83,8 @@ private:
      * @brief handle collision between objects
      */
     void collision();
+
+    void pruneObjects();
 
     friend class GameBuilder;
     friend class GameController;

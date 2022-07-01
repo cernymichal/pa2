@@ -6,12 +6,12 @@
 #include "AntNest.h"
 
 Ant::Ant() {
-    m_hitDistance = 0;
+    m_collision = true;
 }
 
 Ant::Ant(const Vector2<uint8_t>& location, Player* player, Vector2<uint8_t> targetLocation)
     : PlayerUnit(location, player), m_targetLocation(targetLocation) {
-    m_hitDistance = 0;
+    m_collision = true;
     m_mvLocation = m_location;
 }
 
@@ -35,20 +35,15 @@ void Ant::update() {
 }
 
 void Ant::collideWith(GameObject& object) {
-    if (m_dead)
+    if (destroyed())
         return;
 
     auto ant = dynamic_cast<Ant*>(&object);
 
-    if (ant && ant->player() != player()) {
-        m_dead = true;
-        return;
+    if (ant && ant->player() != player() && !ant->destroyed()) {
+        destroy();
+        ant->destroy();
     }
-
-    auto nest = dynamic_cast<AntNest*>(&object);
-
-    if (nest && nest->location() == m_targetLocation)
-        m_dead = true;
 }
 
 bool Ant::serializeState(std::ostream& stream) const {

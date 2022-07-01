@@ -42,9 +42,9 @@ void ComputerPlayer::update() {
 
 void ComputerPlayer::onLoad() {
     if (m_focusedNestId != '?')
-        m_focusedNest = m_game->m_nestMap[m_focusedNestId];
+        m_focusedNest = game()->m_nestMap[m_focusedNestId];
 
-    m_gameController = std::make_unique<GameController>(m_game->createPlayerController(playerId()));
+    m_gameController = std::make_unique<GameController>(game()->createPlayerController(playerId()));
 }
 
 bool ComputerPlayer::serializeState(std::ostream& stream) const {

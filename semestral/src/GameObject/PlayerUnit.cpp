@@ -15,19 +15,31 @@ Player* PlayerUnit::player() {
 }
 
 void PlayerUnit::changeOwningPlayer(Player* player) {
+    if (m_owningPlayer)
+        m_owningPlayer->decUnitCount();
+
+    m_owningPlayer = player;
+
     if (!player)
         m_owningPlayerId = -1;
     else {
         m_owningPlayerId = player->playerId();
         m_color = player->m_color;
+        m_owningPlayer->incUnitCount();
     }
-
-    m_owningPlayer = player;
 }
 
 void PlayerUnit::onLoad() {
+    GameObject::onLoad();
+
     if (m_owningPlayerId != -1)
-        changeOwningPlayer(m_game->m_playerMap[m_owningPlayerId]);
+        changeOwningPlayer(game()->m_playerMap[m_owningPlayerId]);
+}
+
+void PlayerUnit::onErase() {
+    GameObject::onErase();
+
+    changeOwningPlayer(nullptr);
 }
 
 bool PlayerUnit::serializeState(std::ostream& stream) const {

@@ -17,6 +17,12 @@ public:
 
     uint8_t playerId() const;
 
+    bool defeated() const;
+
+    void incUnitCount();
+
+    void decUnitCount();
+
     /**
      * @brief add this to m_playerMap in m_game
      */
@@ -37,4 +43,5 @@ protected:
 private:
     // TODO remove -1
     uint8_t m_playerId = -1;
+    uint16_t m_unitCount = 0;  // not saved
 };

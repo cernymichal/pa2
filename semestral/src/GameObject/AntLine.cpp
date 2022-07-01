@@ -51,8 +51,8 @@ void AntLine::update() {
 }
 
 void AntLine::onLoad() {
-    m_nestA = m_game->m_nestMap[m_nestAId];
-    m_nestB = m_game->m_nestMap[m_nestBId];
+    m_nestA = game()->m_nestMap[m_nestAId];
+    m_nestB = game()->m_nestMap[m_nestBId];
 
     m_nestA->m_lineMap[m_nestBId] = this;
     m_nestB->m_lineMap[m_nestAId] = this;

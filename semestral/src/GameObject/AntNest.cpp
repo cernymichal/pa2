@@ -11,12 +11,12 @@
 #define NEUTRAL_DEFENDERS 10
 
 AntNest::AntNest() {
-    m_hitDistance = 1;
+    m_collision = true;
 }
 
 AntNest::AntNest(const Vector2<uint8_t>& location, char id, bool starting)
     : PlayerUnit(location), m_nestId(id), m_starting(starting) {
-    m_hitDistance = 1;
+    m_collision = true;
 
     if (!starting)
         m_ants = NEUTRAL_DEFENDERS;
@@ -51,7 +51,7 @@ bool AntNest::contested() {
 void AntNest::spawnAnt(const AntNest* targetNest) {
     if (m_ants > 0) {
         m_ants--;
-        m_game->addObject<Ant>(m_location, player(), targetNest->location());
+        game()->addObject<Ant>(m_location, player(), targetNest->location());
     }
 }
 
@@ -82,13 +82,16 @@ void AntNest::update() {
 void AntNest::onAdd(Game* game) {
     PlayerUnit::onAdd(game);
 
-    m_game->m_nestMap[m_nestId] = this;
+    game->m_nestMap[m_nestId] = this;
 }
 
 void AntNest::collideWith(GameObject& object) {
     auto ant = dynamic_cast<Ant*>(&object);
 
     if (!ant)
+        return;
+
+    if (ant->destroyed())
         return;
 
     if (ant->player() != player()) {
@@ -98,11 +101,15 @@ void AntNest::collideWith(GameObject& object) {
             m_ants = 1;
             changeOwningPlayer(ant->player());
             disableLines();
-            m_game->checkWin();
         }
+
+        ant->destroy();
     }
-    else if (ant->target() == m_location && m_ants < 99)
-        m_ants++;
+    else if (ant->target() == m_location) {
+        if (m_ants < 99)
+            m_ants++;
+        ant->destroy();
+    }
 }
 
 uint8_t AntNest::updatePriority() const {

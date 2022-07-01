@@ -27,6 +27,8 @@ public:
      */
     virtual void onLoad() override;
 
+    virtual void onErase() override;
+
     virtual bool unserialize(std::istream& stream) override;
 
 protected:
